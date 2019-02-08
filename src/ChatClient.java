@@ -1,33 +1,28 @@
 import java.io.*;
 import java.net.*;
 
-public class ChatClient {
-    public static void main(String[] args) throws IOException {
+class ChatClient {
 
-        if (args.length != 2) {
-            System.err.println(
-                    "Usage: java ChatClient <host name> <port number>");
-            System.exit(1);
-        }
+    private final static ChatClient client = new ChatClient();
+    private final String HOSTNAME = "localhost";
+    private final int PORT = 1234;
 
-        final String HOSTNAME = args[0];
-        final int PORT = Integer.parseInt(args[1]);
-
+    private ChatClient() {
         try (
-                Socket echoSocket = new Socket(HOSTNAME, PORT);
-                PrintWriter out =
-                        new PrintWriter(echoSocket.getOutputStream(), true);
-                BufferedReader in =
-                        new BufferedReader(
-                                new InputStreamReader(echoSocket.getInputStream()));
-                BufferedReader stdIn =
-                        new BufferedReader(
-                                new InputStreamReader(System.in))
+            Socket socket = new Socket(HOSTNAME, PORT);
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in))
+
         ) {
+            System.out.println("Connected");
             String userInput;
             while ((userInput = stdIn.readLine()) != null) {
                 out.println(userInput);
-                System.out.println(echoSocket.getLocalSocketAddress().toString().substring(1) + " " + in.readLine());
+                if (userInput.equals("quit")) {
+                    socket.close();
+                }
+                System.out.println(socket.getLocalSocketAddress().toString().substring(1) + " " + in.readLine());
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
@@ -38,4 +33,9 @@ public class ChatClient {
             System.exit(1);
         }
     }
+
+    static ChatClient get(){
+        return client;
+    }
 }
+
