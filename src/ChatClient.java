@@ -15,6 +15,7 @@ class ChatClient {
             BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in))
 
         ) {
+
             System.out.println("Connected");
             String userInput;
             while ((userInput = stdIn.readLine()) != null) {
