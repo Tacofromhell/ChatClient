@@ -1,6 +1,5 @@
 import java.io.Serializable;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.time.LocalTime;
 
 public class Message implements Serializable {
@@ -11,6 +10,7 @@ public class Message implements Serializable {
     private transient Socket reviever;
     private String msg;
     private LocalTime timestamp;
+    private boolean toAll = true;
 
     public Message(Socket sender, String msg){
         this.sender = sender.getLocalSocketAddress().toString();
@@ -38,6 +38,10 @@ public class Message implements Serializable {
         String minute = this.timestamp.getMinute() < 10 ?  "0" + this.timestamp.getMinute() : "" + this.timestamp.getMinute();
         String second = this.timestamp.getSecond() < 10 ?  "0" + this.timestamp.getSecond() : "" + this.timestamp.getSecond();
         return hour + "." + minute + "." + second;
+    }
+
+    Boolean GetToAll(){
+        return toAll;
     }
 }
 

@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
 
-class ChatClient {
+class ChatClient extends Thread{
 
 //    private final static ChatClient client = new ChatClient();
     private final String HOSTNAME = "localhost";
@@ -9,6 +9,7 @@ class ChatClient {
     private boolean running = true;
 
     public ChatClient() {
+        start();
         try {
             Socket socket = new Socket(HOSTNAME, PORT);
             //TODO: add setSoTimeout()
@@ -19,11 +20,9 @@ class ChatClient {
             System.out.println("Connected");
             while (running) {
             String userInput = input.readLine();
-//            dout.writeUTF(userInput);
-//            String msg = din.readUTF();
             Message msg = new Message(socket, userInput);
             dataOut.writeObject(msg);
-            dataOut.flush();
+//            dataOut.flush();
                 if (userInput.equals("quit")) {
                     socket.close();
                 }
@@ -35,7 +34,6 @@ class ChatClient {
                     e.printStackTrace();
                 }
                 System.out.println(incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + ": " + incoming.getMsg());
-//                System.out.println(socket.getLocalSocketAddress().toString().substring(1) + " " + msg);
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
@@ -50,5 +48,7 @@ class ChatClient {
     public ChatClient get(){
         return this;
     }
+
+    
 }
 
