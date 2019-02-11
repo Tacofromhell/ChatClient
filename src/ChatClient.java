@@ -7,6 +7,7 @@ class ChatClient extends Thread{
     private final String HOSTNAME = "localhost";
     private final int PORT = 1234;
     private boolean running = true;
+    private User currentUser = new User();
 
     public ChatClient() {
         start();
@@ -20,7 +21,7 @@ class ChatClient extends Thread{
             System.out.println("Connected");
             while (running) {
             String userInput = input.readLine();
-            Message msg = new Message(socket, userInput);
+            Message msg = new Message(socket, userInput, currentUser);
             dataOut.writeObject(msg);
 //            dataOut.flush();
                 if (userInput.equals("quit")) {
@@ -33,7 +34,7 @@ class ChatClient extends Thread{
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-                System.out.println(incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + ": " + incoming.getMsg());
+                System.out.println(incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + " " + incoming.getUser().getUsername() + ": " + incoming.getMsg());
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
