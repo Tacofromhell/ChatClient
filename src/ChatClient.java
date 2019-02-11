@@ -8,28 +8,31 @@ class ChatClient extends Thread{
     private final int PORT = 1234;
     private boolean running = true;
     ObjectInputStream dataIn;
+    ObjectOutputStream dataOut;
+    Socket socket;
 
     public ChatClient() {
         start();
         try {
-            Socket socket = new Socket(HOSTNAME, PORT);
+            socket = new Socket(HOSTNAME, PORT);
             //TODO: add setSoTimeout()
-            ObjectOutputStream dataOut = new ObjectOutputStream(socket.getOutputStream());
+            dataOut = new ObjectOutputStream(socket.getOutputStream());
             dataIn = new ObjectInputStream(socket.getInputStream());
-            BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
             System.out.println("Connected");
             Thread monitorIncoming = new Thread(this::monitorIncomingMessages);
             monitorIncoming.start();
+            Thread monitorInput = new Thread(this::monitorInput);
+            monitorInput.start();
 //            monitorIncomingMessages(dataIn);
 
-            while (running) {
-            String userInput = input.readLine();
-            if (userInput.equals("quit")) {
-                socket.close();
-            }
-            Message msg = new Message(socket, userInput);
-            dataOut.writeObject(msg);
+//            while (running) {
+//            String userInput = input.readLine();
+//            if (userInput.equals("quit")) {
+//                socket.close();
+//            }
+//            Message msg = new Message(socket, userInput);
+//            dataOut.writeObject(msg);
 //            dataOut.flush();
 
 //                Message incoming = null;
@@ -39,7 +42,7 @@ class ChatClient extends Thread{
 //                } catch (ClassNotFoundException e) {
 //                    e.printStackTrace();
 //                }
-            }
+
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
             System.exit(1);
@@ -68,6 +71,22 @@ class ChatClient extends Thread{
         }
     }
 
+    void monitorInput() {
 
+        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            while (running) {
+                String userInput = input.readLine();
+                if (userInput.equals("quit")) {
+                    socket.close();
+                }
+                Message msg = new Message(socket, userInput);
+                dataOut.writeObject(msg);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
 
