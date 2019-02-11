@@ -20,20 +20,20 @@ class ChatClient extends Thread{
             System.out.println("Connected");
             while (running) {
             String userInput = input.readLine();
+            if (userInput.equals("quit")) {
+                socket.close();
+            }
             Message msg = new Message(socket, userInput);
             dataOut.writeObject(msg);
 //            dataOut.flush();
-                if (userInput.equals("quit")) {
-                    socket.close();
-                }
 
-                Message incoming = null;
+//                Message incoming = null;
                 try {
-                    incoming = (Message)dataIn.readObject();
+                    Message incoming = (Message)dataIn.readObject();
+                    System.out.println(incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + ": " + incoming.getMsg());
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-                System.out.println(incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + ": " + incoming.getMsg());
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
@@ -48,6 +48,8 @@ class ChatClient extends Thread{
     public ChatClient get(){
         return this;
     }
+
+    
 
 
 }
