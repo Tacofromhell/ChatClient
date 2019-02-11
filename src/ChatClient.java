@@ -4,37 +4,45 @@ import java.net.*;
 class ChatClient extends Thread{
 
 //    private final static ChatClient client = new ChatClient();
-    private final String HOSTNAME = "localhost";
+    private final String HOSTNAME = "10.155.90.36";
     private final int PORT = 1234;
     private boolean running = true;
+    ObjectInputStream dataIn;
+    ObjectOutputStream dataOut;
+    Socket socket;
 
     public ChatClient() {
         start();
         try {
-            Socket socket = new Socket(HOSTNAME, PORT);
+            socket = new Socket(HOSTNAME, PORT);
             //TODO: add setSoTimeout()
-            ObjectOutputStream dataOut = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream dataIn = new ObjectInputStream(socket.getInputStream());
-            BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+            dataOut = new ObjectOutputStream(socket.getOutputStream());
+            dataIn = new ObjectInputStream(socket.getInputStream());
 
             System.out.println("Connected");
-            while (running) {
-            String userInput = input.readLine();
-            Message msg = new Message(socket, userInput);
-            dataOut.writeObject(msg);
-//            dataOut.flush();
-                if (userInput.equals("quit")) {
-                    socket.close();
-                }
+            Thread monitorIncoming = new Thread(this::monitorIncomingMessages);
+            monitorIncoming.start();
+            Thread monitorInput = new Thread(this::monitorInput);
+            monitorInput.start();
+//            monitorIncomingMessages(dataIn);
 
-                Message incoming = null;
-                try {
-                    incoming = (Message)dataIn.readObject();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                System.out.println(incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + ": " + incoming.getMsg());
-            }
+//            while (running) {
+//            String userInput = input.readLine();
+//            if (userInput.equals("quit")) {
+//                socket.close();
+//            }
+//            Message msg = new Message(socket, userInput);
+//            dataOut.writeObject(msg);
+//            dataOut.flush();
+
+//                Message incoming = null;
+//                try {
+//                    Message incoming = (Message)dataIn.readObject();
+//                    System.out.println(incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + ": " + incoming.getMsg());
+//                } catch (ClassNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
             System.exit(1);
@@ -49,6 +57,38 @@ class ChatClient extends Thread{
         return this;
     }
 
+    void monitorIncomingMessages() {
+        while (running) {
+            try {
+                Message incoming = (Message) dataIn.readObject();
+                System.out.println(incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + ": " + incoming.getMsg());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException ioe) {
+                System.out.println("Socket is closed");
+                running = false;
+//                ioe.printStackTrace();
 
+            }
+        }
+    }
+    void monitorInput(){
+
+        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            while (running) {
+                String userInput = input.readLine();
+                if (userInput.equals("quit")) {
+                    socket.close();
+                    running = false;
+                } else {
+                    Message msg = new Message(socket, userInput);
+                    dataOut.writeObject(msg);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
