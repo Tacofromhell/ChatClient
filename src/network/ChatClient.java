@@ -38,6 +38,7 @@ public class ChatClient {
                 e.printStackTrace();
             }
         });
+        startT.setDaemon(true);
         startT.start();
     }
 
@@ -47,23 +48,45 @@ public class ChatClient {
         dataOut = new ObjectOutputStream(socket.getOutputStream());
         dataIn = new ObjectInputStream(socket.getInputStream());
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+        Thread monitorIncoming = new Thread(this::monitorIncomingMessages);
+        monitorIncoming.setDaemon(true);
+        monitorIncoming.start();
+        Thread monitorInput = new Thread(this::monitorInput);
+        monitorInput.setDaemon(true);
+        monitorInput.start();
+    }
 
+    void monitorIncomingMessages() {
         while (running) {
-            String userInput = input.readLine();
-            Message msg = new Message(socket, userInput);
-            dataOut.writeObject(msg);
-//            dataOut.flush();
-            if (userInput.equals("quit")) {
-                socket.close();
-            }
-
-            Message incoming = null;
             try {
-                incoming = (Message) dataIn.readObject();
+                Message incoming = (Message) dataIn.readObject();
+                System.out.println(incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + ": " + incoming.getMsg());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
+            } catch (IOException ioe) {
+                System.out.println("Socket is closed");
+                running = false;
+//                ioe.printStackTrace();
+
             }
-            System.out.println(incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + ": " + incoming.getMsg());
+        }
+    }
+    void monitorInput(){
+
+        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            while (running) {
+                String userInput = input.readLine();
+                if (userInput.equals("quit")) {
+                    socket.close();
+                    running = false;
+                } else {
+                    Message msg = new Message(socket, userInput);
+                    dataOut.writeObject(msg);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -73,11 +96,11 @@ public class ChatClient {
 
     public void closeThreads() {
         running = false;
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            socket.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         startT.interrupt();
     }
 }
