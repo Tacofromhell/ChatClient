@@ -7,6 +7,7 @@ class ChatClient extends Thread{
     private final String HOSTNAME = "localhost";
     private final int PORT = 1234;
     private boolean running = true;
+    ObjectInputStream dataIn;
 
     public ChatClient() {
         start();
@@ -14,12 +15,13 @@ class ChatClient extends Thread{
             Socket socket = new Socket(HOSTNAME, PORT);
             //TODO: add setSoTimeout()
             ObjectOutputStream dataOut = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream dataIn = new ObjectInputStream(socket.getInputStream());
+            dataIn = new ObjectInputStream(socket.getInputStream());
             BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
             System.out.println("Connected");
-
-            monitorIncomingMessages(dataIn);
+            Thread monitorIncoming = new Thread(this::monitorIncomingMessages);
+            monitorIncoming.start();
+//            monitorIncomingMessages(dataIn);
 
             while (running) {
             String userInput = input.readLine();
@@ -52,8 +54,8 @@ class ChatClient extends Thread{
         return this;
     }
 
-    void monitorIncomingMessages(ObjectInputStream dataIn){
-        new Thread().start();
+    void monitorIncomingMessages(){
+
         while(running){
             try {
                 Message incoming = (Message)dataIn.readObject();
