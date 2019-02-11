@@ -11,23 +11,13 @@ public class Main extends Application {
     public static Stage stage;
     private Parent root;
 
-    public static void main(String[] args) {
-        launch(args);
-
-    }
-
     @Override
     public void start(Stage stage) throws Exception {
         root = FXMLLoader.load(getClass().getResource("chatUI.fxml"));
         Main.stage = stage;
         stage.setTitle("ChatApp");
 
-//        try {
-//            startSocket();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
+//        initialize server connection by calling singleton
         ChatClient.get();
 
         stage.setScene(new Scene(root, 400, 600));
@@ -36,17 +26,5 @@ public class Main extends Application {
         stage.show();
     }
 
-//    public void startSocket() {
-//        Runnable task = new Runnable() {
-//            @Override
-//            public void run() {
-//                ChatClient.get();
-//            }
-//        };
-//
-//        Thread socketThread = new Thread(task);
-//        socketThread.start();
-//    }
-
-
+    public static void main(String[] args) {launch(args);}
 }
