@@ -4,7 +4,7 @@ import java.net.*;
 class ChatClient extends Thread{
 
 //    private final static ChatClient client = new ChatClient();
-    private final String HOSTNAME = "localhost";
+    private final String HOSTNAME = "10.155.90.36";
     private final int PORT = 1234;
     private boolean running = true;
     ObjectInputStream dataIn;
@@ -57,21 +57,22 @@ class ChatClient extends Thread{
         return this;
     }
 
-    void monitorIncomingMessages(){
-
-        while(running){
+    void monitorIncomingMessages() {
+        while (running) {
             try {
-                Message incoming = (Message)dataIn.readObject();
+                Message incoming = (Message) dataIn.readObject();
                 System.out.println(incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + ": " + incoming.getMsg());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-            } catch (IOException ioe){
-                ioe.printStackTrace();
+            } catch (IOException ioe) {
+                System.out.println("Socket is closed");
+                running = false;
+//                ioe.printStackTrace();
+
             }
         }
     }
-
-    void monitorInput() {
+    void monitorInput(){
 
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
         try {
@@ -79,14 +80,15 @@ class ChatClient extends Thread{
                 String userInput = input.readLine();
                 if (userInput.equals("quit")) {
                     socket.close();
+                    running = false;
+                } else {
+                    Message msg = new Message(socket, userInput);
+                    dataOut.writeObject(msg);
                 }
-                Message msg = new Message(socket, userInput);
-                dataOut.writeObject(msg);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }
 
