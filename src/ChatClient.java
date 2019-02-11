@@ -7,9 +7,13 @@ class ChatClient extends Thread{
     private final String HOSTNAME = "10.155.90.36";
     private final int PORT = 1234;
     private boolean running = true;
+
     ObjectInputStream dataIn;
     ObjectOutputStream dataOut;
     Socket socket;
+
+    private User currentUser = new User();
+ 
 
     public ChatClient() {
         start();
@@ -20,6 +24,7 @@ class ChatClient extends Thread{
             dataIn = new ObjectInputStream(socket.getInputStream());
 
             System.out.println("Connected");
+
             Thread monitorIncoming = new Thread(this::monitorIncomingMessages);
             monitorIncoming.start();
             Thread monitorInput = new Thread(this::monitorInput);
@@ -33,15 +38,9 @@ class ChatClient extends Thread{
 //            }
 //            Message msg = new Message(socket, userInput);
 //            dataOut.writeObject(msg);
+
 //            dataOut.flush();
 
-//                Message incoming = null;
-//                try {
-//                    Message incoming = (Message)dataIn.readObject();
-//                    System.out.println(incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + ": " + incoming.getMsg());
-//                } catch (ClassNotFoundException e) {
-//                    e.printStackTrace();
-//                }
 
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
