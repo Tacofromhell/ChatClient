@@ -49,6 +49,6 @@ class ChatClient extends Thread{
         return this;
     }
 
-    
+
 }
 
