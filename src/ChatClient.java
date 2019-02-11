@@ -18,6 +18,9 @@ class ChatClient extends Thread{
             BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
             System.out.println("Connected");
+
+            monitorIncomingMessages(dataIn);
+
             while (running) {
             String userInput = input.readLine();
             if (userInput.equals("quit")) {
@@ -28,12 +31,12 @@ class ChatClient extends Thread{
 //            dataOut.flush();
 
 //                Message incoming = null;
-                try {
-                    Message incoming = (Message)dataIn.readObject();
-                    System.out.println(incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + ": " + incoming.getMsg());
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Message incoming = (Message)dataIn.readObject();
+//                    System.out.println(incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + ": " + incoming.getMsg());
+//                } catch (ClassNotFoundException e) {
+//                    e.printStackTrace();
+//                }
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
@@ -49,7 +52,19 @@ class ChatClient extends Thread{
         return this;
     }
 
-    
+    void monitorIncomingMessages(ObjectInputStream dataIn){
+        new Thread().start();
+        while(running){
+            try {
+                Message incoming = (Message)dataIn.readObject();
+                System.out.println(incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + ": " + incoming.getMsg());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException ioe){
+                ioe.printStackTrace();
+            }
+        }
+    }
 
 
 }
