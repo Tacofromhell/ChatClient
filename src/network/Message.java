@@ -13,9 +13,11 @@ public class Message implements Serializable {
     private String msg;
     private LocalTime timestamp;
     private boolean toAll = true;
+    private User user;
 
-    public Message(Socket sender, String msg){
+    public Message(Socket sender, String msg, User user){
         this.sender = sender.getLocalSocketAddress().toString();
+        this.user = user;
         this.msg = msg;
         this.timestamp = LocalTime.now();
     }
@@ -30,6 +32,8 @@ public class Message implements Serializable {
     String getSender(){
         return this.sender;
     }
+
+    User getUser (){return this.user;}
 
     String getMsg(){
         return this.msg;

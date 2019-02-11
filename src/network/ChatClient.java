@@ -71,7 +71,8 @@ public class ChatClient {
             }
         }
     }
-    void monitorInput(){
+
+    void monitorInput() {
 
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
         try {
@@ -81,7 +82,7 @@ public class ChatClient {
                     socket.close();
                     running = false;
                 } else {
-                    Message msg = new Message(socket, userInput);
+                    Message msg = new Message(socket, userInput, new User());
                     dataOut.writeObject(msg);
                 }
             }
@@ -96,11 +97,6 @@ public class ChatClient {
 
     public void closeThreads() {
         running = false;
-//        try {
-//            socket.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         startT.interrupt();
     }
 }
