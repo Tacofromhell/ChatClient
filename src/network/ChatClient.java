@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.*;
 
 public class ChatClient {
-
     //    private final static network.ChatClient client = new network.ChatClient();
     private final String HOSTNAME = "localhost";
     private final int PORT = 1234;
@@ -14,7 +13,6 @@ public class ChatClient {
     private ObjectOutputStream dataOut;
     private ObjectInputStream dataIn;
     private Thread startT;
-
 
     public ChatClient() {
         try {
@@ -71,7 +69,8 @@ public class ChatClient {
             }
         }
     }
-    void monitorInput(){
+
+    void monitorInput() {
 
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
         try {
@@ -81,7 +80,7 @@ public class ChatClient {
                     socket.close();
                     running = false;
                 } else {
-                    Message msg = new Message(socket, userInput);
+                    Message msg = new Message(socket, userInput, new User());
                     dataOut.writeObject(msg);
                 }
             }
@@ -96,11 +95,6 @@ public class ChatClient {
 
     public void closeThreads() {
         running = false;
-//        try {
-//            socket.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         startT.interrupt();
     }
 }
