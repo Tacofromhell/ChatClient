@@ -9,11 +9,17 @@ import network.ChatClient;
 
 public class Main extends Application {
     public static Stage stage;
+    public static chatUIcontroller UIcontrol;
     private Parent root;
 
     @Override
     public void start(Stage stage) throws Exception {
-        root = FXMLLoader.load(getClass().getResource("chatUI.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("chatUI.fxml"));
+        root = loader.load();
+
+        UIcontrol = loader.getController();
+        stage.setUserData(UIcontrol);
+
         Main.stage = stage;
         stage.setTitle("ChatApp");
 
@@ -26,5 +32,7 @@ public class Main extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) {launch(args);}
+    public static void main(String[] args) {
+        launch(args);
+    }
 }

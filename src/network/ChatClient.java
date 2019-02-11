@@ -1,5 +1,8 @@
 package network;
 
+import gui.Main;
+import javafx.application.Platform;
+
 import java.io.*;
 import java.net.*;
 
@@ -58,7 +61,14 @@ public class ChatClient {
         while (running) {
             try {
                 Message incoming = (Message) dataIn.readObject();
-                System.out.println(incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + ": " + incoming.getMsg());
+                String msg = incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + ": " + incoming.getMsg();
+                System.out.println(msg);
+
+//                to update GUI, the elements need to be set
+//                in the JavaFX thread.
+//                this is achieved with Platform.runLater
+                Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(msg));
+
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException ioe) {
