@@ -30,7 +30,7 @@
             <Insets />
          </BorderPane.margin>
          <children>
-              <TextArea fx:id="printMessages" editable="false" prefHeight="518.0" prefWidth="354.0" wrapText="true">
+              <TextArea fx:id="printMessages" editable="false" focusTraversable="false" prefHeight="518.0" prefWidth="354.0" wrapText="true">
                   <font>
                       <Font name="Arial" size="12.0" />
                   </font>
@@ -40,8 +40,11 @@
               </TextArea>
               <HBox prefHeight="8.0" prefWidth="200.0">
                   <children>
-                      <TextField fx:id="newMessage" onKeyReleased="#sendMessageEnter" prefHeight="25.0" prefWidth="345.0" promptText="Type message" />
-                      <Button fx:id="sendMessage" mnemonicParsing="false" onAction="#sendMessageButton" prefHeight="25.0" prefWidth="66.0" text="Send" />
+                      <TextField fx:id="newMessage" onKeyReleased="#sendMessageEnter" prefHeight="25.0" prefWidth="800.0" promptText="Type message">
+                     <font>
+                        <Font name="Arial" size="12.0" />
+                     </font></TextField>
+                      <Button fx:id="sendMessage" maxHeight="25.0" maxWidth="65.0" minHeight="25.0" minWidth="65.0" mnemonicParsing="false" onAction="#sendMessageButton" prefHeight="25.0" prefWidth="65.0" text="Send" />
                   </children>
               </HBox>
          </children>
@@ -58,7 +61,7 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </TextField>
-            <VBox fx:id="users" spacing="5" prefHeight="568.0" prefWidth="100.0" />
+            <VBox fx:id="users" prefHeight="568.0" prefWidth="100.0" spacing="5" />
          </children>
       </VBox>
    </right>
