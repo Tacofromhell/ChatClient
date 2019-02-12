@@ -38,7 +38,8 @@ public class chatUIcontroller {
 
     public void sendMessageButton() {
 //        send input string to network method in ChatClient
-        ChatClient.get().sendMessageToServer(username.getText(), newMessage.getText());
+        if (newMessage.getText().trim().length() > 0)
+            ChatClient.get().sendMessageToServer(username.getText().trim(), newMessage.getText());
 
         newMessage.setText("");
     }
@@ -46,13 +47,14 @@ public class chatUIcontroller {
     public void sendMessageEnter(KeyEvent key) {
         if (key.getCode().equals(KeyCode.ENTER)) {
 //            send input string to network method in ChatClient
-            ChatClient.get().sendMessageToServer(username.getText(), newMessage.getText());
+            if (newMessage.getText().trim().length() > 0)
+                ChatClient.get().sendMessageToServer(username.getText().trim(), newMessage.getText());
 
             newMessage.setText("");
         }
     }
 
-    public void printUsers(){
+    public void printUsers() {
         HBox onlineUser = new HBox(5);
         onlineUser.setStyle("-fx-alignment: CENTER_LEFT");
         Circle userPic = new Circle(13, Color.LIGHTGRAY);

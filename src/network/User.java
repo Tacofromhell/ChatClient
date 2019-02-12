@@ -23,7 +23,7 @@ public class User implements Serializable {
     public User(String name){
     //this.activeRoom = "general";
         this.ID = UUID.randomUUID().toString();
-        this.username = name;
+        this.username = name.length() > 0 ? name : "anon";
     }
 
    public String getUsername (){return this.username;}
