@@ -21,6 +21,8 @@ public class chatUIcontroller {
     @FXML
     TextField newMessage;
     @FXML
+    TextField username;
+    @FXML
     Button sendMessage;
     @FXML
     VBox users;
@@ -36,7 +38,7 @@ public class chatUIcontroller {
 
     public void sendMessageButton() {
 //        send input string to network method in ChatClient
-        ChatClient.get().sendMessageToServer(newMessage.getText());
+        ChatClient.get().sendMessageToServer(username.getText(), newMessage.getText());
 
         newMessage.setText("");
     }
@@ -44,7 +46,7 @@ public class chatUIcontroller {
     public void sendMessageEnter(KeyEvent key) {
         if (key.getCode().equals(KeyCode.ENTER)) {
 //            send input string to network method in ChatClient
-            ChatClient.get().sendMessageToServer(newMessage.getText());
+            ChatClient.get().sendMessageToServer(username.getText(), newMessage.getText());
 
             newMessage.setText("");
         }

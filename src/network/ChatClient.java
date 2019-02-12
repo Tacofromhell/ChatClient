@@ -62,7 +62,7 @@ public class ChatClient {
         while (running) {
             try {
                 Message incoming = (Message) dataIn.readObject();
-                String msg = incoming.getTimestamp() + " | " + incoming.getSender().substring(1) + ": " + incoming.getMsg();
+                String msg = incoming.getTimestamp() + " | " + incoming.getUser().getUsername() + ":  " + incoming.getMsg();
                 System.out.println(msg);
 
                 Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(msg));
@@ -97,11 +97,11 @@ public class ChatClient {
         }
     }
 
-    public void sendMessageToServer(String userInput) {
+    public void sendMessageToServer(String userName, String userInput) {
 
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
         try {
-            Message msg = new Message(socket, userInput, new User());
+            Message msg = new Message(socket, userInput, new User(userName));
             dataOut.writeObject(msg);
         } catch (IOException e) {
             e.printStackTrace();

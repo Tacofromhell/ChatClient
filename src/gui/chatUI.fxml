@@ -56,7 +56,7 @@
             <Insets left="5.0" />
          </BorderPane.margin>
          <children>
-            <TextField promptText="Username">
+            <TextField fx:id="username" promptText="Username">
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin>
