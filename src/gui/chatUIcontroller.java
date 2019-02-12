@@ -7,6 +7,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import network.ChatClient;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -22,24 +23,27 @@ public class chatUIcontroller implements Initializable {
 
     public void printMessageFromServer(String msg) {
         printMessages.setText(printMessages.getText().concat("\n" + msg));
+        printMessages.setScrollTop(Double.MAX_VALUE);
     }
 
     public void sendMessageButton() {
-        printMessages.setText(printMessages.getText().concat("\n" + newMessage.getText()));
+//        send input string to network method in ChatClient
+        ChatClient.get().sendMessageToServer(newMessage.getText());
+
         newMessage.setText("");
     }
 
     public void sendMessageEnter(KeyEvent key) {
         if (key.getCode().equals(KeyCode.ENTER)) {
-            printMessages.setText(printMessages.getText().concat("\n" + newMessage.getText()));
+//            send input string to network method in ChatClient
+            ChatClient.get().sendMessageToServer(newMessage.getText());
+
             newMessage.setText("");
         }
     }
 
     public void initialize() {
-        printMessages.textProperty().addListener(e -> {
-            printMessages.setScrollTop(Double.MAX_VALUE);
-        });
+
     }
 
 

@@ -12,7 +12,7 @@ public class ChatClient {
     private final String HOSTNAME = "localhost";
     private final int PORT = 1234;
     private volatile boolean running = true;
-    private static ChatClient _singleton = new ChatClient();
+    private static ChatClient singleton = new ChatClient();
     private Socket socket;
     private ObjectOutputStream dataOut;
     private ObjectInputStream dataIn;
@@ -97,8 +97,19 @@ public class ChatClient {
         }
     }
 
+    public void sendMessageToServer(String userInput) {
+
+        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            Message msg = new Message(socket, userInput, new User());
+            dataOut.writeObject(msg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static ChatClient get() {
-        return _singleton;
+        return singleton;
     }
 
     public void closeThreads() {
