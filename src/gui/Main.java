@@ -26,6 +26,10 @@ public class Main extends Application {
 //        initialize server connection by calling singleton
         ChatClient.get();
 
+        for(int i = 0; i < 10; i++){
+            UIcontrol.printUsers();
+        }
+
         stage.setScene(new Scene(root, 500, 600));
 
         stage.setOnCloseRequest(e -> ChatClient.get().closeThreads());
