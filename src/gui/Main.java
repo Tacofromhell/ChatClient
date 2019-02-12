@@ -26,7 +26,7 @@ public class Main extends Application {
 //        initialize server connection by calling singleton
         ChatClient.get();
 
-        stage.setScene(new Scene(root, 400, 600));
+        stage.setScene(new Scene(root, 500, 600));
 
         stage.setOnCloseRequest(e -> ChatClient.get().closeThreads());
         stage.show();
