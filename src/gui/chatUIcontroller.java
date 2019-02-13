@@ -32,7 +32,7 @@ public class chatUIcontroller {
     }
 
     public void printMessageFromServer(String msg) {
-        printMessages.setText(printMessages.getText().concat("\n" + msg));
+        printMessages.setText(printMessages.getText().concat(msg + "\n"));
         printMessages.setScrollTop(Double.MAX_VALUE);
     }
 
