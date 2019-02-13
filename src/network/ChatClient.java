@@ -112,7 +112,7 @@ public class ChatClient {
     public void sendUserToServer() {
         try {
             dataOut.reset();
-            dataOut.writeUnshared(currentUser);
+            dataOut.writeObject(currentUser);
         } catch (IOException e) {
             e.printStackTrace();
         }
