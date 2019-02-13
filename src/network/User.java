@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class User implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 8119880995263638778L;
 
     private String ID;
     private String username;
@@ -18,7 +18,7 @@ public class User implements Serializable {
     public User(){
     //this.activeRoom = "general";
         this.ID = UUID.randomUUID().toString();
-        this.username = "anonymous";
+        this.username = "anon";
     }
     public User(String name){
     //this.activeRoom = "general";
@@ -28,5 +28,8 @@ public class User implements Serializable {
 
    public String getUsername (){return this.username;}
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
 }//class end

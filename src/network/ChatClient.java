@@ -16,13 +16,19 @@ public class ChatClient {
     private Socket socket;
     private ObjectOutputStream dataOut;
     private ObjectInputStream dataIn;
-    private Thread startT;
+    private User currentUser;
 
-    public ChatClient() {
+    private ChatClient() {
+        currentUser = new User();
+
         try {
             socket = new Socket(HOSTNAME, PORT);
             //TODO: add setSoTimeout()
             System.out.println("Connected");
+
+            initObjectStreams();
+
+            sendDataToServer();
 
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
@@ -33,29 +39,25 @@ public class ChatClient {
             System.exit(1);
         }
 
-        startT = new Thread(() -> {
-            try {
-                loop();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        startT.setDaemon(true);
-        startT.start();
     }
 
-    private void loop() throws Exception {
+    private void initObjectStreams() {
         System.out.println("Starting client thread");
+        Thread monitorIncoming = null;
 
-        dataOut = new ObjectOutputStream(socket.getOutputStream());
-        dataIn = new ObjectInputStream(socket.getInputStream());
-        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-        Thread monitorIncoming = new Thread(this::monitorIncomingMessages);
-        monitorIncoming.setDaemon(true);
-        monitorIncoming.start();
-        Thread monitorInput = new Thread(this::monitorInput);
-        monitorInput.setDaemon(true);
-        monitorInput.start();
+        try {
+            dataOut = new ObjectOutputStream(socket.getOutputStream());
+            dataIn = new ObjectInputStream(socket.getInputStream());
+            monitorIncoming = new Thread(this::monitorIncomingMessages);
+            monitorIncoming.setDaemon(true);
+            monitorIncoming.start();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     void monitorIncomingMessages() {
@@ -65,7 +67,8 @@ public class ChatClient {
                 String msg = incoming.getTimestamp() + " | " + incoming.getUser().getUsername() + ":  " + incoming.getMsg();
                 System.out.println(msg);
 
-                Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(msg));
+                Main.UIcontrol.printMessageFromServer(msg);
+//                Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(msg));
 
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
@@ -78,31 +81,23 @@ public class ChatClient {
         }
     }
 
-    void monitorInput() {
+    public void sendDataToServer(String userName, String userInput) {
 
-        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+        if (!currentUser.getUsername().equals(userName))
+            currentUser.setUsername(userName);
+
         try {
-            while (running) {
-                String userInput = input.readLine();
-                if (userInput.equals("quit")) {
-                    socket.close();
-                    running = false;
-                } else {
-                    Message msg = new Message(socket, userInput, new User());
-                    dataOut.writeObject(msg);
-                }
-            }
+            Message msg = new Message(socket, userInput, currentUser);
+            dataOut.writeObject(msg);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void sendMessageToServer(String userName, String userInput) {
+    public void sendDataToServer() {
 
-        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
         try {
-            Message msg = new Message(socket, userInput, new User(userName));
-            dataOut.writeObject(msg);
+            dataOut.writeObject(currentUser);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -114,6 +109,5 @@ public class ChatClient {
 
     public void closeThreads() {
         running = false;
-        startT.interrupt();
     }
 }

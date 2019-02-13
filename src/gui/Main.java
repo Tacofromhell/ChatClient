@@ -27,13 +27,14 @@ public class Main extends Application {
         ChatClient.get();
 
         for(int i = 0; i < 10; i++){
-            UIcontrol.printUsers();
+            UIcontrol.printUsers(i);
         }
 
         stage.setScene(new Scene(root, 500, 600));
 
         stage.setOnCloseRequest(e -> ChatClient.get().closeThreads());
         stage.show();
+
     }
 
     public static void main(String[] args) {

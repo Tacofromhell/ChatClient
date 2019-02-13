@@ -19,7 +19,7 @@ public class chatUIcontroller {
     @FXML
     TextArea printMessages;
     @FXML
-    TextField newMessage;
+    TextField userInputNewMessage;
     @FXML
     TextField username;
     @FXML
@@ -28,7 +28,7 @@ public class chatUIcontroller {
     VBox users;
 
     public void initialize() {
-
+        System.out.println(Thread.currentThread().toString());
     }
 
     public void printMessageFromServer(String msg) {
@@ -38,27 +38,27 @@ public class chatUIcontroller {
 
     public void sendMessageButton() {
 //        send input string to network method in ChatClient
-        if (newMessage.getText().trim().length() > 0)
-            ChatClient.get().sendMessageToServer(username.getText().trim(), newMessage.getText());
+        if (userInputNewMessage.getText().trim().length() > 0)
+            ChatClient.get().sendDataToServer(username.getText().trim(), userInputNewMessage.getText());
 
-        newMessage.setText("");
+        userInputNewMessage.setText("");
     }
 
     public void sendMessageEnter(KeyEvent key) {
         if (key.getCode().equals(KeyCode.ENTER)) {
 //            send input string to network method in ChatClient
-            if (newMessage.getText().trim().length() > 0)
-                ChatClient.get().sendMessageToServer(username.getText().trim(), newMessage.getText());
+            if (userInputNewMessage.getText().trim().length() > 0)
+                ChatClient.get().sendDataToServer(username.getText().trim(), userInputNewMessage.getText());
 
-            newMessage.setText("");
+            userInputNewMessage.setText("");
         }
     }
 
-    public void printUsers() {
+    public void printUsers(int i) {
         HBox onlineUser = new HBox(5);
         onlineUser.setStyle("-fx-alignment: CENTER_LEFT");
         Circle userPic = new Circle(13, Color.LIGHTGRAY);
-        Label userName = new Label();
+        Label userName = new Label("" + i);
         userName.setStyle("-fx-background-color: lightgrey;" +
                 "-fx-pref-width: 200px;");
 
