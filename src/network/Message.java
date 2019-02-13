@@ -7,30 +7,14 @@ import java.time.LocalTime;
 public class Message implements Serializable {
     private static final long serialVersionUID = 8119880995263638779L;
 
-//    private transient Socket sender;
-    private String sender;
-    private transient Socket reviever;
+    private User user;
     private String msg;
     private LocalTime timestamp;
-    private boolean toAll = true;
-    private User user;
 
-    public Message(Socket sender, String msg, User user){
-        this.sender = sender.getLocalSocketAddress().toString();
+    public Message(String msg, User user){
         this.user = user;
         this.msg = msg;
         this.timestamp = LocalTime.now();
-    }
-
-    public Message(Socket sender, Socket reviever, String msg){
-        this.sender = sender.getLocalSocketAddress().toString();
-        this.reviever = reviever;
-        this.msg = msg;
-        this.timestamp = LocalTime.now();
-    }
-
-    String getSender(){
-        return this.sender;
     }
 
     User getUser (){return this.user;}
@@ -46,8 +30,7 @@ public class Message implements Serializable {
         return hour + "." + minute;
     }
 
-    Boolean GetToAll(){
-        return toAll;
-    }
+
+
 }
 

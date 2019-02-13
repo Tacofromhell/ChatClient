@@ -3,6 +3,7 @@ package network;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.net.IDN;
+import java.net.Socket;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -12,8 +13,8 @@ public class User implements Serializable {
 
     private String ID;
     private String username;
-   // private ArrayList<Room> joinedRooms;
-   // private Room activeRoom;
+//    private ArrayList<Room> joinedRooms;
+//    private Room activeRoom;
 
     public User(){
     //this.activeRoom = "general";
@@ -26,9 +27,13 @@ public class User implements Serializable {
         this.username = name.length() > 0 ? name : "anon";
     }
 
+    public User getUser(){
+        return this;
+    }
+
    public String getUsername (){return this.username;}
 
-    public void setUsername(String username) {
+   public void setUsername(String username) {
         this.username = username;
     }
 

@@ -8,18 +8,16 @@ import java.io.*;
 import java.net.*;
 
 public class ChatClient {
-    //    private final static network.ChatClient client = new network.ChatClient();
     private final String HOSTNAME = "localhost";
     private final int PORT = 1234;
     private volatile boolean running = true;
-    private static ChatClient singleton = new ChatClient();
+    private final static ChatClient singleton = new ChatClient();
     private Socket socket;
     private ObjectOutputStream dataOut;
     private ObjectInputStream dataIn;
-    private User currentUser;
+    private User currentUser = new User();
 
     private ChatClient() {
-        currentUser = new User();
 
         try {
             socket = new Socket(HOSTNAME, PORT);
@@ -27,8 +25,6 @@ public class ChatClient {
             System.out.println("Connected");
 
             initObjectStreams();
-
-            sendDataToServer();
 
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
@@ -43,21 +39,18 @@ public class ChatClient {
 
     private void initObjectStreams() {
         System.out.println("Starting client thread");
-        Thread monitorIncoming = null;
-
         try {
             dataOut = new ObjectOutputStream(socket.getOutputStream());
             dataIn = new ObjectInputStream(socket.getInputStream());
-            monitorIncoming = new Thread(this::monitorIncomingMessages);
+
+            Thread monitorIncoming = new Thread(this::monitorIncomingMessages);
             monitorIncoming.setDaemon(true);
             monitorIncoming.start();
-
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     void monitorIncomingMessages() {
@@ -81,23 +74,45 @@ public class ChatClient {
         }
     }
 
-    public void sendDataToServer(String userName, String userInput) {
+//    public void sendDataToServer(String userName, String userInput) {
+//
+//        if (!currentUser.getUsername().equals(userName))
+//            currentUser.setUsername(userName);
+//
+//        try {
+//            Message msg = new Message(socket, userInput, currentUser);
+//            dataOut.writeObject(msg);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    public void sendDataToServer() {
+//
+//        try {
+//            dataOut.writeObject(currentUser);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-        if (!currentUser.getUsername().equals(userName))
-            currentUser.setUsername(userName);
+    public void sendMessageToServer(User user, String userInput) {
+
+        if (!currentUser.getUsername().equals(user.getUsername()))
+            currentUser.setUsername(user.getUsername());
 
         try {
-            Message msg = new Message(socket, userInput, currentUser);
-            dataOut.writeObject(msg);
+            Message newMessage = new Message(userInput, currentUser);
+            dataOut.writeObject(newMessage);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void sendDataToServer() {
-
+    public void sendUserToServer() {
         try {
-            dataOut.writeObject(currentUser);
+            dataOut.reset();
+            dataOut.writeUnshared(currentUser);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,6 +120,14 @@ public class ChatClient {
 
     public static ChatClient get() {
         return singleton;
+    }
+
+    public Socket getSocket(){
+        return this.socket;
+    }
+
+    public User getCurrentUser(){
+        return currentUser;
     }
 
     public void closeThreads() {
