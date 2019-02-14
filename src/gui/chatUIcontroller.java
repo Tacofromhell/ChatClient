@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import network.ChatClient;
 import network.Message;
 import network.User;
@@ -42,16 +43,19 @@ public class chatUIcontroller {
 
     public void printMessageFromServer(Message msg, User user) {
         HBox messageContainer = new HBox();
-        Label messageToPrint = new Label( msg.getTimestamp() + " " + msg.getUser().getUsername() + ": " + msg.getMsg());
-        messageToPrint.setPadding(new Insets(2, 5, 2, 5));
+        Text messageToPrint = new Text( msg.getTimestamp() + " " + msg.getUser().getUsername() + ": " + msg.getMsg());
+//        messageToPrint.setPadding(new Insets(2, 5, 2, 5));
         messageToPrint.setStyle("-fx-background-color: lightgrey; -fx-background-radius: 5px;");
-        messageToPrint.setWrapText(true);
-
-//        messageToPrint.maxHeight("Infinity");
+//        messageToPrint.prefWidth(350);
+//        messageToPrint.setWrapText(true);
+//        messageToPrint.setMinHeight(40);
 
         messageContainer.getChildren().add(messageToPrint);
+        messageToPrint.setWrappingWidth(350);
 //        messageContainer.setMaxWidth(printMessages.getWidth());
-        messageContainer.setMinHeight(messageToPrint.getHeight());
+//        messageContainer.setPrefHeight(messageToPrint.getHeight());
+
+//        messageContainer.setStyle("-fx-background-color: blue;");
         messageContainer.setMargin(messageToPrint, new Insets(5, 5,0,5));
 
         printMessages.getChildren().add(messageContainer);

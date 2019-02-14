@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -31,9 +32,13 @@
          </BorderPane.margin>
          <children>
             <TextField fx:id="currentUsername" />
-            <ScrollPane fx:id="scrollMessages" prefHeight="492.0" prefWidth="359.0">
+            <ScrollPane fx:id="scrollMessages" fitToWidth="true" hbarPolicy="NEVER" prefHeight="492.0" prefWidth="370.0">
                <content>
-                  <VBox fx:id="printMessages" prefHeight="482.0" prefWidth="369.0" />
+                  <FlowPane>
+                     <children>
+                        <VBox fx:id="printMessages" prefHeight="485.0" prefWidth="369.0" />
+                     </children>
+                  </FlowPane>
                </content>
                <VBox.margin>
                   <Insets />
