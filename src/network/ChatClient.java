@@ -8,7 +8,7 @@ import java.io.*;
 import java.net.*;
 
 public class ChatClient {
-    private final String HOSTNAME = "localhost";
+    private final String HOSTNAME = "10.155.90.41";
     private final int PORT = 1234;
     private volatile boolean running = true;
     private final static ChatClient singleton = new ChatClient();

@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="600.0" prefWidth="528.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.chatUIcontroller">
+<BorderPane prefHeight="600.0" prefWidth="528.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.chatUIcontroller">
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
@@ -30,7 +30,7 @@
             <Insets />
          </BorderPane.margin>
          <children>
-            <TextField fx:id="currentUsername" />
+            <TextField fx:id="currentUsername" promptText="Temporary display of Username" />
             <ScrollPane fx:id="scrollMessages" prefHeight="492.0" prefWidth="359.0">
                <content>
                   <VBox fx:id="printMessages" prefHeight="482.0" prefWidth="369.0" />
@@ -57,11 +57,19 @@
          </BorderPane.margin>
          <children>
             <VBox fx:id="users" prefHeight="489.0" prefWidth="100.0" spacing="5" />
-            <TextField fx:id="newUsername" onKeyReleased="#sendNewUsernameEnter" promptText="Username">
+            <TextField fx:id="newUsername" onKeyReleased="#sendNewUsernameEnter" promptText="New Username">
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin>
+               <font>
+                  <Font size="12.0" />
+               </font>
             </TextField>
+            <Button id="changeUser_btn" mnemonicParsing="false" onAction="#sendNewUsernameButton" prefHeight="29.0" prefWidth="98.0" text="Change Username">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Button>
          </children>
       </VBox>
    </right>

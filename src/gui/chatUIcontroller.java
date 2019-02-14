@@ -34,6 +34,8 @@ public class chatUIcontroller {
     VBox users;
     @FXML
     TextField currentUsername;
+    @FXML
+    Button changeUser_btn;
 
     public void initialize() {
         updateUsername();
@@ -77,6 +79,17 @@ public class chatUIcontroller {
 
             userInputNewMessage.setText("");
         }
+    }
+
+    public void sendNewUsernameButton(){
+        if(newUsername.getText().trim().length() > 0){
+            ChatClient.get().getCurrentUser().setUsername(newUsername.getText());
+            System.out.println("Changed username to: " + ChatClient.get().getCurrentUser().getUsername());
+            ChatClient.get().sendUserToServer();
+        }
+
+        newUsername.setText("");
+        updateUsername();
     }
 
     public void sendNewUsernameEnter(KeyEvent key){
