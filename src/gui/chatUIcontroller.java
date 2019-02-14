@@ -47,7 +47,7 @@ public class chatUIcontroller {
         HBox messageContainer = new HBox();
         Label messageToPrint = new Label( msg.getTimestamp() + " " + msg.getUser().getUsername() + ": " + msg.getMsg());
         messageToPrint.setPadding(new Insets(2, 5, 2, 5));
-        messageToPrint.setStyle("-fx-background-color: lightgrey; -fx-background-radius: 5px;");
+        messageToPrint.setStyle("-fx-background-color: honeydew; -fx-background-radius: 5px;");
         messageToPrint.setWrapText(true);
         messageToPrint.setMinHeight(Control.USE_PREF_SIZE);
 
