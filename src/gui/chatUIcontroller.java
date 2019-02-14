@@ -43,7 +43,7 @@ public class chatUIcontroller {
         System.out.println(Thread.currentThread().toString());
     }
 
-    public void printMessageFromServer(Message msg, User user) {
+    public void printMessageFromServer(Message msg) {
         HBox messageContainer = new HBox();
         Label messageToPrint = new Label( msg.getTimestamp() + " " + msg.getUser().getUsername() + ": " + msg.getMsg());
         messageToPrint.setPadding(new Insets(2, 5, 2, 5));
@@ -54,9 +54,7 @@ public class chatUIcontroller {
         messageContainer.getChildren().add(messageToPrint);
 
         messageContainer.setMargin(messageToPrint, new Insets(5, 5,0,5));
-
         printMessages.getChildren().add(messageContainer);
-
         messageContainer.heightProperty().addListener((ChangeListener) (observable, oldvalue, newValue) -> scrollMessages.setVvalue((Double)newValue ));
 
 

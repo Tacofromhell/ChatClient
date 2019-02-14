@@ -64,7 +64,7 @@ public class ChatClient {
 
                 //Send incoming message and currentUser to javaFX
 //                Main.UIcontrol.printMessageFromServer(incoming, currentUser);
-                Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(incoming, currentUser));
+                Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(incoming));
 
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
