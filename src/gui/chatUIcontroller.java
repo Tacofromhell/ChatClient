@@ -42,7 +42,7 @@ public class chatUIcontroller {
 
     public void printMessageFromServer(Message msg, User user) {
         HBox messageContainer = new HBox();
-        Label messageToPrint = new Label( msg.getTimestamp() + " " + user.getUsername() + " " + msg.getMsg());
+        Label messageToPrint = new Label( msg.getTimestamp() + " " + msg.getUser().getUsername() + ": " + msg.getMsg());
         messageToPrint.setPadding(new Insets(2, 5, 2, 5));
         messageToPrint.setStyle("-fx-background-color: lightgrey; -fx-background-radius: 5px;");
         messageToPrint.setWrapText(true);
