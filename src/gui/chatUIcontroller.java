@@ -116,7 +116,7 @@ public class chatUIcontroller {
         onlineUser.setStyle("-fx-alignment: CENTER_LEFT");
         Circle userPic = new Circle(13, Color.LIGHTGRAY);
         Label userName = new Label("" + i);
-        userName.setStyle("-fx-background-color: lightgrey;" +
+        userName.setStyle("-fx-text-fill: white;" +
                 "-fx-pref-width: 200px;");
 
         onlineUser.getChildren().addAll(userPic, userName);
