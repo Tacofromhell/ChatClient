@@ -57,11 +57,14 @@ public class ChatClient {
         while (running) {
             try {
                 Message incoming = (Message) dataIn.readObject();
+
+                //Just for print in terminal
                 String msg = incoming.getTimestamp() + " | " + incoming.getUser().getUsername() + ":  " + incoming.getMsg();
                 System.out.println(msg);
 
-                Main.UIcontrol.printMessageFromServer(msg);
-//                Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(msg));
+                //Send incoming message and currentUser to javaFX
+//                Main.UIcontrol.printMessageFromServer(incoming, currentUser);
+                Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(incoming, currentUser));
 
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();

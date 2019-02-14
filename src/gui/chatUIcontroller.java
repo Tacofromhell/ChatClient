@@ -1,11 +1,12 @@
 package gui;
 
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.CacheHint;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -13,12 +14,16 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import network.ChatClient;
+import network.Message;
+import network.User;
 
 
 public class chatUIcontroller {
 
     @FXML
-    TextArea printMessages;
+    ScrollPane scrollMessages;
+    @FXML
+    VBox printMessages;
     @FXML
     TextField userInputNewMessage;
     @FXML
@@ -35,9 +40,25 @@ public class chatUIcontroller {
         System.out.println(Thread.currentThread().toString());
     }
 
-    public void printMessageFromServer(String msg) {
-        printMessages.setText(printMessages.getText().concat(msg + "\n"));
-        printMessages.setScrollTop(Double.MAX_VALUE);
+    public void printMessageFromServer(Message msg, User user) {
+        HBox messageContainer = new HBox();
+        Label messageToPrint = new Label( msg.getTimestamp() + " " + user.getUsername() + " " + msg.getMsg());
+        messageToPrint.setPadding(new Insets(2, 5, 2, 5));
+        messageToPrint.setStyle("-fx-background-color: lightgrey; -fx-background-radius: 5px;");
+        messageToPrint.setWrapText(true);
+
+//        messageToPrint.maxHeight("Infinity");
+
+        messageContainer.getChildren().add(messageToPrint);
+//        messageContainer.setMaxWidth(printMessages.getWidth());
+        messageContainer.setMinHeight(messageToPrint.getHeight());
+        messageContainer.setMargin(messageToPrint, new Insets(5, 5,0,5));
+
+        printMessages.getChildren().add(messageContainer);
+
+        messageContainer.heightProperty().addListener((ChangeListener) (observable, oldvalue, newValue) -> scrollMessages.setVvalue((Double)newValue ));
+
+
     }
 
     public void sendMessageButton() {

@@ -17,13 +17,13 @@ public class Message implements Serializable {
         this.timestamp = LocalTime.now();
     }
 
-    User getUser (){return this.user;}
+    public User getUser (){return this.user;}
 
-    String getMsg(){
+    public String getMsg(){
         return this.msg;
     }
 
-    String getTimestamp(){
+    public String getTimestamp(){
         String hour = this.timestamp.getHour() < 10 ?  "0" + this.timestamp.getHour() : "" + this.timestamp.getHour();
         String minute = this.timestamp.getMinute() < 10 ?  "0" + this.timestamp.getMinute() : "" + this.timestamp.getMinute();
         String second = this.timestamp.getSecond() < 10 ?  "0" + this.timestamp.getSecond() : "" + this.timestamp.getSecond();
