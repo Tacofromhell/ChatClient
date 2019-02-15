@@ -52,7 +52,7 @@ public class chatUIcontroller {
         messageToPrint.setStyle("-fx-background-color: honeydew; -fx-background-radius: 5px;");
         messageToPrint.setWrapText(true);
         messageToPrint.setMinHeight(Control.USE_PREF_SIZE);
-
+        messageToPrint.setMaxWidth(350);
         messageContainer.getChildren().add(messageToPrint);
 
         if(msg.getUser().getUser().getID().equals(ChatClient.get().getCurrentUser().getID())) {
@@ -93,7 +93,7 @@ public class chatUIcontroller {
         }
 
         newUsername.setText("");
-        updateUsername();
+//        updateUsername();
     }
 
     public void sendNewUsernameEnter(KeyEvent key){
@@ -106,7 +106,7 @@ public class chatUIcontroller {
             }
 
             newUsername.setText("");
-            updateUsername();
+//            updateUsername();
         }
 
     }
