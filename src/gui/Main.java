@@ -22,15 +22,15 @@ public class Main extends Application {
 
         Main.stage = stage;
         stage.setTitle("ChatApp");
-
+        stage.setResizable(false);
 //        initialize server connection by calling singleton
         ChatClient.get();
 
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 30; i++){
             UIcontrol.printUsers(i);
         }
 
-        stage.setScene(new Scene(root, 500, 600));
+        stage.setScene(new Scene(root));
 
         stage.setOnCloseRequest(e -> ChatClient.get().closeThreads());
         stage.show();
