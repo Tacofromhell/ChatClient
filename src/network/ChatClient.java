@@ -5,7 +5,9 @@ import gui.Main;
 import javafx.application.Platform;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.*;
+import java.util.ArrayList;
 
 public class ChatClient {
     private final String HOSTNAME = "localhost";
@@ -16,6 +18,7 @@ public class ChatClient {
     private ObjectOutputStream dataOut;
     private ObjectInputStream dataIn;
     private User currentUser = new User();
+    private ArrayList<Room> rooms;
 
     private ChatClient() {
 
@@ -58,15 +61,24 @@ public class ChatClient {
     void monitorIncomingMessages() {
         while (running) {
             try {
-                Message incoming = (Message) dataIn.readObject();
+                Object data = dataIn.readObject();
+                if (data instanceof Message) {
+                    Message incoming = (Message) data;
 
-                //Just for print in terminal
-                String msg = incoming.getTimestamp() + " | " + incoming.getUser().getUsername() + ":  " + incoming.getMsg();
-                System.out.println(msg);
+                    //Just for print in terminal
+                    String msg = incoming.getTimestamp() + " | " + incoming.getUser().getUsername() + ":  " + incoming.getMsg();
+                    System.out.println(msg);
 
-                //Send incoming message and currentUser to javaFX
+                    //Send incoming message and currentUser to javaFX
 //                Main.UIcontrol.printMessageFromServer(incoming, currentUser);
-                Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(incoming));
+                    Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(incoming));
+                }
+                else if (data instanceof ArrayList){
+                    rooms = (ArrayList<Room>) data;
+
+                }
+
+
 
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
