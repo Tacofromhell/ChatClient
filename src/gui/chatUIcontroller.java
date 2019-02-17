@@ -38,6 +38,8 @@ public class chatUIcontroller {
     @FXML
     Button changeUser_btn;
 
+    String activeRoom = "general";
+
     public void initialize() {
         updateUsername();
         System.out.println(Thread.currentThread().toString());
@@ -63,7 +65,7 @@ public class chatUIcontroller {
     public void sendMessageButton() {
 //        send input string to network method in ChatClient
         if (userInputNewMessage.getText().trim().length() > 0)
-            ChatClient.get().sendMessageToServer(ChatClient.get().getCurrentUser(), userInputNewMessage.getText());
+            ChatClient.get().sendMessageToServer(ChatClient.get().getCurrentUser(), userInputNewMessage.getText(), activeRoom);
 
         userInputNewMessage.setText("");
     }
@@ -72,7 +74,7 @@ public class chatUIcontroller {
         if (key.getCode().equals(KeyCode.ENTER)) {
 //            send input string to network method in ChatClient
             if (userInputNewMessage.getText().trim().length() > 0)
-                ChatClient.get().sendMessageToServer(ChatClient.get().getCurrentUser(), userInputNewMessage.getText());
+                ChatClient.get().sendMessageToServer(ChatClient.get().getCurrentUser(), userInputNewMessage.getText(), activeRoom);
 
             userInputNewMessage.setText("");
         }

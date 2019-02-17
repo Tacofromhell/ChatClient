@@ -13,7 +13,7 @@ public class User implements Serializable {
 
     private String ID;
     private String username;
-    private ArrayList<String> joinedRooms;
+    private ArrayList<String> joinedRooms = new ArrayList<>();
 //    private Room activeRoom;
 
     public User() {
@@ -27,6 +27,10 @@ public class User implements Serializable {
         //this.activeRoom = "general";
         this.ID = UUID.randomUUID().toString();
         this.username = name.length() > 0 ? name : "anon";
+    }
+
+    public ArrayList<String> getJoinedRooms() {
+        return joinedRooms;
     }
 
     public User getUser() {

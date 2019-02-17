@@ -1,8 +1,11 @@
 package network;
 
+import java.io.Serializable;
 import java.util.concurrent.LinkedBlockingDeque;
 
-public class Room {
+public class Room implements Serializable {
+    private static final long serialVersionUID = 8119886995263638778L;
+
     private String roomName;
     private int roomSize;
     private LinkedBlockingDeque<Message> messages = new LinkedBlockingDeque<>();
