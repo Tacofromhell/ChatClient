@@ -9,12 +9,18 @@ public class Message implements Serializable {
 
     private User user;
     private String msg;
+    private String room;
     private LocalTime timestamp;
 
-    public Message(String msg, User user){
+    public Message(String msg, User user, String room){
         this.user = user;
         this.msg = msg;
+        this.room = room;
         this.timestamp = LocalTime.now();
+    }
+
+    public String getRoom() {
+        return room;
     }
 
     public User getUser (){return this.user;}

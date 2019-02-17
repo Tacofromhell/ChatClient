@@ -6,16 +6,20 @@ import javafx.application.Platform;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class ChatClient {
-    private final String HOSTNAME = "10.155.90.41";
+    private final String HOSTNAME = "localhost";
     private final int PORT = 1234;
     private volatile boolean running = true;
     private final static ChatClient singleton = new ChatClient();
     private Socket socket;
     private ObjectOutputStream dataOut;
     private ObjectInputStream dataIn;
+    private LinkedBlockingDeque<Object> dataQueue = new LinkedBlockingDeque<>();
     private User currentUser = new User();
+    private ArrayList<Room> rooms = new ArrayList<>();
 
     private ChatClient() {
 
@@ -25,6 +29,7 @@ public class ChatClient {
             System.out.println("Connected");
 
             initObjectStreams();
+            sendUserToServer();
 
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
@@ -34,7 +39,6 @@ public class ChatClient {
                     HOSTNAME);
             System.exit(1);
         }
-
     }
 
     private void initObjectStreams() {
@@ -43,9 +47,12 @@ public class ChatClient {
             dataOut = new ObjectOutputStream(socket.getOutputStream());
             dataIn = new ObjectInputStream(socket.getInputStream());
 
-            Thread monitorIncoming = new Thread(this::monitorIncomingMessages);
+            Thread monitorIncoming = new Thread(this::monitorIncomingData);
             monitorIncoming.setDaemon(true);
             monitorIncoming.start();
+            Thread handleData = new Thread(this::handleDataQueue);
+            handleData.setDaemon(true);
+            handleData.start();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -53,59 +60,58 @@ public class ChatClient {
         }
     }
 
-    void monitorIncomingMessages() {
+    void monitorIncomingData() {
         while (running) {
             try {
-                Message incoming = (Message) dataIn.readObject();
-
-                //Just for print in terminal
-                String msg = incoming.getTimestamp() + " | " + incoming.getUser().getUsername() + ":  " + incoming.getMsg();
-                System.out.println(msg);
-
-                //Send incoming message and currentUser to javaFX
-//                Main.UIcontrol.printMessageFromServer(incoming, currentUser);
-                Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(incoming));
-
+                dataQueue.addLast(dataIn.readObject());
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                System.err.println("Object not found");
             } catch (IOException ioe) {
                 System.out.println("Socket is closed");
                 running = false;
-//                ioe.printStackTrace();
-
             }
         }
     }
 
-//    public void sendDataToServer(String userName, String userInput) {
-//
-//        if (!currentUser.getUsername().equals(userName))
-//            currentUser.setUsername(userName);
-//
-//        try {
-//            Message msg = new Message(socket, userInput, currentUser);
-//            dataOut.writeObject(msg);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void sendDataToServer() {
-//
-//        try {
-//            dataOut.writeObject(currentUser);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    private void handleDataQueue() {
+        while (true) {
+            if (dataQueue.size() > 0) {
+                Object data = dataQueue.poll();
 
-    public void sendMessageToServer(User user, String userInput) {
+                if (data instanceof Message) {
+                    Message incoming = (Message) data;
+                    //Just for print in terminal
+                    String msg = incoming.getTimestamp() + " | " + incoming.getUser().getUsername() + ":  " + incoming.getMsg();
+                    System.out.println(msg);
+
+                    //Send incoming message and currentUser to javaFX
+                    Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(incoming));
+
+                } else if (data instanceof Room) {
+                    rooms.add((Room) data);
+
+                    // print rooms messages on connection
+                    rooms.forEach(room -> room.getMessages()
+                            .forEach(msg ->
+                                    Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(msg))));
+                }
+            } else {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void sendMessageToServer(User user, String userInput, String activeRoom) {
 
         if (!currentUser.getUsername().equals(user.getUsername()))
             currentUser.setUsername(user.getUsername());
 
         try {
-            Message newMessage = new Message(userInput, currentUser);
+            Message newMessage = new Message(userInput, currentUser, activeRoom);
             dataOut.writeObject(newMessage);
         } catch (IOException e) {
             e.printStackTrace();
@@ -125,11 +131,11 @@ public class ChatClient {
         return singleton;
     }
 
-    public Socket getSocket(){
+    public Socket getSocket() {
         return this.socket;
     }
 
-    public User getCurrentUser(){
+    public User getCurrentUser() {
         return currentUser;
     }
 
