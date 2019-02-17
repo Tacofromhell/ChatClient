@@ -81,7 +81,7 @@ public class ChatClient {
                 if (data instanceof Message) {
                     Message incoming = (Message) data;
                     //Just for print in terminal
-                    String msg = incoming.getTimestamp() + " | " + incoming.getUser().getUsername() + ":  " + incoming.getMsg();
+                    String msg = incoming.getRoom() + ": " + incoming.getTimestamp() + " | " + incoming.getUser().getUsername() + ":  " + incoming.getMsg();
                     System.out.println(msg);
 
                     //Send incoming message and currentUser to javaFX
