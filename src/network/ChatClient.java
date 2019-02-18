@@ -92,11 +92,7 @@ public class ChatClient {
                 } else if (data instanceof Room) {
                     rooms.add((Room) data);
 
-                    rooms.stream()
-                            .flatMap(room -> room.getUsers().stream())
-                            .filter(user -> user.getOnlineStatus() == true)
-                            .forEach(user -> Platform.runLater(() -> Main.UIcontrol.printUsers(user)));
-
+                    Platform.runLater(() -> Main.UIcontrol.updateUserList(rooms));
                     // print rooms messages on connection
                     rooms.forEach(room -> room.getMessages()
                             .forEach(msg ->

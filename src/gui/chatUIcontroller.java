@@ -138,10 +138,10 @@ public class chatUIcontroller {
         currentUsername.setText(ChatClient.get().getCurrentUser().getUsername());
     }
 
-//    public void updateUserList(ArrayList<room> rooms){
-//        rooms.stream()
-//                .flatMap(room -> room.getUsers().stream())
-//                .filter(user -> user.getOnlineStatus() == true)
-//                .forEach(user -> Platform.runLater(() -> Main.UIcontrol.printUsers(user)));
-//    }
+    public void updateUserList(ArrayList<Room> rooms){
+        rooms.stream()
+                .flatMap(room -> room.getUsers().stream())
+                .filter(user -> user.getOnlineStatus() == true)
+                .forEach(user -> printUsers(user));
+    }
 }
