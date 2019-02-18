@@ -29,7 +29,6 @@ public class ChatClient {
     private ArrayList<Room> rooms = new ArrayList<>();
 
 
-
     private ChatClient() {
 
         try {
@@ -38,7 +37,7 @@ public class ChatClient {
             System.out.println("Connected");
 
             initObjectStreams();
-            updateServer();
+            emitToServer("connecting");
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
             System.exit(1);
@@ -106,27 +105,20 @@ public class ChatClient {
                     room.getMessages()
                             .forEach(msg ->
                                     Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(msg)));
-                    System.out.println("Received a: " + data);
-
-                    if(!rooms.contains(data)) {
-                        rooms.add((Room) data);
-                        // print rooms messages on connection
-                        rooms.forEach(room -> room.getMessages()
-                                .forEach(msg ->
-                                        Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(msg))));
-                    }
-                } else if(data instanceof ArrayList){
+                } else if (data instanceof ArrayList) {
                     System.out.println("ARRAYLIST a " + data);
                     this.rooms = (ArrayList<Room>) data;
 
 
                     Platform.runLater(() -> Main.UIcontrol.updateUserList());
 
-                } else if(data instanceof User){
+                } else if (data instanceof User) {
                     System.out.println("Received a: " + data);
 
                     this.currentUser = (User) data;
                     System.out.println(currentUser.getID());
+
+                    Platform.runLater(() -> Main.UIcontrol.initRooms());
                 }
             } else {
                 try {
@@ -172,14 +164,22 @@ public class ChatClient {
         return currentUser;
     }
 
-    public ArrayList<Room> getRooms(){
+    public ArrayList<Room> getRooms() {
         return this.rooms;
     }
 
-    public void updateServer(){
+    public void updateServer() {
         try {
             dataOut.writeObject("update");
-        } catch (IOException e){
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void emitToServer(String event){
+        try {
+            dataOut.writeObject(event);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

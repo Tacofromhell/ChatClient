@@ -59,9 +59,15 @@ public class chatUIcontroller {
 
     public void initialize() {
 
+//        observableListRooms.addListener((ListChangeListener<? super Room>) c -> {
+//            while(c.next()){
+//                System.out.println("CHANGE DETECTED");
+//                Platform.runLater(() -> updateUserList());
+//            }
+//        });
+    }
 
-
-
+    public void initRooms() {
         for (String room : ChatClient.get().getCurrentUser().getJoinedRooms()) {
             VBox tempMsg = new VBox();
             tempMsg.setId(room);
@@ -81,23 +87,6 @@ public class chatUIcontroller {
         scrollUsers.setContent(VBoxRoomsUsers.get(
                 ChatClient.get().getCurrentUser().getActiveRoom()
         ));
-
-        System.out.println(Thread.currentThread().toString());
-
-        for(int i = 0; i < 10; i++){
-            printUsers(i, "general");
-        }
-
-        for(int i = 0; i < 5; i++){
-            printUsers(i, "other room");
-        }
-
-//        observableListRooms.addListener((ListChangeListener<? super Room>) c -> {
-//            while(c.next()){
-//                System.out.println("CHANGE DETECTED");
-//                Platform.runLater(() -> updateUserList());
-//            }
-//        });
     }
 
     public void printMessageFromServer(Message msg) {
@@ -122,7 +111,7 @@ public class chatUIcontroller {
         messageContainer.heightProperty().addListener((ChangeListener) (observable, oldvalue, newValue) -> scrollMessages.setVvalue((Double) newValue));
     }
 
-    public void switchContent(String room){
+    public void switchContent(String room) {
         scrollMessages.setContent(VBoxRoomsMessages.get(room));
         scrollUsers.setContent(VBoxRoomsUsers.get(room));
 
@@ -161,27 +150,18 @@ public class chatUIcontroller {
 
     public void sendNewUsernameEnter(KeyEvent key) {
         if (key.getCode().equals(KeyCode.ENTER)) {
-
-            if (newUsername.getText().trim().length() > 0) {
-                ChatClient.get().getCurrentUser().setUsername(newUsername.getText());
-                System.out.println("Changed username to: " + ChatClient.get().getCurrentUser().getUsername());
-                ChatClient.get().sendUserToServer();
-            }
-    public void sendNewUsernameEnter(KeyEvent key){
-        if(key.getCode().equals(KeyCode.ENTER)){
             sendNewUsernameButton();
         }
 
     }
 
 
-    public void printUsers(int i, String room) {
+    public void printUsers(User user, String room) {
         HBox onlineUser = new HBox(5);
         onlineUser.setStyle("-fx-alignment: CENTER_LEFT");
         Circle userPic;
 
-
-        if(ChatClient.get().getCurrentUser().getID().equals(user.getID())){
+        if (ChatClient.get().getCurrentUser().getID().equals(user.getID())) {
             userPic = new Circle(10, Color.GREEN);
         } else {
             userPic = new Circle(10, Color.LIGHTGRAY);
@@ -192,24 +172,35 @@ public class chatUIcontroller {
                 "-fx-pref-width: 100px;");
 
         onlineUser.getChildren().addAll(userPic, userName);
-        onlineUser.setMargin(userPic, new Insets(5,0,5,3));
+        onlineUser.setMargin(userPic, new Insets(5, 0, 5, 3));
 
         VBoxRoomsUsers.get(room).getChildren().add(onlineUser);
     }
 
-    public void updateUserList(){
+    public void updateUserList() {
         System.out.println("Updated list ");
 
-        users.getChildren().clear();
+//        users.getChildren().clear();
 
+        for (Room room : ChatClient.get().getRooms()) {
+            VBoxRoomsUsers.get(room.getRoomName()).getChildren().clear();
 
-        ChatClient.get().getRooms().stream()
-                .flatMap(room -> room.getUsers().stream())
-                .filter(user -> user.getOnlineStatus() == true)
-                .peek(user -> System.out.println("Username: " + user.getUsername()))
-                .forEach(user -> {
+            room.getUsers().stream()
+                    .filter(user -> user.getOnlineStatus() == true)
+                    .peek(user -> System.out.println("Username: " + user.getUsername()))
+                    .forEach(user -> {
 //                        ChatClient.get().sendUserToServer();
-                        printUsers(user);
-                });
+                        printUsers(user, room.getRoomName());
+                    });
+        }
+
+//        ChatClient.get().getRooms().stream()
+//                .flatMap(room -> room.getUsers().stream())
+//                .filter(user -> user.getOnlineStatus() == true)
+//                .peek(user -> System.out.println("Username: " + user.getUsername()))
+//                .forEach(user -> {
+////                        ChatClient.get().sendUserToServer();
+//                    printUsers(user);
+//                });
     }
 }
