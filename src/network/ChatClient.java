@@ -3,11 +3,17 @@ package network;
 
 import gui.Main;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.stream.Collectors;
 
 public class ChatClient {
     private final String HOSTNAME = "localhost";
@@ -18,8 +24,11 @@ public class ChatClient {
     private ObjectOutputStream dataOut;
     private ObjectInputStream dataIn;
     private LinkedBlockingDeque<Object> dataQueue = new LinkedBlockingDeque<>();
-    private User currentUser = new User();
+    private User currentUser;
+
     private ArrayList<Room> rooms = new ArrayList<>();
+
+
 
     private ChatClient() {
 
@@ -29,8 +38,7 @@ public class ChatClient {
             System.out.println("Connected");
 
             initObjectStreams();
-            sendUserToServer();
-
+            updateServer();
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
             System.exit(1);
@@ -81,6 +89,7 @@ public class ChatClient {
                 Object data = dataQueue.poll();
 
                 if (data instanceof Message) {
+                    System.out.println("Received a: " + data);
                     Message incoming = (Message) data;
                     //Just for print in terminal
                     String msg = incoming.getRoom() + ": " + incoming.getTimestamp() + " | " + incoming.getUser().getUsername() + ":  " + incoming.getMsg();
@@ -97,6 +106,27 @@ public class ChatClient {
                     room.getMessages()
                             .forEach(msg ->
                                     Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(msg)));
+                    System.out.println("Received a: " + data);
+
+                    if(!rooms.contains(data)) {
+                        rooms.add((Room) data);
+                        // print rooms messages on connection
+                        rooms.forEach(room -> room.getMessages()
+                                .forEach(msg ->
+                                        Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(msg))));
+                    }
+                } else if(data instanceof ArrayList){
+                    System.out.println("ARRAYLIST a " + data);
+                    this.rooms = (ArrayList<Room>) data;
+
+
+                    Platform.runLater(() -> Main.UIcontrol.updateUserList());
+
+                } else if(data instanceof User){
+                    System.out.println("Received a: " + data);
+
+                    this.currentUser = (User) data;
+                    System.out.println(currentUser.getID());
                 }
             } else {
                 try {
@@ -142,8 +172,19 @@ public class ChatClient {
         return currentUser;
     }
 
+    public ArrayList<Room> getRooms(){
+        return this.rooms;
+    }
+
+    public void updateServer(){
+        try {
+            dataOut.writeObject("update");
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
     public void closeThreads() {
         running = false;
     }
-
 }

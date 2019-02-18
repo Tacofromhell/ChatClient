@@ -26,6 +26,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 
 public class chatUIcontroller {
 
@@ -89,6 +92,12 @@ public class chatUIcontroller {
             printUsers(i, "other room");
         }
 
+//        observableListRooms.addListener((ListChangeListener<? super Room>) c -> {
+//            while(c.next()){
+//                System.out.println("CHANGE DETECTED");
+//                Platform.runLater(() -> updateUserList());
+//            }
+//        });
     }
 
     public void printMessageFromServer(Message msg) {
@@ -142,11 +151,12 @@ public class chatUIcontroller {
         if (newUsername.getText().trim().length() > 0) {
             ChatClient.get().getCurrentUser().setUsername(newUsername.getText());
             System.out.println("Changed username to: " + ChatClient.get().getCurrentUser().getUsername());
+            updateUserList();
             ChatClient.get().sendUserToServer();
+            ChatClient.get().updateServer();
         }
 
         newUsername.setText("");
-//        updateUsername();
     }
 
     public void sendNewUsernameEnter(KeyEvent key) {
@@ -157,30 +167,49 @@ public class chatUIcontroller {
                 System.out.println("Changed username to: " + ChatClient.get().getCurrentUser().getUsername());
                 ChatClient.get().sendUserToServer();
             }
-
-            newUsername.setText("");
-//            updateUsername();
+    public void sendNewUsernameEnter(KeyEvent key){
+        if(key.getCode().equals(KeyCode.ENTER)){
+            sendNewUsernameButton();
         }
 
     }
 
+
     public void printUsers(int i, String room) {
         HBox onlineUser = new HBox(5);
         onlineUser.setStyle("-fx-alignment: CENTER_LEFT");
-        Circle userPic = new Circle(10, Color.LIGHTGRAY);
-        Label userName = new Label(room + i);
+        Circle userPic;
+
+
+        if(ChatClient.get().getCurrentUser().getID().equals(user.getID())){
+            userPic = new Circle(10, Color.GREEN);
+        } else {
+            userPic = new Circle(10, Color.LIGHTGRAY);
+        }
+
+        Label userName = new Label(user.getUsername());
         userName.setStyle("-fx-text-fill: black;" +
                 "-fx-pref-width: 100px;");
 
         onlineUser.getChildren().addAll(userPic, userName);
-        onlineUser.setMargin(userPic, new Insets(5, 0, 5, 3));
+        onlineUser.setMargin(userPic, new Insets(5,0,5,3));
 
         VBoxRoomsUsers.get(room).getChildren().add(onlineUser);
     }
 
-    public void updateUsername() {
-        currentUsername.setText(ChatClient.get().getCurrentUser().getUsername());
+    public void updateUserList(){
+        System.out.println("Updated list ");
+
+        users.getChildren().clear();
+
+
+        ChatClient.get().getRooms().stream()
+                .flatMap(room -> room.getUsers().stream())
+                .filter(user -> user.getOnlineStatus() == true)
+                .peek(user -> System.out.println("Username: " + user.getUsername()))
+                .forEach(user -> {
+//                        ChatClient.get().sendUserToServer();
+                        printUsers(user);
+                });
     }
-
-
 }
