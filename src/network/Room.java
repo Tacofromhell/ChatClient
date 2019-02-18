@@ -34,4 +34,8 @@ public class Room implements Serializable {
     public LinkedBlockingDeque<User> getUsers() {
         return users;
     }
+
+    public String getRoomName() {
+        return roomName;
+    }
 }
