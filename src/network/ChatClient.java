@@ -91,7 +91,7 @@ public class ChatClient {
 
                 } else if (data instanceof Room) {
                     rooms.add((Room) data);
-                    
+
                     rooms.stream()
                             .flatMap(room -> room.getUsers().stream())
                             .filter(user -> user.getOnlineStatus() == true)

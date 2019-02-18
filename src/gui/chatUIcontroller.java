@@ -17,7 +17,10 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import network.ChatClient;
 import network.Message;
+import network.Room;
 import network.User;
+
+import java.util.ArrayList;
 
 
 public class chatUIcontroller {
@@ -135,5 +138,10 @@ public class chatUIcontroller {
         currentUsername.setText(ChatClient.get().getCurrentUser().getUsername());
     }
 
-
+//    public void updateUserList(ArrayList<room> rooms){
+//        rooms.stream()
+//                .flatMap(room -> room.getUsers().stream())
+//                .filter(user -> user.getOnlineStatus() == true)
+//                .forEach(user -> Platform.runLater(() -> Main.UIcontrol.printUsers(user)));
+//    }
 }
