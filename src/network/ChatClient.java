@@ -60,6 +60,7 @@ public class ChatClient {
         }
     }
 
+
     void monitorIncomingData() {
         while (running) {
             try {
@@ -89,7 +90,6 @@ public class ChatClient {
 
                 } else if (data instanceof Room) {
                     rooms.add((Room) data);
-
                     // print rooms messages on connection
                     rooms.forEach(room -> room.getMessages()
                             .forEach(msg ->

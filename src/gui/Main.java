@@ -14,9 +14,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-//        initialize server connection by calling singleton
         ChatClient.get();
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("chatUI.fxml"));
         root = loader.load();
 
@@ -25,16 +23,15 @@ public class Main extends Application {
 
         Main.stage = stage;
         stage.setTitle("ChatApp");
-        stage.setResizable(false);
-//        initialize server connection by calling singleton
-        ChatClient.get();
+
 
         for(int i = 0; i < 10; i++){
             UIcontrol.printUsers(i);
         }
 
         stage.setScene(new Scene(root));
-
+        stage.setMinWidth(550);
+        stage.setMinHeight(650);
         stage.setOnCloseRequest(e -> ChatClient.get().closeThreads());
         stage.show();
 

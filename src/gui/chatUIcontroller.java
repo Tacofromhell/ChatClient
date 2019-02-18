@@ -42,6 +42,9 @@ public class chatUIcontroller {
     String activeRoom = "general";
 
     public void initialize() {
+
+
+
         System.out.println(Thread.currentThread().toString());
     }
 
@@ -54,7 +57,7 @@ public class chatUIcontroller {
         messageToPrint.setStyle("-fx-background-color: honeydew; -fx-background-radius: 5px;");
         messageToPrint.setWrapText(true);
         messageToPrint.setMinHeight(Control.USE_PREF_SIZE);
-        messageToPrint.setMaxWidth(350);
+        messageToPrint.setMaxWidth(300);
         messageContainer.getChildren().add(messageToPrint);
 
         if(msg.getUser().getUser().getID().equals(ChatClient.get().getCurrentUser().getID())) {
