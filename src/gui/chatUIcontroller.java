@@ -46,18 +46,17 @@ public class chatUIcontroller {
     Button changeUser_btn;
 
     String activeRoom = "general";
-    private ObservableList<Room> observableListRooms = ChatClient.get().getRooms();
+//    private ObservableList<Room> observableListRooms = ChatClient.get().getRooms();
 
 
     public void initialize() {
-    updateUserList();
 
-        observableListRooms.addListener((ListChangeListener<? super Room>) c -> {
-            while(c.next()){
-                System.out.println("CHANGE DETECTED");
-                Platform.runLater(() -> updateUserList());
-            }
-        });
+//        observableListRooms.addListener((ListChangeListener<? super Room>) c -> {
+//            while(c.next()){
+//                System.out.println("CHANGE DETECTED");
+//                Platform.runLater(() -> updateUserList());
+//            }
+//        });
     }
 
     public void printMessageFromServer(Message msg) {
@@ -106,24 +105,16 @@ public class chatUIcontroller {
         if(newUsername.getText().trim().length() > 0){
             ChatClient.get().getCurrentUser().setUsername(newUsername.getText());
             System.out.println("Changed username to: " + ChatClient.get().getCurrentUser().getUsername());
-            ChatClient.get().sendUserToServer();
+            updateUserList();
+            ChatClient.get().updateServer();
         }
 
         newUsername.setText("");
-        updateUserList();
     }
 
     public void sendNewUsernameEnter(KeyEvent key){
         if(key.getCode().equals(KeyCode.ENTER)){
-
-            if(newUsername.getText().trim().length() > 0){
-                ChatClient.get().getCurrentUser().setUsername(newUsername.getText());
-                System.out.println("Changed username to: " + ChatClient.get().getCurrentUser().getUsername());
-                ChatClient.get().sendUserToServer();
-            }
-
-            newUsername.setText("");
-            updateUserList();
+            sendNewUsernameButton();
         }
 
     }
@@ -143,16 +134,17 @@ public class chatUIcontroller {
     }
 
     public void updateUserList(){
-        System.out.println("Updated list " + observableListRooms.size());
+        System.out.println("Updated list ");
+
         users.getChildren().clear();
 
 
-        observableListRooms.stream()
+        ChatClient.get().getRooms().stream()
                 .flatMap(room -> room.getUsers().stream())
                 .filter(user -> user.getOnlineStatus() == true)
-                .peek(System.out::println)
+                .peek(user -> System.out.println("Username: " + user.getUsername()))
                 .forEach(user -> {
-//                        ChatClient.get().sendUserToServer();
+                        ChatClient.get().sendUserToServer();
                         printUsers(user);
                 });
     }

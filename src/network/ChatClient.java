@@ -25,7 +25,8 @@ public class ChatClient {
     private ObjectInputStream dataIn;
     private LinkedBlockingDeque<Object> dataQueue = new LinkedBlockingDeque<>();
     private User currentUser;
-    private ObservableList<Room> rooms = FXCollections.observableArrayList();
+
+    private ArrayList<Room> rooms = new ArrayList<>();
 
 
 
@@ -37,6 +38,7 @@ public class ChatClient {
             System.out.println("Connected");
 
             initObjectStreams();
+            updateServer();
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
             System.exit(1);
@@ -86,6 +88,7 @@ public class ChatClient {
                 Object data = dataQueue.poll();
 
                 if (data instanceof Message) {
+                    System.out.println("Received a: " + data);
                     Message incoming = (Message) data;
                     //Just for print in terminal
                     String msg = incoming.getRoom() + ": " + incoming.getTimestamp() + " | " + incoming.getUser().getUsername() + ":  " + incoming.getMsg();
@@ -95,13 +98,25 @@ public class ChatClient {
                     Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(incoming));
 
                 } else if (data instanceof Room) {
-                    rooms.add((Room) data);
+                    System.out.println("Received a: " + data);
 
-                    // print rooms messages on connection
-                    rooms.forEach(room -> room.getMessages()
-                            .forEach(msg ->
-                                    Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(msg))));
+                    if(!rooms.contains(data)) {
+                        rooms.add((Room) data);
+                        // print rooms messages on connection
+                        rooms.forEach(room -> room.getMessages()
+                                .forEach(msg ->
+                                        Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(msg))));
+                    }
+                } else if(data instanceof ArrayList){
+                    System.out.println("ARRAYLIST a " + data);
+                    this.rooms = (ArrayList<Room>) data;
+
+
+                    Platform.runLater(() -> Main.UIcontrol.updateUserList());
+
                 } else if(data instanceof User){
+                    System.out.println("Received a: " + data);
+
                     this.currentUser = (User) data;
                     System.out.println(currentUser.getID());
                 }
@@ -149,8 +164,16 @@ public class ChatClient {
         return currentUser;
     }
 
-    public ObservableList<Room> getRooms(){
+    public ArrayList<Room> getRooms(){
         return this.rooms;
+    }
+
+    public void updateServer(){
+        try {
+            dataOut.writeObject("update");
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     public void closeThreads() {
