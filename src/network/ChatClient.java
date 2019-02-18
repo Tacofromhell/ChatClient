@@ -77,6 +77,7 @@ public class ChatClient {
     private void handleDataQueue() {
         while (true) {
             if (dataQueue.size() > 0) {
+
                 Object data = dataQueue.poll();
 
                 if (data instanceof Message) {
@@ -142,4 +143,5 @@ public class ChatClient {
     public void closeThreads() {
         running = false;
     }
+
 }
