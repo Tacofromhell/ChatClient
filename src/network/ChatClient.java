@@ -3,10 +3,15 @@ package network;
 
 import gui.Main;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.Collectors;
 
@@ -20,7 +25,9 @@ public class ChatClient {
     private ObjectInputStream dataIn;
     private LinkedBlockingDeque<Object> dataQueue = new LinkedBlockingDeque<>();
     private User currentUser;
-    private ArrayList<Room> rooms = new ArrayList<>();
+    private ObservableList<Room> rooms = FXCollections.observableArrayList();
+
+
 
     private ChatClient() {
 
@@ -30,8 +37,6 @@ public class ChatClient {
             System.out.println("Connected");
 
             initObjectStreams();
-//            sendUserToServer();
-
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
             System.exit(1);
@@ -92,7 +97,6 @@ public class ChatClient {
                 } else if (data instanceof Room) {
                     rooms.add((Room) data);
 
-                    Platform.runLater(() -> Main.UIcontrol.updateUserList(rooms));
                     // print rooms messages on connection
                     rooms.forEach(room -> room.getMessages()
                             .forEach(msg ->
@@ -143,6 +147,10 @@ public class ChatClient {
 
     public User getCurrentUser() {
         return currentUser;
+    }
+
+    public ObservableList<Room> getRooms(){
+        return this.rooms;
     }
 
     public void closeThreads() {

@@ -3,6 +3,8 @@ package gui;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,6 +23,7 @@ import network.Room;
 import network.User;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 
 public class chatUIcontroller {
@@ -43,12 +46,18 @@ public class chatUIcontroller {
     Button changeUser_btn;
 
     String activeRoom = "general";
+    private ObservableList<Room> observableListRooms = ChatClient.get().getRooms();
+
 
     public void initialize() {
+    updateUserList();
 
-
-
-        System.out.println(Thread.currentThread().toString());
+        observableListRooms.addListener((ListChangeListener<? super Room>) c -> {
+            while(c.next()){
+                System.out.println("CHANGE DETECTED");
+                Platform.runLater(() -> updateUserList());
+            }
+        });
     }
 
     public void printMessageFromServer(Message msg) {
@@ -101,7 +110,7 @@ public class chatUIcontroller {
         }
 
         newUsername.setText("");
-//        updateUsername();
+        updateUserList();
     }
 
     public void sendNewUsernameEnter(KeyEvent key){
@@ -114,13 +123,12 @@ public class chatUIcontroller {
             }
 
             newUsername.setText("");
-//            updateUsername();
+            updateUserList();
         }
 
     }
 
     public void printUsers(User user) {
-
         HBox onlineUser = new HBox(5);
         onlineUser.setStyle("-fx-alignment: CENTER_LEFT");
         Circle userPic = new Circle(10, Color.LIGHTGRAY);
@@ -134,14 +142,18 @@ public class chatUIcontroller {
         users.getChildren().add(onlineUser);
     }
 
-    public void updateUsername(){
-        currentUsername.setText(ChatClient.get().getCurrentUser().getUsername());
-    }
+    public void updateUserList(){
+        System.out.println("Updated list " + observableListRooms.size());
+        users.getChildren().clear();
 
-    public void updateUserList(ArrayList<Room> rooms){
-        rooms.stream()
+
+        observableListRooms.stream()
                 .flatMap(room -> room.getUsers().stream())
                 .filter(user -> user.getOnlineStatus() == true)
-                .forEach(user -> printUsers(user));
+                .peek(System.out::println)
+                .forEach(user -> {
+//                        ChatClient.get().sendUserToServer();
+                        printUsers(user);
+                });
     }
 }
