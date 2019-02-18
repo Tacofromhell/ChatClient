@@ -116,11 +116,12 @@ public class chatUIcontroller {
 
     }
 
-    public void printUsers(int i) {
+    public void printUsers(User user) {
+
         HBox onlineUser = new HBox(5);
         onlineUser.setStyle("-fx-alignment: CENTER_LEFT");
         Circle userPic = new Circle(10, Color.LIGHTGRAY);
-        Label userName = new Label("" + i);
+        Label userName = new Label(user.getUsername());
         userName.setStyle("-fx-text-fill: black;" +
                 "-fx-pref-width: 100px;");
 

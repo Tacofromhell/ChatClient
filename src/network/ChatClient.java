@@ -8,6 +8,7 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.stream.Collectors;
 
 public class ChatClient {
     private final String HOSTNAME = "localhost";
@@ -90,6 +91,12 @@ public class ChatClient {
 
                 } else if (data instanceof Room) {
                     rooms.add((Room) data);
+                    
+                    rooms.stream()
+                            .flatMap(room -> room.getUsers().stream())
+                            .filter(user -> user.getOnlineStatus() == true)
+                            .forEach(user -> Platform.runLater(() -> Main.UIcontrol.printUsers(user)));
+
                     // print rooms messages on connection
                     rooms.forEach(room -> room.getMessages()
                             .forEach(msg ->

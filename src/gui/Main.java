@@ -25,10 +25,6 @@ public class Main extends Application {
         stage.setTitle("ChatApp");
 
 
-        for(int i = 0; i < 10; i++){
-            UIcontrol.printUsers(i);
-        }
-
         stage.setScene(new Scene(root));
         stage.setMinWidth(550);
         stage.setMinHeight(650);
