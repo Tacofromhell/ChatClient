@@ -21,6 +21,7 @@ public class User implements Serializable {
         this.ID = UUID.randomUUID().toString();
         this.username = "anon";
         joinedRooms.add("general");
+        setActiveRoom("general");
     }
 
     public User(String name) {
@@ -33,8 +34,8 @@ public class User implements Serializable {
         return activeRoom;
     }
 
-    public void setActiveRoom(Room activeRoom) {
-        this.activeRoom = activeRoom.getRoomName();
+    public void setActiveRoom(String activeRoom) {
+        this.activeRoom = activeRoom;
     }
 
     public ArrayList<String> getJoinedRooms() {
