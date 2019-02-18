@@ -14,19 +14,28 @@ public class User implements Serializable {
     private String ID;
     private String username;
     private ArrayList<String> joinedRooms = new ArrayList<>();
-//    private Room activeRoom;
+    String activeRoom = "general";
 
     public User() {
         //this.activeRoom = "general";
         this.ID = UUID.randomUUID().toString();
         this.username = "anon";
         joinedRooms.add("general");
+        setActiveRoom("general");
     }
 
     public User(String name) {
         //this.activeRoom = "general";
         this.ID = UUID.randomUUID().toString();
         this.username = name.length() > 0 ? name : "anon";
+    }
+
+    public String getActiveRoom() {
+        return activeRoom;
+    }
+
+    public void setActiveRoom(String activeRoom) {
+        this.activeRoom = activeRoom;
     }
 
     public ArrayList<String> getJoinedRooms() {

@@ -39,7 +39,8 @@ public class chatUIcontroller {
     @FXML
     Button changeUser_btn;
 
-    String activeRoom = "general";
+    //REDUNDANT: Moved to User.java
+    //String activeRoom = "general";
 
     public void initialize() {
 
@@ -75,7 +76,7 @@ public class chatUIcontroller {
     public void sendMessageButton() {
 //        send input string to network method in ChatClient
         if (userInputNewMessage.getText().trim().length() > 0)
-            ChatClient.get().sendMessageToServer(ChatClient.get().getCurrentUser(), userInputNewMessage.getText(), activeRoom);
+            ChatClient.get().sendMessageToServer(ChatClient.get().getCurrentUser(), userInputNewMessage.getText(), ChatClient.get().getCurrentUser().getActiveRoom());
 
         userInputNewMessage.setText("");
     }
