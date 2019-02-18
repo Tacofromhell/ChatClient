@@ -106,6 +106,7 @@ public class chatUIcontroller {
             ChatClient.get().getCurrentUser().setUsername(newUsername.getText());
             System.out.println("Changed username to: " + ChatClient.get().getCurrentUser().getUsername());
             updateUserList();
+            ChatClient.get().sendUserToServer();
             ChatClient.get().updateServer();
         }
 
@@ -122,7 +123,15 @@ public class chatUIcontroller {
     public void printUsers(User user) {
         HBox onlineUser = new HBox(5);
         onlineUser.setStyle("-fx-alignment: CENTER_LEFT");
-        Circle userPic = new Circle(10, Color.LIGHTGRAY);
+        Circle userPic;
+
+
+        if(ChatClient.get().getCurrentUser().getID().equals(user.getID())){
+            userPic = new Circle(10, Color.GREEN);
+        } else {
+            userPic = new Circle(10, Color.LIGHTGRAY);
+        }
+
         Label userName = new Label(user.getUsername());
         userName.setStyle("-fx-text-fill: black;" +
                 "-fx-pref-width: 100px;");
@@ -144,7 +153,7 @@ public class chatUIcontroller {
                 .filter(user -> user.getOnlineStatus() == true)
                 .peek(user -> System.out.println("Username: " + user.getUsername()))
                 .forEach(user -> {
-                        ChatClient.get().sendUserToServer();
+//                        ChatClient.get().sendUserToServer();
                         printUsers(user);
                 });
     }
