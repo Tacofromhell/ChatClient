@@ -45,4 +45,7 @@ public class User implements Serializable {
         this.username = username;
     }
 
+    public String getID(){
+        return this.ID;
+    }
 }//class end
