@@ -18,7 +18,7 @@ public class ChatClient {
     private ObjectOutputStream dataOut;
     private ObjectInputStream dataIn;
     private LinkedBlockingDeque<Object> dataQueue = new LinkedBlockingDeque<>();
-    private User currentUser = new User();
+    private User currentUser;
     private ArrayList<Room> rooms = new ArrayList<>();
 
     private ChatClient() {
@@ -29,7 +29,7 @@ public class ChatClient {
             System.out.println("Connected");
 
             initObjectStreams();
-            sendUserToServer();
+//            sendUserToServer();
 
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
@@ -94,6 +94,9 @@ public class ChatClient {
                     rooms.forEach(room -> room.getMessages()
                             .forEach(msg ->
                                     Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(msg))));
+                } else if(data instanceof User){
+                    this.currentUser = (User) data;
+                    System.out.println(currentUser.getID());
                 }
             } else {
                 try {
