@@ -21,6 +21,7 @@ public class User implements Serializable {
         this.ID = UUID.randomUUID().toString();
         this.username = "anon";
         joinedRooms.add("general");
+        joinedRooms.add("other room");
         setActiveRoom("general");
     }
 

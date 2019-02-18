@@ -90,11 +90,13 @@ public class ChatClient {
                     Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(incoming));
 
                 } else if (data instanceof Room) {
-                    rooms.add((Room) data);
+
+                    Room room = (Room) data;
+                    rooms.add(room);
                     // print rooms messages on connection
-                    rooms.forEach(room -> room.getMessages()
+                    room.getMessages()
                             .forEach(msg ->
-                                    Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(msg))));
+                                    Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(msg)));
                 }
             } else {
                 try {

@@ -25,7 +25,6 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
                <content>
-                  <VBox fx:id="printMessages" prefHeight="450.0" />
                </content></ScrollPane>
               <HBox minHeight="25.0" prefWidth="400.0">
                   <children>
@@ -48,17 +47,17 @@
             <Insets left="10.0" />
          </BorderPane.margin>
          <children>
-            <ScrollPane fitToHeight="true" fitToWidth="true" minHeight="450.0" minWidth="150.0" VBox.vgrow="ALWAYS">
-               <content>
-      
-                   <VBox fx:id="users" fillWidth="false" prefHeight="400.0" prefWidth="140.0">
-                     <VBox.margin>
-                        <Insets bottom="10.0" top="10.0" />
-                     </VBox.margin>
-                     <BorderPane.margin>
-                        <Insets />
-                     </BorderPane.margin></VBox>
-               </content>
+            <ScrollPane fx:id="scrollUsers" fitToHeight="true" fitToWidth="true" minHeight="450.0" minWidth="150.0" VBox.vgrow="ALWAYS">
+               <!--<content>-->
+      <!---->
+                   <!--&lt;!&ndash;<VBox fx:id="users" fillWidth="false" prefHeight="400.0" prefWidth="140.0">&ndash;&gt;-->
+                     <!--<VBox.margin>-->
+                        <!--<Insets bottom="10.0" top="10.0" />-->
+                     <!--</VBox.margin>-->
+                     <!--<BorderPane.margin>-->
+                        <!--<Insets />-->
+                     <!--</BorderPane.margin></VBox>-->
+               <!--</content>-->
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin>
@@ -87,11 +86,7 @@
                       <Font name="Arial" size="24.0" />
                   </font>
               </Label>
-            <HBox spacing="10.0">
-               <children>
-                  <Button mnemonicParsing="false" text="#general" />
-                  <Button mnemonicParsing="false" text="#other room" />
-               </children>
+            <HBox fx:id="roomButtonsHolder" spacing="10.0">
                <VBox.margin>
                   <Insets bottom="5.0" top="5.0" />
                </VBox.margin>
