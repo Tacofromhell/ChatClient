@@ -81,14 +81,14 @@ public class chatUIcontroller {
             b.setId(room);
             b.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
                 roomButtonsHolder.getChildren().forEach(roomCircle -> roomCircle.setStyle("-fx-background-color: lightgray"));
-                b.setStyle("-fx-background-color: green");
+                b.setStyle("-fx-background-color: lightseagreen");
                 switchContent(b.getId());
             });
             roomButtonsHolder.getChildren().add(b);
         }
         roomButtonsHolder.getChildren().forEach(roomButton -> {
             if (roomButton.getId().equals(ChatClient.get().getCurrentUser().getActiveRoom())) {
-                roomButton.setStyle("-fx-background-color: green");
+                roomButton.setStyle("-fx-background-color: lightseagreen");
 
             } else {
                 roomButton.setStyle("-fx-background-color: lightgray");
