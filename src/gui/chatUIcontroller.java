@@ -35,6 +35,7 @@ public class chatUIcontroller {
     public Map<String, VBox> VBoxRoomsMessages = new HashMap<>();
     public Map<String, VBox> VBoxRoomsUsers = new HashMap<>();
 
+
     @FXML
     HBox roomButtonsHolder;
     @FXML
@@ -77,9 +78,22 @@ public class chatUIcontroller {
             VBoxRoomsUsers.putIfAbsent(room, tempUsr);
 
             Button b = new Button(room);
-            b.setOnAction((ActionEvent e) -> switchContent(b.getText()));
+            b.setId(room);
+            b.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
+                roomButtonsHolder.getChildren().forEach(roomCircle -> roomCircle.setStyle("-fx-background-color: lightgray"));
+                b.setStyle("-fx-background-color: green");
+                switchContent(b.getId());
+            });
             roomButtonsHolder.getChildren().add(b);
         }
+        roomButtonsHolder.getChildren().forEach(roomButton -> {
+            if (roomButton.getId().equals(ChatClient.get().getCurrentUser().getActiveRoom())) {
+                roomButton.setStyle("-fx-background-color: green");
+
+            } else {
+                roomButton.setStyle("-fx-background-color: lightgray");
+            }
+        });
 
         scrollMessages.setContent(VBoxRoomsMessages.get(
                 ChatClient.get().getCurrentUser().getActiveRoom()
@@ -162,9 +176,9 @@ public class chatUIcontroller {
         Circle userPic;
 
         if (ChatClient.get().getCurrentUser().getID().equals(user.getID())) {
-            userPic = new Circle(10, Color.GREEN);
+            userPic = new Circle(7, Color.GREEN);
         } else {
-            userPic = new Circle(10, Color.LIGHTGRAY);
+            userPic = new Circle(7, Color.LIGHTGRAY);
         }
 
         Label userName = new Label(user.getUsername());

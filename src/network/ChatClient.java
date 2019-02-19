@@ -25,6 +25,7 @@ public class ChatClient {
     private ObjectInputStream dataIn;
     private LinkedBlockingDeque<Object> dataQueue = new LinkedBlockingDeque<>();
     private User currentUser;
+    private boolean firstConnection = false;
 
     private ArrayList<Room> rooms = new ArrayList<>();
 
@@ -118,7 +119,10 @@ public class ChatClient {
                     this.currentUser = (User) data;
                     System.out.println(currentUser.getID());
 
-                    Platform.runLater(() -> Main.UIcontrol.initRooms());
+                    if (!firstConnection) {
+                        Platform.runLater(() -> Main.UIcontrol.initRooms());
+                        firstConnection = true;
+                    }
                 }
             } else {
                 try {
@@ -176,7 +180,7 @@ public class ChatClient {
         }
     }
 
-    public void emitToServer(String event){
+    public void emitToServer(String event) {
         try {
             dataOut.writeObject(event);
         } catch (IOException e) {
