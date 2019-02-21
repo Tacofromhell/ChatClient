@@ -7,6 +7,8 @@ import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import utilities.FileUtility;
+import utilities.SocketUtility;
 
 import java.io.*;
 import java.lang.reflect.Array;
@@ -71,14 +73,17 @@ public class ChatClient {
 
     void monitorIncomingData() {
         while (running) {
-            try {
-                dataQueue.addLast(dataIn.readObject());
-            } catch (ClassNotFoundException e) {
-                System.err.println("Object not found");
-            } catch (IOException ioe) {
-                System.out.println("Socket is closed");
-                running = false;
-            }
+
+            dataQueue.addLast(SocketUtility.receiveDataFromServer(dataIn));
+//
+//            try {
+//                dataQueue.addLast(dataIn.readObject());
+//            } catch (ClassNotFoundException e) {
+//                System.err.println("Object not found");
+//            } catch (IOException ioe) {
+//                System.out.println("Socket is closed");
+//                running = false;
+//            }
         }
     }
 
@@ -119,6 +124,8 @@ public class ChatClient {
                     this.currentUser = (User) data;
                     System.out.println(currentUser.getID());
 
+                    FileUtility.saveObject(currentUser, "currerntUser");
+
                     if (!firstConnection) {
                         Platform.runLater(() -> Main.UIcontrol.initRooms());
                         firstConnection = true;
@@ -139,21 +146,26 @@ public class ChatClient {
         if (!currentUser.getUsername().equals(user.getUsername()))
             currentUser.setUsername(user.getUsername());
 
-        try {
             Message newMessage = new Message(userInput, currentUser, activeRoom);
-            dataOut.writeObject(newMessage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+            SocketUtility.sendDataToServer(dataOut, newMessage);
+//
+//        try {
+//            dataOut.writeObject(newMessage);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void sendUserToServer() {
-        try {
-            dataOut.reset();
-            dataOut.writeObject(currentUser);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SocketUtility.sendDataToServer(dataOut, currentUser);
+
+//        try {
+//            dataOut.reset();
+//            dataOut.writeObject(currentUser);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public static ChatClient get() {
@@ -173,19 +185,25 @@ public class ChatClient {
     }
 
     public void updateServer() {
-        try {
-            dataOut.writeObject("update");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        emitToServer("update");
+
+//        try {
+//            dataOut.writeObject("update");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void emitToServer(String event) {
-        try {
-            dataOut.writeObject(event);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        SocketUtility.sendDataToServer(dataOut, event);
+
+//        try {
+//            dataOut.writeObject(event);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void closeThreads() {
