@@ -1,33 +1,24 @@
 package gui;
 
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.CacheHint;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import network.ChatClient;
-import network.Message;
-import network.Room;
-import network.User;
+import data.Message;
+import data.Room;
+import data.User;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 
 public class chatUIcontroller {

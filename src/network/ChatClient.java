@@ -1,31 +1,30 @@
 
 package network;
 
-import data.SocketEvents;
+import data.DataHandler;
+import data.Message;
+import data.Room;
+import data.User;
 import gui.Main;
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 
+import javax.xml.crypto.Data;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.stream.Collectors;
 
 public class ChatClient {
     private final String HOSTNAME = "localhost";
     private final int PORT = 1234;
     private volatile boolean running = true;
     private final static ChatClient singleton = new ChatClient();
-    private Socket socket;
+   private Socket socket;
     private ObjectOutputStream dataOut;
     private ObjectInputStream dataIn;
-    private LinkedBlockingDeque<Object> dataQueue = new LinkedBlockingDeque<>();
+  // private LinkedBlockingDeque<Object> dataQueue = new LinkedBlockingDeque<>();
     private User currentUser;
+    DataHandler dataHandler = new DataHandler();
 
 
     private ArrayList<Room> rooms = new ArrayList<>();
@@ -59,9 +58,9 @@ public class ChatClient {
             Thread monitorIncoming = new Thread(this::monitorIncomingData);
             monitorIncoming.setDaemon(true);
             monitorIncoming.start();
-            Thread handleData = new Thread(this::handleDataQueue);
+            /*Thread handleData = new Thread(this::handleDataQueue);
             handleData.setDaemon(true);
-            handleData.start();
+            handleData.start();*/
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -70,10 +69,12 @@ public class ChatClient {
     }
 
 
+
+
     void monitorIncomingData() {
         while (running) {
             try {
-                dataQueue.addLast(dataIn.readObject());
+               dataHandler.addToQueue(dataIn.readObject());
             } catch (ClassNotFoundException e) {
                 System.err.println("Object not found");
             } catch (IOException ioe) {
@@ -83,7 +84,7 @@ public class ChatClient {
         }
     }
 
-    private void handleDataQueue() {
+   /* private void handleDataQueue() {
         while (true) {
             if (dataQueue.size() > 0) {
 
@@ -130,7 +131,7 @@ public class ChatClient {
                 }
             }
         }
-    }
+    }*/
 
     public void sendMessageToServer(User user, String userInput, String activeRoom) {
 
