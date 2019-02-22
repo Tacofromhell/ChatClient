@@ -1,5 +1,6 @@
 package gui;
 
+import data.NetworkMessage;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,6 +20,7 @@ import data.User;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 
 public class chatUIcontroller {
@@ -131,9 +133,13 @@ public class chatUIcontroller {
         if (newUsername.getText().trim().length() > 0) {
             ChatClient.get().getCurrentUser().setUsername(newUsername.getText());
             System.out.println("Changed username to: " + ChatClient.get().getCurrentUser().getUsername());
-            updateUserList();
+            ChatClient.get().sendEventToServer(
+                    new NetworkMessage.UserNameChange(
+                            ChatClient.get().getCurrentUser().getUsername(),
+                            ChatClient.get().getCurrentUser().getID()));
+
+//            updateUserList();
             ChatClient.get().sendUserToServer();
-            ChatClient.get().updateServer();
         }
 
         newUsername.setText("");
@@ -159,6 +165,7 @@ public class chatUIcontroller {
         }
 
         Label userName = new Label(user.getUsername());
+        userName.setId(user.getID());
         userName.setStyle("-fx-text-fill: black;" +
                 "-fx-pref-width: 100px;");
 
@@ -168,23 +175,46 @@ public class chatUIcontroller {
         VBoxRoomsUsers.get(room).getChildren().add(onlineUser);
     }
 
-    public void updateUserList() {
+    public void updateUsername(NetworkMessage.UserNameChange event) {
         System.out.println("Updated list ");
-
+        NetworkMessage.UserNameChange newUsername = event;
 //        users.getChildren().clear();
 
-        for (Room room : ChatClient.get().getRooms()) {
-            VBoxRoomsUsers.get(room.getRoomName()).getChildren().clear();
+//        for (Room room : ChatClient.get().getRooms()) {
+//            VBoxRoomsUsers.get(room.getRoomName()).getChildren().clear();
 
-            room.getUsers().stream()
-                    .filter(user -> user.getOnlineStatus() == true)
-                    .peek(user -> System.out.println("Username: " + user.getUsername()))
-                    .forEach(user -> {
-//                        ChatClient.get().sendUserToServer();
-                        printUsers(user, room.getRoomName());
-                    });
-        }
+//        }
 
+        VBoxRoomsUsers.forEach((room, vbox) -> vbox.getChildren().forEach(System.out::println));
+
+
+//                .flatMap(as ->
+//                    forEach(user -> {
+//                if(user.getId().equals(newUsername.getUserId())){
+//                    user.set
+//                }
+//
+//            })
+//        });
+
+//        ChatClient.get().getRooms().
+//                forEach(room -> room.getUsers().stream()
+//                        .filter(user -> user.getID().equals(userChangedName.getID()))
+//                        .forEach(user -> user.setUsername(userChangedName.getUsername())));
+//
+//
+//
+//        ChatClient.get().getRooms().stream()
+//                .forEach(room -> room.getUsers().stream()
+//                        .map(user -> user.getID()));
+//
+//            room.getUsers().stream()
+//                    .filter(user -> user.getOnlineStatus() == true)
+//                    .peek(user -> System.out.println("Username: " + user.getUsername()))
+//                    .forEach(user -> {
+////                        ChatClient.get().sendUserToServer();
+//                        printUsers(user, room.getRoomName());
+//                    });
 //        ChatClient.get().getRooms().stream()
 //                .flatMap(room -> room.getUsers().stream())
 //                .filter(user -> user.getOnlineStatus() == true)

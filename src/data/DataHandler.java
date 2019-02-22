@@ -29,9 +29,10 @@ public class DataHandler {
                 if (data instanceof Message) {
                     receivedMessage(data);
                 } else if (data instanceof Room) {
+                    System.out.println("handledata");
                     receivedUserJoinedRoom(data);
-                } else if (data instanceof NetworkMessage.ClientConnect) {
-                    receivedClientConnected(data);
+                } else if (data instanceof User) {
+                    receivedUser(data);
                 } else if (data instanceof NetworkMessage.RoomCreate){
 
                 } else if (data instanceof NetworkMessage.RoomDelete){
@@ -62,7 +63,7 @@ public class DataHandler {
         //Send incoming message and currentUser to javaFX
         Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(incoming));}
 
-    private void receivedClientConnected(Object data){
+    private void receivedUser(Object data){
         System.out.println("Received a: " + data);
         ChatClient.get().setCurrentUser((User) data);
         System.out.println(ChatClient.get().getCurrentUser().getID());
@@ -84,13 +85,11 @@ public class DataHandler {
     private void receivedUserLeftRoom(Object data){}
 
     private void receivedUserChangedName(Object data){
-        User userChangedName = (User) data;
+        System.out.println("User changed name");
+        NetworkMessage.UserNameChange userNameChange = (NetworkMessage.UserNameChange) data;
 
-        ChatClient.get().getRooms().
-                forEach(room -> room.getUsers().stream()
-                        .filter(user -> user.getID().equals(userChangedName.getID()))
-                        .forEach(user -> user.setUsername(userChangedName.getUsername())));
 
-        Platform.runLater(() -> Main.UIcontrol.updateUserList());
+
+        Platform.runLater(() -> Main.UIcontrol.updateUsername(userNameChange));
     }
 }

@@ -1,9 +1,7 @@
 package network;
 
-import data.DataHandler;
-import data.Message;
-import data.Room;
-import data.User;
+import data.*;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -59,6 +57,7 @@ public class ChatClient {
             try {
                dataHandler.addToQueue(dataIn.readObject());
             } catch (ClassNotFoundException e) {
+                e.printStackTrace();
                 System.err.println("Object not found");
             } catch (IOException ioe) {
                 System.out.println("Socket is closed");
@@ -105,9 +104,10 @@ public class ChatClient {
         return this.rooms;
     }
 
-    public void updateServer() {
+    public void sendEventToServer(Object event) {
         try {
-            dataOut.writeObject("update");
+            dataOut.reset();
+            dataOut.writeObject(event);
         } catch (IOException e) {
             e.printStackTrace();
         }

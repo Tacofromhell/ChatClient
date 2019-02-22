@@ -1,8 +1,11 @@
 package data;
 
-public class NetworkMessage {
+import java.io.Serializable;
 
-        public static class ClientConnect{
+public class NetworkMessage implements Serializable {
+    private static final long serialVersionUID = -4057760186023784992L;
+
+    public static class ClientConnect{
             String userId;
 
             public ClientConnect(String userId){
@@ -42,13 +45,23 @@ public class NetworkMessage {
             }
         }
 
-        public static class UserNameChange{
-            String newName;
-            public UserNameChange(String newName){
-                this.newName = newName;
-            }
+    public static class UserNameChange implements Serializable{
+        String newName;
+        String userId;
 
+        public UserNameChange(String newName, String userId){
+            this.newName = newName;
+            this.userId = userId;
         }
+
+        public String getNewName(){
+            return this.newName;
+        }
+
+        public String getUserId(){
+            return this.userId;
+        }
+    }
 
     }//END OF CLASS
 
