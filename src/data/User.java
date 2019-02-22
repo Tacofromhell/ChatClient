@@ -26,7 +26,7 @@ public class User implements Serializable {
     public User(String name) {
         //this.activeRoom = "general";
         this.ID = UUID.randomUUID().toString();
-        this.username = name.length() > 0 ? name : "anon";
+        this.username = name.length() > 0 ? name : "new User";
     }
 
     public String getActiveRoom() {
