@@ -1,6 +1,7 @@
 
 package network;
 
+import data.SocketEvents;
 import gui.Main;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -25,6 +26,7 @@ public class ChatClient {
     private ObjectInputStream dataIn;
     private LinkedBlockingDeque<Object> dataQueue = new LinkedBlockingDeque<>();
     private User currentUser;
+
 
     private ArrayList<Room> rooms = new ArrayList<>();
 
