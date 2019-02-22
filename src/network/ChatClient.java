@@ -1,4 +1,3 @@
-
 package network;
 
 import data.DataHandler;
@@ -8,7 +7,6 @@ import data.User;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-
 
 public class ChatClient {
     private final String HOSTNAME = "localhost";
@@ -21,9 +19,7 @@ public class ChatClient {
     private User currentUser;
     DataHandler dataHandler = new DataHandler();
 
-
     private ArrayList<Room> rooms = new ArrayList<>();
-
 
     private ChatClient() {
 
@@ -31,7 +27,6 @@ public class ChatClient {
             socket = new Socket(HOSTNAME, PORT);
             //TODO: add setSoTimeout()
             System.out.println("Connected");
-
             initObjectStreams();
             emitToServer("connecting");
         } catch (UnknownHostException e) {
@@ -49,22 +44,15 @@ public class ChatClient {
         try {
             dataOut = new ObjectOutputStream(socket.getOutputStream());
             dataIn = new ObjectInputStream(socket.getInputStream());
-
             Thread monitorIncoming = new Thread(this::monitorIncomingData);
             monitorIncoming.setDaemon(true);
             monitorIncoming.start();
-            /*Thread handleData = new Thread(this::handleDataQueue);
-            handleData.setDaemon(true);
-            handleData.start();*/
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-
-
 
     void monitorIncomingData() {
         while (running) {
@@ -78,7 +66,6 @@ public class ChatClient {
             }
         }
     }
-
 
     public void sendMessageToServer(User user, String userInput, String activeRoom) {
 

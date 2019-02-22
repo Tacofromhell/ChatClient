@@ -3,15 +3,11 @@ package data;
 import gui.Main;
 import javafx.application.Platform;
 import network.ChatClient;
-
-import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.stream.Stream;
 
 public class DataHandler {
 
     private LinkedBlockingDeque<Object> dataQueue = new LinkedBlockingDeque<>();
-
 
     public DataHandler( ) {
 
@@ -65,7 +61,7 @@ public class DataHandler {
         System.out.println(msg);
         //Send incoming message and currentUser to javaFX
         Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(incoming));}
-        
+
     private void receivedClientConnected(Object data){
         System.out.println("Received a: " + data);
         ChatClient.get().setCurrentUser((User) data);
@@ -97,6 +93,4 @@ public class DataHandler {
 
         Platform.runLater(() -> Main.UIcontrol.updateUserList());
     }
-
-
 }
