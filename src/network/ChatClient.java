@@ -17,6 +17,7 @@ public class ChatClient {
     private User currentUser;
     DataHandler dataHandler = new DataHandler();
 
+
     private ArrayList<Room> rooms = new ArrayList<>();
 
     private ChatClient() {
@@ -25,8 +26,16 @@ public class ChatClient {
             socket = new Socket(HOSTNAME, PORT);
             //TODO: add setSoTimeout()
             System.out.println("Connected");
+
             initObjectStreams();
-            emitToServer("connecting");
+            //Sending NetworkMessage.ClientConnect to server
+//            if (file with userID exists){
+//                sendEventToServer(new NetworkMessage.ClientConnect(file.getUserID something));
+//            } else{
+//            sendEventToServer(new NetworkMessage.ClientConnect(NO USER ID));
+//            }
+            //Temporary
+            sendEventToServer(new NetworkMessage.ClientConnect("34342342"));
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
             System.exit(1);
@@ -47,8 +56,6 @@ public class ChatClient {
             monitorIncoming.start();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -60,19 +67,20 @@ public class ChatClient {
                 e.printStackTrace();
                 System.err.println("Object not found");
             } catch (IOException ioe) {
-                System.out.println("Socket is closed");
+                System.out.println("Socket is closed.");
                 running = false;
             }
+
         }
     }
 
     public void sendMessageToServer(User user, String userInput, String activeRoom) {
 
-        if (!currentUser.getUsername().equals(user.getUsername()))
-            currentUser.setUsername(user.getUsername());
-
+//        if (!currentUser.getUsername().equals(user.getUsername()))
+//            currentUser.setUsername(user.getUsername());
         try {
             Message newMessage = new Message(userInput, currentUser, activeRoom);
+            System.out.println("Sending message" + newMessage);
             dataOut.writeObject(newMessage);
         } catch (IOException e) {
             e.printStackTrace();
@@ -130,6 +138,10 @@ public class ChatClient {
     }
 
     public void addRoom(Room room){
-        this.rooms.add(room);
+        if(!rooms.contains(room))
+            this.rooms.add(room);
+        else{
+            System.out.println("Room already exists");
+        }
     }
 }
