@@ -27,7 +27,7 @@ public class ChatClient {
             //TODO: add setSoTimeout()
             System.out.println("Connected");
             initObjectStreams();
-            emitToServer("connecting");
+            sendEventToServer(new NetworkMessage.ClientConnect("123431515"));
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
             System.exit(1);
@@ -68,7 +68,6 @@ public class ChatClient {
     }
 
     public void sendMessageToServer(User user, String userInput, String activeRoom) {
-
         try {
             Message newMessage = new Message(userInput, currentUser, activeRoom);
             dataOut.writeObject(newMessage);

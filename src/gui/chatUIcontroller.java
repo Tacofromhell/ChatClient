@@ -30,6 +30,10 @@ public class chatUIcontroller {
     public Map<String, VBox> VBoxRoomsMessages = new HashMap<>();
     public Map<String, VBox> VBoxRoomsUsers = new HashMap<>();
 
+    public static UIControllerMessages controllerMessages = new UIControllerMessages();
+    public static UIControllerRooms controllerRooms = new UIControllerRooms();
+    public static UIControllerUsers controllerUsers = new UIControllerUsers();
+
     @FXML
     HBox roomButtonsHolder;
     @FXML
@@ -57,12 +61,13 @@ public class chatUIcontroller {
             tempUsr.setId(room);
             VBoxRoomsUsers.putIfAbsent(room, tempUsr);
 
+
             Button b = new Button(room);
             b.setId(room);
             b.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
                 roomButtonsHolder.getChildren().forEach(roomCircle -> roomCircle.setStyle("-fx-background-color: lightgray"));
                 b.setStyle("-fx-background-color: lightseagreen");
-                Main.controllerRooms.switchContent(b.getId());
+                controllerRooms.switchContent(b.getId());
             });
             roomButtonsHolder.getChildren().add(b);
         }
@@ -81,7 +86,6 @@ public class chatUIcontroller {
         scrollUsers.setContent(VBoxRoomsUsers.get(
                 ChatClient.get().getCurrentUser().getActiveRoom()
         ));
-
 
     }
 
@@ -127,5 +131,4 @@ public class chatUIcontroller {
         }
 
     }
-
 }

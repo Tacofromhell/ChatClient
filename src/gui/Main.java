@@ -10,9 +10,7 @@ import network.ChatClient;
 public class Main extends Application {
     public static Stage stage;
     public static chatUIcontroller UIcontrol;
-    public static UIControllerMessages controllerMessages = new UIControllerMessages();
-    public static UIControllerRooms controllerRooms = new UIControllerRooms();
-    public static UIControllerUsers controllerUsers = new UIControllerUsers();
+
     private Parent root;
 
     @Override
