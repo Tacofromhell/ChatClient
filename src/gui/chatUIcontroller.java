@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -70,9 +71,22 @@ public class chatUIcontroller {
             VBoxRoomsUsers.putIfAbsent(room, tempUsr);
 
             Button b = new Button(room);
-            b.setOnAction((ActionEvent e) -> switchContent(b.getText()));
+            b.setId(room);
+            b.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
+                roomButtonsHolder.getChildren().forEach(roomCircle -> roomCircle.setStyle("-fx-background-color: lightgray"));
+                b.setStyle("-fx-background-color: lightseagreen");
+                switchContent(b.getId());
+            });
             roomButtonsHolder.getChildren().add(b);
         }
+        roomButtonsHolder.getChildren().forEach(roomButton -> {
+            if (roomButton.getId().equals(ChatClient.get().getCurrentUser().getActiveRoom())) {
+                roomButton.setStyle("-fx-background-color: lightseagreen");
+
+            } else {
+                roomButton.setStyle("-fx-background-color: lightgray");
+            }
+        });
 
         scrollMessages.setContent(VBoxRoomsMessages.get(
                 ChatClient.get().getCurrentUser().getActiveRoom()
@@ -159,9 +173,9 @@ public class chatUIcontroller {
         Circle userPic;
 
         if (ChatClient.get().getCurrentUser().getID().equals(user.getID())) {
-            userPic = new Circle(10, Color.GREEN);
+            userPic = new Circle(6, Color.GREEN);
         } else {
-            userPic = new Circle(10, Color.LIGHTGRAY);
+            userPic = new Circle(6, Color.LIGHTGRAY);
         }
 
         Label userName = new Label(user.getUsername());
