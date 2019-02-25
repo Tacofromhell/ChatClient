@@ -119,7 +119,7 @@ public class chatUIcontroller {
 
 //            updateUserList();
 
-            ChatClient.get().sendUserToServer();
+//            ChatClient.get().sendUserToServer();
         }
 
         newUsername.setText("");
