@@ -35,6 +35,8 @@ public class DataHandler {
                     receivedRoom(data);
                 } else if (data instanceof User) {
                     receivedUser(data);
+                } else if(data instanceof NetworkMessage.ClientDisconnect) {
+                    receivedClientDisconnected((NetworkMessage.ClientDisconnect) data);
                 } else if (data instanceof RoomCreate) {
 
                 } else if (data instanceof RoomDelete) {
@@ -73,7 +75,8 @@ public class DataHandler {
         Platform.runLater(() -> Main.UIcontrol.initRooms());
     }
 
-    private void receivedClientDisconnected(Object data) {
+    private void receivedClientDisconnected(NetworkMessage.ClientDisconnect data) {
+        Platform.runLater(() -> Main.UIcontrol.controllerUsers.userDisconnected(data.userId));
     }
 
     private void receivedRoomCreated(Object data) {
