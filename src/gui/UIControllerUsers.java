@@ -16,12 +16,14 @@ public class UIControllerUsers extends chatUIcontroller{
     public void printUsers(User user, String room) {
         HBox onlineUser = new HBox(5);
         onlineUser.setStyle("-fx-alignment: CENTER_LEFT");
-        Circle userPic;
+        Circle userPic = new Circle(6);
+        userPic.setId("userPic" + user.getID());
+
 
         if (ChatClient.get().getCurrentUser().getID().equals(user.getID())) {
-            userPic = new Circle(6, Color.GREEN);
+            userPic.setFill(Color.BLUE);
         } else {
-            userPic = new Circle(6, Color.LIGHTGRAY);
+            userPic.setFill(Color.GREEN);
         }
 
         Label userName = new Label(user.getUsername());
@@ -49,5 +51,13 @@ public class UIControllerUsers extends chatUIcontroller{
             userNameLabel.setText(event.getNewName());
         });
 
+    }
+
+    public void userDisconnected(String userID){
+
+        //Hitta cirkeln till användaren som disconnectade och byt färg på den
+
+        Circle userPic = (Circle) Main.stage.getScene().lookup("#userPic" + userID);
+        userPic.setFill(Color.LIGHTGRAY);
     }
 }
