@@ -22,11 +22,8 @@ import network.Message;
 import network.Room;
 import network.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 
@@ -209,8 +206,8 @@ public class chatUIcontroller {
             VBoxRoomsUsers.get(room.getRoomName()).getChildren().clear();
 
             room.getUsers().stream()
-                    //.filter(user -> user.getOnlineStatus() == true)
-                    .sorted((o1, o2)-> Boolean.compare(o2.getUser().getOfflineStatus(), o1.getUser().getOnlineStatus()))
+                    .sorted((o1, o2)-> o2.getUsername().compareTo(o1.getUsername()))
+                    .sorted((o1, o2)-> Boolean.compare(o2.getOfflineStatus(), o1.getOnlineStatus()))
                     .peek(user -> System.out.println("Username: " + user.getUsername()))
                     .forEach(user -> {
 //                        ChatClient.get().sendUserToServer();
