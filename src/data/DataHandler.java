@@ -98,6 +98,7 @@ public class DataHandler {
 
     private void receivedUserJoinedRoom(String targetRoom, User user) {
         ChatClient.get().getRooms().get(targetRoom).addUserToRoom(user);
+        Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(user, targetRoom));
     }
 
     private void receivedUserLeftRoom(Object data) {
