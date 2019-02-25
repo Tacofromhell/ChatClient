@@ -1,7 +1,6 @@
-package network;
+package data;
 
 import java.io.Serializable;
-import java.net.Socket;
 import java.time.LocalTime;
 
 public class Message implements Serializable {
