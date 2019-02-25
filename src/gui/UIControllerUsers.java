@@ -22,6 +22,8 @@ public class UIControllerUsers extends chatUIcontroller{
 
         if (ChatClient.get().getCurrentUser().getID().equals(user.getID())) {
             userPic.setFill(Color.BLUE);
+        } else if(!user.getOnlineStatus()){
+            userPic.setFill(Color.LIGHTGRAY);
         } else {
             userPic.setFill(Color.GREEN);
         }
@@ -54,10 +56,13 @@ public class UIControllerUsers extends chatUIcontroller{
     }
 
     public void userDisconnected(String userID){
-
+        System.out.println("USer disconnected");
         //Hitta cirkeln till användaren som disconnectade och byt färg på den
 
-        Circle userPic = (Circle) Main.stage.getScene().lookup("#userPic" + userID);
-        userPic.setFill(Color.LIGHTGRAY);
+        Main.UIcontrol.VBoxRoomsUsers.forEach((room, vbox) -> {
+            Circle userPic = (Circle) Main.stage.getScene().lookup("#userPic" + userID);
+            userPic.setFill(Color.LIGHTGRAY);
+        });
+
     }
 }

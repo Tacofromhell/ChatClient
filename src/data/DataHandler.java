@@ -35,6 +35,8 @@ public class DataHandler {
                     receivedRoom(data);
                 } else if (data instanceof User) {
                     receivedUser(data);
+                } else if (data instanceof NetworkMessage.ClientConnect){
+                    receivedClientConnected((NetworkMessage.ClientConnect) data);
                 } else if(data instanceof NetworkMessage.ClientDisconnect) {
                     receivedClientDisconnected((NetworkMessage.ClientDisconnect) data);
                 } else if (data instanceof RoomCreate) {
@@ -76,6 +78,7 @@ public class DataHandler {
     }
 
     private void receivedClientDisconnected(NetworkMessage.ClientDisconnect data) {
+        System.out.println("user disconnected");
         Platform.runLater(() -> Main.UIcontrol.controllerUsers.userDisconnected(data.userId));
     }
 
@@ -101,6 +104,7 @@ public class DataHandler {
 
     private void receivedUserJoinedRoom(String targetRoom, User user) {
         ChatClient.get().getRooms().get(targetRoom).addUserToRoom(user);
+        Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(user, targetRoom));
     }
 
     private void receivedUserLeftRoom(Object data) {
@@ -111,5 +115,14 @@ public class DataHandler {
         NetworkMessage.UserNameChange userNameChange = (UserNameChange) data;
 
         Platform.runLater(() -> Main.UIcontrol.controllerUsers.updateUsername(userNameChange));
+    }
+
+    private void receivedClientConnected(NetworkMessage.ClientConnect event){
+        System.out.println(event);
+        ChatClient.get().getRooms().forEach((roomName, room) -> room.getUsers().forEach(user -> {
+            if(user.getID().equals(event.userId)){
+                user.setOnlineStatus(true);
+            }
+        }));
     }
 }
