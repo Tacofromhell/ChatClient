@@ -5,11 +5,13 @@ import javafx.application.Platform;
 import network.ChatClient;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import data.NetworkMessage.*;
+
 public class DataHandler {
 
     private LinkedBlockingDeque<Object> dataQueue = new LinkedBlockingDeque<>();
 
-    public DataHandler( ) {
+    public DataHandler() {
 
         Thread handleData = new Thread(this::handleDataQueue);
         handleData.setDaemon(true);
@@ -30,18 +32,19 @@ public class DataHandler {
                     receivedMessage(data);
                 } else if (data instanceof Room) {
                     System.out.println("handledata");
-                    receivedUserJoinedRoom(data);
+                    receivedRoom(data);
                 } else if (data instanceof User) {
                     receivedUser(data);
-                } else if (data instanceof NetworkMessage.RoomCreate){
+                } else if (data instanceof RoomCreate) {
 
-                } else if (data instanceof NetworkMessage.RoomDelete){
+                } else if (data instanceof RoomDelete) {
 
-                } else if (data instanceof NetworkMessage.RoomJoin){
+                } else if (data instanceof RoomJoin) {
+                    receivedUserJoinedRoom(((RoomJoin) data).getTargetRoom(), ((RoomJoin) data).getUser());
 
-                } else if (data instanceof NetworkMessage.RoomLeave){
+                } else if (data instanceof RoomLeave) {
 
-                } else if (data instanceof NetworkMessage.UserNameChange) {
+                } else if (data instanceof UserNameChange) {
                     receivedUserChangedName(data);
                 }
             } else {
@@ -54,7 +57,7 @@ public class DataHandler {
         }
     }
 
-    private void receivedMessage(Object data){
+    private void receivedMessage(Object data) {
         System.out.println("Received a: " + data);
         Message incoming = (Message) data;
         //Just for print in terminal
@@ -63,18 +66,24 @@ public class DataHandler {
         //Send incoming message and currentUser to javaFX
         Platform.runLater(() -> Main.UIcontrol.controllerMessages.printMessageFromServer(incoming));}
 
-    private void receivedUser(Object data){
+    private void receivedUser(Object data) {
         System.out.println("Received a: " + data);
         ChatClient.get().setCurrentUser((User) data);
         System.out.println(ChatClient.get().getCurrentUser().getID());
         Platform.runLater(() -> Main.UIcontrol.initRooms());
     }
-    private void receivedClientDisconnected(Object data){}
-    private void receivedRoomCreated(Object data){}
-    private void receivedRoomDeleted(Object data){}
 
-    private void receivedUserJoinedRoom(Object data){
-        System.out.println("RECEIVED ROOM");
+    private void receivedClientDisconnected(Object data) {
+    }
+
+    private void receivedRoomCreated(Object data) {
+    }
+
+    private void receivedRoomDeleted(Object data) {
+    }
+
+    private void receivedRoom(Object data) {
+
         Room room = (Room) data;
         ChatClient.get().addRoom(room);
         // print rooms messages on connection
@@ -86,11 +95,17 @@ public class DataHandler {
             Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(user, room.getRoomName()));
         });
     }
-    private void receivedUserLeftRoom(Object data){}
 
-    private void receivedUserChangedName(Object data){
+    private void receivedUserJoinedRoom(String targetRoom, User user) {
+        ChatClient.get().getRooms().get(targetRoom).addUserToRoom(user);
+    }
+
+    private void receivedUserLeftRoom(Object data) {
+    }
+
+    private void receivedUserChangedName(Object data) {
         System.out.println("User changed name");
-        NetworkMessage.UserNameChange userNameChange = (NetworkMessage.UserNameChange) data;
+        NetworkMessage.UserNameChange userNameChange = (UserNameChange) data;
 
         Platform.runLater(() -> Main.UIcontrol.controllerUsers.updateUsername(userNameChange));
     }
