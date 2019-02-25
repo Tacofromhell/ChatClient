@@ -5,6 +5,7 @@ import data.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatClient {
     private final String HOSTNAME = "localhost";
@@ -17,7 +18,7 @@ public class ChatClient {
     private User currentUser;
     DataHandler dataHandler = new DataHandler();
 
-    private ArrayList<Room> rooms = new ArrayList<>();
+    private ConcurrentHashMap<String, Room> rooms = new ConcurrentHashMap<>();
 
     private ChatClient() {
 
@@ -68,9 +69,6 @@ public class ChatClient {
 
     public void sendMessageToServer(User user, String userInput, String activeRoom) {
 
-        if (!currentUser.getUsername().equals(user.getUsername()))
-            currentUser.setUsername(user.getUsername());
-
         try {
             Message newMessage = new Message(userInput, currentUser, activeRoom);
             dataOut.writeObject(newMessage);
@@ -100,7 +98,7 @@ public class ChatClient {
         return currentUser;
     }
 
-    public ArrayList<Room> getRooms() {
+    public ConcurrentHashMap<String, Room> getRooms() {
         return this.rooms;
     }
 
@@ -130,6 +128,6 @@ public class ChatClient {
     }
 
     public void addRoom(Room room){
-        this.rooms.add(room);
+        this.rooms.putIfAbsent(room.getRoomName(), room);
     }
 }

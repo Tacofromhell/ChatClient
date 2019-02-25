@@ -88,8 +88,6 @@ public class DataHandler {
         System.out.println("User changed name");
         NetworkMessage.UserNameChange userNameChange = (NetworkMessage.UserNameChange) data;
 
-
-
         Platform.runLater(() -> Main.UIcontrol.updateUsername(userNameChange));
     }
 }
