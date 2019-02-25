@@ -11,7 +11,7 @@ public class Room implements Serializable {
     private String roomName;
     private int roomSize;
     private LinkedBlockingDeque<Message> messages = new LinkedBlockingDeque<>();
-    private ArrayList<User> users = new ArrayList<>();
+    private CopyOnWriteArrayList<User> users = new CopyOnWriteArrayList<>();
 
 
     public Room(String name, int roomSize) {
@@ -34,7 +34,7 @@ public class Room implements Serializable {
         return messages;
     }
 
-    public ArrayList<User> getUsers() {
+    public CopyOnWriteArrayList<User> getUsers() {
         return users;
     }
 
