@@ -128,6 +128,6 @@ public class DataHandler {
                 user.setOnlineStatus(true);
             }
         }));
-        Platform.runLater(() -> Main.UIcontrol.controllerUsers.userConnnected(event.userId));
+        Platform.runLater(() -> Main.UIcontrol.controllerUsers.userConnected(event.userId));
     }
 }

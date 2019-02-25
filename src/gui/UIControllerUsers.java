@@ -66,7 +66,7 @@ public class UIControllerUsers extends chatUIcontroller{
 
     }
 
-    public void userConnnected(String userID){
+    public void userConnected(String userID){
         //Hitta cirkeln till användaren som anslöt och byt färg på den
 
         if(!ChatClient.get().getCurrentUser().getID().equals(userID)) {
