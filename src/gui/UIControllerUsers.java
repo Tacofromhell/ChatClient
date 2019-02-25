@@ -65,4 +65,14 @@ public class UIControllerUsers extends chatUIcontroller{
         });
 
     }
+
+    public void userConnnected(String userID){
+        //Hitta cirkeln till användaren som anslöt och byt färg på den
+
+        Main.UIcontrol.VBoxRoomsUsers.forEach((room, vbox) -> {
+            Circle userPic = (Circle) Main.stage.getScene().lookup("#userPic" + userID);
+            userPic.setFill(Color.GREEN);
+        });
+
+    }
 }

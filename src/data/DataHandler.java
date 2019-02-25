@@ -79,6 +79,11 @@ public class DataHandler {
 
     private void receivedClientDisconnected(NetworkMessage.ClientDisconnect data) {
         System.out.println("user disconnected");
+        ChatClient.get().getRooms().forEach((roomName, room) -> room.getUsers().forEach(user -> {
+            if(user.getID().equals(data.userId)){
+                user.setOnlineStatus(false);
+            }
+        }));
         Platform.runLater(() -> Main.UIcontrol.controllerUsers.userDisconnected(data.userId));
     }
 
@@ -118,11 +123,11 @@ public class DataHandler {
     }
 
     private void receivedClientConnected(NetworkMessage.ClientConnect event){
-        System.out.println(event);
         ChatClient.get().getRooms().forEach((roomName, room) -> room.getUsers().forEach(user -> {
             if(user.getID().equals(event.userId)){
                 user.setOnlineStatus(true);
             }
         }));
+        Platform.runLater(() -> Main.UIcontrol.controllerUsers.userConnected(event.userId));
     }
 }
