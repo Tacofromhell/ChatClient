@@ -35,10 +35,10 @@ public class DataHandler {
                     receivedRoom(data);
                 } else if (data instanceof User) {
                     receivedUser(data);
-                } else if (data instanceof NetworkMessage.ClientConnect){
-                    receivedClientConnected((NetworkMessage.ClientConnect) data);
-                } else if(data instanceof NetworkMessage.ClientDisconnect) {
-                    receivedClientDisconnected((NetworkMessage.ClientDisconnect) data);
+                } else if (data instanceof ClientConnect){
+                    receivedClientConnected((ClientConnect) data);
+                } else if(data instanceof ClientDisconnect) {
+                    receivedClientDisconnected((ClientDisconnect) data);
                 } else if (data instanceof RoomCreate) {
 
                 } else if (data instanceof RoomDelete) {
