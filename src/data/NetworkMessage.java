@@ -45,7 +45,7 @@ public class NetworkMessage implements Serializable {
             }
         }
 
-    public static class UserNameChange implements Serializable{
+        public static class UserNameChange implements Serializable{
         String newName;
         String userId;
 

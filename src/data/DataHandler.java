@@ -61,7 +61,7 @@ public class DataHandler {
         String msg = incoming.getRoom() + ": " + incoming.getTimestamp() + " | " + incoming.getUser().getUsername() + ":  " + incoming.getMsg();
         System.out.println(msg);
         //Send incoming message and currentUser to javaFX
-        Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(incoming));}
+        Platform.runLater(() -> Main.controllerMessages.printMessageFromServer(incoming));}
 
     private void receivedUser(Object data){
         System.out.println("Received a: " + data);
@@ -80,7 +80,7 @@ public class DataHandler {
         // print rooms messages on connection
         room.getMessages()
                 .forEach(msg ->
-                        Platform.runLater(() -> Main.UIcontrol.printMessageFromServer(msg)));
+                        Platform.runLater(() -> Main.controllerMessages.printMessageFromServer(msg)));
     }
     private void receivedUserLeftRoom(Object data){}
 
@@ -88,8 +88,6 @@ public class DataHandler {
         System.out.println("User changed name");
         NetworkMessage.UserNameChange userNameChange = (NetworkMessage.UserNameChange) data;
 
-
-
-        Platform.runLater(() -> Main.UIcontrol.updateUsername(userNameChange));
+        Platform.runLater(() -> Main.controllerUsers.updateUsername(userNameChange));
     }
 }
