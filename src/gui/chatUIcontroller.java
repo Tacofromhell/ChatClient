@@ -175,15 +175,24 @@ public class chatUIcontroller {
         onlineUser.setStyle("-fx-alignment: CENTER_LEFT");
         Circle userPic;
 
+        Label userName = new Label(user.getUsername());
+
+
         if (ChatClient.get().getCurrentUser().getID().equals(user.getID())) {
+            userPic = new Circle(7, Color.BLUE);
+            userName.setStyle("-fx-text-fill: blue;" +
+                    "-fx-pref-width: 100px;");
+        } else if(user.getOnlineStatus()) {
             userPic = new Circle(7, Color.GREEN);
-        } else {
-            userPic = new Circle(7, Color.LIGHTGRAY);
+            userName.setStyle("-fx-text-fill: black;" +
+                    "-fx-pref-width: 100px;");
+        } else{
+            userPic = new Circle(7, Color.GRAY);
+            userName.setStyle("-fx-text-fill: black;" +
+                    "-fx-pref-width: 100px;");
         }
 
-        Label userName = new Label(user.getUsername());
-        userName.setStyle("-fx-text-fill: black;" +
-                "-fx-pref-width: 100px;");
+
 
         onlineUser.getChildren().addAll(userPic, userName);
         onlineUser.setMargin(userPic, new Insets(5, 0, 5, 3));
@@ -200,7 +209,8 @@ public class chatUIcontroller {
             VBoxRoomsUsers.get(room.getRoomName()).getChildren().clear();
 
             room.getUsers().stream()
-                    .filter(user -> user.getOnlineStatus() == true)
+                    //.filter(user -> user.getOnlineStatus() == true)
+                    .sorted((o1, o2)-> Boolean.compare(o2.getUser().getOfflineStatus(), o1.getUser().getOnlineStatus()))
                     .peek(user -> System.out.println("Username: " + user.getUsername()))
                     .forEach(user -> {
 //                        ChatClient.get().sendUserToServer();
