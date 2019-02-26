@@ -1,12 +1,15 @@
 package gui;
 
+import data.NetworkMessage;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import network.ChatClient;
+import network.SocketStreamHelper;
 
 public class UIControllerRooms extends chatUIcontroller {
     HBox roomButtonsHolder;
@@ -22,16 +25,51 @@ public class UIControllerRooms extends chatUIcontroller {
         ChatClient.get().getCurrentUser().setActiveRoom(room);
     }
 
+    public void addRoomContent(String room) {
+        // add placeholder for messages
+        VBox VBoxMessages = new VBox();
+        VBoxMessages.setId(room);
+        Main.UIcontrol.VBoxRoomsMessages.putIfAbsent(room, VBoxMessages);
+
+        // add placeholder for users
+        VBox VBoxUsers = new VBox();
+        VBoxUsers.setId(room);
+        Main.UIcontrol.VBoxRoomsUsers.putIfAbsent(room, VBoxUsers);
+    }
+
     public void printNewJoinedRoom(String room) {
+        System.out.println("print new room");
+
+        addRoomContent(room);
+
         Button b = new Button(room);
         b.setId(room);
         b.setStyle("-fx-background-color: lightgray");
         b.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
-            this.roomButtonsHolder.getChildren().forEach(roomCircle -> roomCircle.setStyle("-fx-background-color: lightgray"));
-            b.setStyle("-fx-background-color: lightseagreen");
-            controllerRooms.switchContent(b.getId());
+            if (e.getButton() == MouseButton.SECONDARY) {
+                Main.UIcontrol.tooltip.show(b, e.getScreenX(), e.getScreenY());
+            } else {
+                this.roomButtonsHolder.getChildren().forEach(roomCircle ->
+                        roomCircle.setStyle("-fx-background-color: lightgray"));
+                b.setStyle("-fx-background-color: lightseagreen");
+                switchContent(b.getId());
+            }
         });
+
         roomButtons.putIfAbsent(room, b);
         this.roomButtonsHolder.getChildren().add(b);
+    }
+
+    public void printNewPublicRoom(String room) {
+        System.out.println("print public room");
+        MenuItem newRoom = new MenuItem(room);
+        newRoom.setId(room);
+        newRoom.setOnAction(e -> {
+            SocketStreamHelper.sendData(
+                    new NetworkMessage.RoomJoin(newRoom.getId(), ChatClient.get().getCurrentUser(), null),
+                    ChatClient.get().getDataOut());
+            switchContent(room);
+        });
+        Main.UIcontrol.publicRooms.getItems().add(newRoom);
     }
 }
