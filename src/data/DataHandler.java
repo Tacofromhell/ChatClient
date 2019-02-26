@@ -28,16 +28,22 @@ public class DataHandler {
 
                 if (data instanceof Message) {
                     helper.receivedMessage(data);
+
                 } else if (data instanceof Room) {
                     System.out.println("handledata");
                     helper.receivedRoom(data);
+
                 } else if (data instanceof User) {
                     helper.receivedUser(data);
+
                 } else if (data instanceof ClientConnect) {
                     helper.receivedClientConnected((ClientConnect) data);
+
                 } else if (data instanceof ClientDisconnect) {
                     helper.receivedClientDisconnected((ClientDisconnect) data);
+
                 } else if (data instanceof RoomCreate) {
+                    helper.receivedRoomCreated((RoomCreate) data);
 
                 } else if (data instanceof RoomDelete) {
 

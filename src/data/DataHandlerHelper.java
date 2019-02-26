@@ -3,6 +3,7 @@ package data;
 import gui.Main;
 import javafx.application.Platform;
 import network.ChatClient;
+import network.SocketStreamHelper;
 
 public class DataHandlerHelper {
 
@@ -36,7 +37,8 @@ public class DataHandlerHelper {
         Platform.runLater(() -> Main.UIcontrol.controllerUsers.userDisconnected(data.userId));
     }
 
-    public void receivedRoomCreated(Object data) {
+    public void receivedRoomCreated(NetworkMessage.RoomCreate data) {
+             Platform.runLater(() -> Main.UIcontrol.controllerRooms.printNewJoinedRoom(data.getRoomName()));
     }
 
     public void receivedRoomDeleted(Object data) {
@@ -47,9 +49,8 @@ public class DataHandlerHelper {
         Room room = (Room) data;
         ChatClient.get().addRoom(room);
         // print rooms messages on connection
-        room.getMessages()
-                .forEach(msg ->
-                        Platform.runLater(() -> Main.UIcontrol.controllerMessages.printMessageFromServer(msg)));
+        room.getMessages().forEach(msg ->
+                Platform.runLater(() -> Main.UIcontrol.controllerMessages.printMessageFromServer(msg)));
 
         room.getUsers().values().forEach(user -> {
             Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(user, room.getRoomName()));

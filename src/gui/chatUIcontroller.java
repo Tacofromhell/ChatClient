@@ -30,10 +30,11 @@ public class chatUIcontroller {
 
     public Map<String, VBox> VBoxRoomsMessages = new HashMap<>();
     public Map<String, VBox> VBoxRoomsUsers = new HashMap<>();
+    public Map<String, Button> roomButtons = new HashMap<>();
 
-    public static UIControllerMessages controllerMessages = new UIControllerMessages();
-    public static UIControllerRooms controllerRooms = new UIControllerRooms();
-    public static UIControllerUsers controllerUsers = new UIControllerUsers();
+    public static UIControllerMessages controllerMessages;
+    public static UIControllerRooms controllerRooms;
+    public static UIControllerUsers controllerUsers;
 
     @FXML
     HBox roomButtonsHolder;
@@ -50,9 +51,23 @@ public class chatUIcontroller {
 
 
     public void initialize() {
+        controllerUsers = new UIControllerUsers();
+        controllerRooms = new UIControllerRooms(roomButtonsHolder);
+        controllerMessages = new UIControllerMessages();
     }
 
     public void initRooms() {
+
+        Button addRoomButton = new Button("+");
+        addRoomButton.setId("addRoom");
+        addRoomButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
+            // TODO: add room
+            SocketStreamHelper.sendData(
+                    new NetworkMessage.RoomCreate("test", true),
+                    ChatClient.get().getDataOut());
+        });
+        roomButtonsHolder.getChildren().add(addRoomButton);
+
         for (String room : ChatClient.get().getCurrentUser().getJoinedRooms()) {
             VBox tempMsg = new VBox();
             tempMsg.setId(room);
@@ -61,15 +76,8 @@ public class chatUIcontroller {
             tempUsr.setId(room);
             VBoxRoomsUsers.putIfAbsent(room, tempUsr);
 
+            controllerRooms.printNewJoinedRoom(room);
 
-            Button b = new Button(room);
-            b.setId(room);
-            b.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
-                roomButtonsHolder.getChildren().forEach(roomCircle -> roomCircle.setStyle("-fx-background-color: lightgray"));
-                b.setStyle("-fx-background-color: lightseagreen");
-                controllerRooms.switchContent(b.getId());
-            });
-            roomButtonsHolder.getChildren().add(b);
         }
         roomButtonsHolder.getChildren().forEach(roomButton -> {
             if (roomButton.getId().equals(ChatClient.get().getCurrentUser().getActiveRoom())) {
