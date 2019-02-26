@@ -2,6 +2,7 @@ package data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -11,7 +12,7 @@ public class Room implements Serializable {
     private String roomName;
     private int roomSize;
     private LinkedBlockingDeque<Message> messages = new LinkedBlockingDeque<>();
-    private CopyOnWriteArrayList<User> users = new CopyOnWriteArrayList<>();
+    private ConcurrentHashMap<String, User> users = new ConcurrentHashMap<>();
 
 
     public Room(String name, int roomSize) {
@@ -25,7 +26,7 @@ public class Room implements Serializable {
 
     public void addUserToRoom(User user) {
         if (users.size() < roomSize + 1)
-            users.add(user);
+            users.putIfAbsent(user.getID(), user);
         else
             System.err.println("Room: " + roomName + " is full");
     }
@@ -34,7 +35,7 @@ public class Room implements Serializable {
         return messages;
     }
 
-    public CopyOnWriteArrayList<User> getUsers() {
+    public ConcurrentHashMap<String, User> getUsers() {
         return users;
     }
 
