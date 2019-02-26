@@ -11,6 +11,8 @@ import javafx.scene.layout.VBox;
 import network.ChatClient;
 import network.SocketStreamHelper;
 
+import java.util.Set;
+
 public class UIControllerRooms extends chatUIcontroller {
     HBox roomButtonsHolder;
 
@@ -23,6 +25,21 @@ public class UIControllerRooms extends chatUIcontroller {
         Main.UIcontrol.scrollUsers.setContent(Main.UIcontrol.VBoxRoomsUsers.get(room));
 
         ChatClient.get().getCurrentUser().setActiveRoom(room);
+    }
+
+    public void activeRoomColor(String activeRoom) {
+
+//            this.roomButtonsHolder.getChildren().forEach(room -> {
+//                if (room.getId().equals(activeRoom))
+//                    room.setStyle("-fx-background-color: lightseagreen");
+//            });
+
+//        Set<Button> prevRoomButton = (Set) this.roomButtonsHolder.lookupAll("#");
+//        prevRoomButton.forEach(button ->
+//                button.setStyle("-fx-background-color: lightgray"));
+
+        Button roomButton = (Button) this.roomButtonsHolder.lookup("#" + activeRoom);
+        roomButton.setStyle("-fx-background-color: lightseagreen");
     }
 
     public void addRoomContent(String room) {
@@ -38,8 +55,6 @@ public class UIControllerRooms extends chatUIcontroller {
     }
 
     public void printNewJoinedRoom(String room) {
-        System.out.println("print new room");
-
         addRoomContent(room);
 
         Button b = new Button(room);
@@ -61,13 +76,15 @@ public class UIControllerRooms extends chatUIcontroller {
     }
 
     public void printNewPublicRoom(String room) {
-        System.out.println("print public room");
         MenuItem newRoom = new MenuItem(room);
         newRoom.setId(room);
         newRoom.setOnAction(e -> {
             SocketStreamHelper.sendData(
                     new NetworkMessage.RoomJoin(newRoom.getId(), ChatClient.get().getCurrentUser(), null),
                     ChatClient.get().getDataOut());
+
+            // removes when user joins
+            Main.UIcontrol.publicRooms.getItems().remove(newRoom);
             switchContent(room);
         });
         Main.UIcontrol.publicRooms.getItems().add(newRoom);

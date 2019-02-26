@@ -71,7 +71,11 @@ public class chatUIcontroller {
         addRoomButton.setStyle("-fx-background-color: lightgray");
         addRoomButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
             // TODO: add room
-            controllerRooms.printNewPublicRoom(newRoom.getText());
+//            controllerRooms.printNewJoinedRoom(newRoom.getText());
+
+//            SocketStreamHelper.sendData(
+//                    new NetworkMessage.RoomJoin(newRoom.getId(), ChatClient.get().getCurrentUser(), null),
+//                    ChatClient.get().getDataOut());
 
             SocketStreamHelper.sendData(
                     new NetworkMessage.RoomCreate(newRoom.getText(), true),

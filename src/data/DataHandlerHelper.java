@@ -25,7 +25,6 @@ public class DataHandlerHelper {
         ChatClient.get().startAutoUpdatingActiveRoom();
 
         System.out.println(ChatClient.get().getCurrentUser().getID());
-//        Platform.runLater(() -> Main.UIcontrol.initRooms());
     }
 
     public void receivedClientDisconnected(NetworkMessage.ClientDisconnect data) {
@@ -39,8 +38,7 @@ public class DataHandlerHelper {
     }
 
     public void receivedRoomCreated(NetworkMessage.RoomCreate data) {
-        if (!Main.UIcontrol.publicRooms.getItems().contains(data.getRoomName()))
-            Platform.runLater(() -> Main.UIcontrol.controllerRooms.printNewPublicRoom(data.getRoomName()));
+        Platform.runLater(() -> Main.UIcontrol.controllerRooms.printNewPublicRoom(data.getRoomName()));
     }
 
     public void receivedRoomDeleted(Object data) {
@@ -51,12 +49,8 @@ public class DataHandlerHelper {
         Room room = (Room) data;
         ChatClient.get().addRoom(room);
         // print rooms messages on connection
-//        room.getMessages().forEach(msg ->
-//                Platform.runLater(() -> Main.UIcontrol.controllerMessages.printMessageFromServer(msg)));
-//
-//        room.getUsers().values().forEach(user -> {
-//            Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(user, room.getRoomName()));
-//        });
+
+//        printDataToRooms(room);
     }
 
     public void receivedUserJoinedRoom(String targetRoom, User user, Room room) {
@@ -69,21 +63,21 @@ public class DataHandlerHelper {
 
             Platform.runLater(() -> Main.UIcontrol.controllerRooms.printNewJoinedRoom(targetRoom));
 
-            room.getMessages().forEach(msg ->
-                    Platform.runLater(() -> Main.UIcontrol.controllerMessages.printMessageFromServer(msg)));
+            printDataToRooms(room);
 
-            room.getUsers().values().forEach(u -> {
-                Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(u, targetRoom));
-            });
+            // TODO: highlight active room color
+            Platform.runLater(() -> Main.UIcontrol.controllerRooms.activeRoomColor(targetRoom));
 
             // switch room when joining
             Platform.runLater(() -> Main.UIcontrol.controllerRooms.switchContent(targetRoom));
+
 
         } else {
             ChatClient.get().getRooms().get(targetRoom).addUserToRoom(user);
             Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(user, targetRoom));
         }
 
+        // need to init rooms at correct lifecycle hook
         if (!firstLogin) {
             Platform.runLater(() -> Main.UIcontrol.initRooms());
             firstLogin = true;
@@ -108,4 +102,14 @@ public class DataHandlerHelper {
         }));
         Platform.runLater(() -> Main.UIcontrol.controllerUsers.userConnected(event.userId));
     }
+
+    public void printDataToRooms(Room room) {
+        room.getMessages().forEach(msg ->
+                Platform.runLater(() -> Main.UIcontrol.controllerMessages.printMessageFromServer(msg)));
+
+        room.getUsers().values().forEach(u -> {
+            Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(u, room.getRoomName()));
+        });
+    }
+
 }
