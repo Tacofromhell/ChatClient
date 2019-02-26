@@ -19,6 +19,7 @@ import network.ChatClient;
 import data.Message;
 import data.Room;
 import data.User;
+import network.SocketStreamHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +47,6 @@ public class chatUIcontroller {
     TextField newUsername;
     @FXML
     Button sendMessage;
-
 
 
     public void initialize() {
@@ -89,11 +89,10 @@ public class chatUIcontroller {
 
     }
 
-
     public void sendMessageButton() {
 //        send input string to network method in ChatClient
         if (userInputNewMessage.getText().trim().length() > 0)
-            ChatClient.get().sendMessageToServer(ChatClient.get().getCurrentUser(), userInputNewMessage.getText(), ChatClient.get().getCurrentUser().getActiveRoom());
+            ChatClient.get().sendMessageToServer(userInputNewMessage.getText(), ChatClient.get().getCurrentUser().getActiveRoom());
 
         userInputNewMessage.setText("");
     }
@@ -101,10 +100,7 @@ public class chatUIcontroller {
     public void sendMessageEnter(KeyEvent key) {
         if (key.getCode().equals(KeyCode.ENTER)) {
 //            send input string to network method in ChatClient
-            if (userInputNewMessage.getText().trim().length() > 0)
-                ChatClient.get().sendMessageToServer(ChatClient.get().getCurrentUser(), userInputNewMessage.getText(), ChatClient.get().getCurrentUser().getActiveRoom());
-
-            userInputNewMessage.setText("");
+            sendMessageButton();
         }
     }
 
@@ -112,16 +108,12 @@ public class chatUIcontroller {
         if (newUsername.getText().trim().length() > 0) {
             ChatClient.get().getCurrentUser().setUsername(newUsername.getText());
             System.out.println("Changed username to: " + ChatClient.get().getCurrentUser().getUsername());
-            ChatClient.get().sendEventToServer(
+            SocketStreamHelper.sendData(
                     new NetworkMessage.UserNameChange(
                             ChatClient.get().getCurrentUser().getUsername(),
-                            ChatClient.get().getCurrentUser().getID()));
+                            ChatClient.get().getCurrentUser().getID()), ChatClient.get().getDataOut());
 
-//            updateUserList();
-
-//            ChatClient.get().sendUserToServer();
         }
-
         newUsername.setText("");
     }
 

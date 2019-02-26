@@ -26,7 +26,7 @@ public class ChatClient {
             //TODO: add setSoTimeout()
             System.out.println("Connected");
             initObjectStreams();
-            emitToServer(new NetworkMessage.ClientConnect("connecting client test"));
+            SocketStreamHelper.sendData(new NetworkMessage.ClientConnect("connecting client test"), dataOut);
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
             System.exit(1);
@@ -42,6 +42,7 @@ public class ChatClient {
         try {
             dataOut = new ObjectOutputStream(socket.getOutputStream());
             dataIn = new ObjectInputStream(socket.getInputStream());
+
             Thread monitorIncoming = new Thread(this::monitorIncomingData);
             monitorIncoming.setDaemon(true);
             monitorIncoming.start();
@@ -54,38 +55,25 @@ public class ChatClient {
 
     void monitorIncomingData() {
         while (running) {
-            try {
-               dataHandler.addToQueue(dataIn.readObject());
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-                System.err.println("Object not found");
-            } catch (IOException ioe) {
-                System.out.println("Socket is closed");
-                running = false;
-            }
+            dataHandler.addToQueue(SocketStreamHelper.receiveData(dataIn));
         }
     }
 
-    public void sendMessageToServer(User user, String userInput, String activeRoom) {
-        try {
-            Message newMessage = new Message(userInput, currentUser, activeRoom);
-            dataOut.writeObject(newMessage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void sendUserToServer() {
-        try {
-            dataOut.reset();
-            dataOut.writeObject(currentUser);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void sendMessageToServer(String userInput, String activeRoom) {
+        Message newMessage = new Message(userInput, currentUser, activeRoom);
+        SocketStreamHelper.sendData(newMessage, dataOut);
     }
 
     public static ChatClient get() {
         return singleton;
+    }
+
+    public void startAutoUpdatingActiveRoom(){
+        // starts auto updating active room
+        UpdateActiveRoom updateActiveRoom = new UpdateActiveRoom();
+        Thread updateActiveRoomThread = new Thread(updateActiveRoom);
+        updateActiveRoomThread.setDaemon(true);
+        updateActiveRoomThread.start();
     }
 
     public Socket getSocket() {
@@ -100,32 +88,19 @@ public class ChatClient {
         return this.rooms;
     }
 
-    public void sendEventToServer(Object event) {
-        try {
-            dataOut.reset();
-            dataOut.writeObject(event);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void emitToServer(Object o){
-        try {
-            dataOut.writeObject(o);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public ObjectOutputStream getDataOut() {
+        return dataOut;
     }
 
     public void closeThreads() {
         running = false;
     }
 
-    public void setCurrentUser(User user){
+    public void setCurrentUser(User user) {
         this.currentUser = user;
     }
 
-    public void addRoom(Room room){
+    public void addRoom(Room room) {
         this.rooms.putIfAbsent(room.getRoomName(), room);
     }
 }

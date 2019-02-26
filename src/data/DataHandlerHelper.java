@@ -19,6 +19,9 @@ public class DataHandlerHelper {
     public void receivedUser(Object data) {
         System.out.println("Received a: " + data);
         ChatClient.get().setCurrentUser((User) data);
+
+        ChatClient.get().startAutoUpdatingActiveRoom();
+
         System.out.println(ChatClient.get().getCurrentUser().getID());
         Platform.runLater(() -> Main.UIcontrol.initRooms());
     }
