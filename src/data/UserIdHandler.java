@@ -8,8 +8,7 @@ import java.nio.file.Paths;
 
 public class UserIdHandler{
 
-
-    private static Path path = Paths.get("./storage/userId.txt");
+    private static Path path = Paths.get("src/storage/userId.txt");
     private static String userId;
 
     public UserIdHandler(){}
@@ -18,7 +17,7 @@ public class UserIdHandler{
 
     public static void writeUserId(String userId){
 
-        try {
+        try {   //Write to file. Will create file if it does not already exist.
             Files.write(path, userId.getBytes(StandardCharsets.UTF_8));
             System.out.println("Writing user ID to " + path.toString());
         }
