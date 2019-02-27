@@ -28,31 +28,40 @@ public class DataHandler {
 
                 if (data instanceof Message) {
                     helper.receivedMessage(data);
-                } else if (data instanceof Room) {
+                }
+                else if (data instanceof Room) {
                     System.out.println("handledata");
                     helper.receivedRoom(data);
-                } else if (data instanceof User) {
+                }
+                else if (data instanceof User) {
                     helper.receivedUser(data);
-                } else if (data instanceof ClientConnect) {
+                }
+                else if (data instanceof ClientConnect) {
                     helper.receivedClientConnected((ClientConnect) data);
-                } else if (data instanceof ClientDisconnect) {
+                }
+                else if (data instanceof ClientDisconnect) {
                     helper.receivedClientDisconnected((ClientDisconnect) data);
-                } else if (data instanceof RoomCreate) {
+                }
+                else if (data instanceof RoomCreate) {
 
-                } else if (data instanceof RoomDelete) {
+                }
+                else if (data instanceof RoomDelete) {
 
-                } else if (data instanceof RoomJoin) {
+                }
+                else if (data instanceof RoomJoin) {
                     helper.receivedUserJoinedRoom(((RoomJoin) data).getTargetRoom(), ((RoomJoin) data).getUser());
 
-                } else if (data instanceof RoomLeave) {
+                }
+                else if (data instanceof RoomLeave) {
 
-                } else if (data instanceof UserNameChange) {
+                }
+                else if (data instanceof UserNameChange) {
                     helper.receivedUserChangedName(data);
                 }
-            } else {
-                try {
+                } else {
+                    try {
                     Thread.sleep(200);
-                } catch (InterruptedException e) {
+                    } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
