@@ -47,8 +47,6 @@ public class UIControllerUsers extends chatUIcontroller {
         //Går igenom rum och ändrar namn i användarlistan
         Label userNameLabel = (Label) Main.UIcontrol.VBoxRoomsUsers.get(roomName).lookup("#" + event.getUserId());
         userNameLabel.setText(event.getNewName());
-
-
     }
 
     public void userDisconnected(String roomName, String userID) {
