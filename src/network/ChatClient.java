@@ -5,6 +5,7 @@ import data.*;
 import java.io.*;
 import java.net.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.FileHandler;
 
 public class ChatClient {
     private final String HOSTNAME = "localhost";
@@ -102,6 +103,7 @@ public class ChatClient {
 
     public void setCurrentUser(User user) {
         this.currentUser = user;
+        UserIdHandler.writeUserId(currentUser.getID());
     }
 
     public void addRoom(Room room) {

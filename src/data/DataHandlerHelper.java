@@ -20,6 +20,7 @@ public class DataHandlerHelper {
         System.out.println("Received a: " + data);
         ChatClient.get().setCurrentUser((User) data);
 
+
         ChatClient.get().startAutoUpdatingActiveRoom();
 
         System.out.println(ChatClient.get().getCurrentUser().getID());

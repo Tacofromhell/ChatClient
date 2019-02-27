@@ -16,10 +16,11 @@ public class UserIdHandler{
 
     public static String getUserId() { return userId;}
 
-    public void writeUserId(String userId){
+    public static void writeUserId(String userId){
 
         try {
             Files.write(path, userId.getBytes(StandardCharsets.UTF_8));
+            System.out.println("Writing user ID to " + path.toString());
         }
         catch (IOException e){
             e.printStackTrace();
@@ -32,7 +33,7 @@ public class UserIdHandler{
             userId = Files.lines(path).toString();
         }
         catch (IOException e){
-            System.out.println("UserId not found: Generic user will be created.");
+            System.out.println("UserId not found: Generic user will be created by server.");
         }
         return userId;
     }
