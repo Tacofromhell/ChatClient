@@ -34,7 +34,12 @@ public class DataHandlerHelper {
                 user.setOnlineStatus(false);
             }
         }));
-        Platform.runLater(() -> Main.UIcontrol.controllerUsers.userDisconnected(data.userId));
+        for (Room room : ChatClient.get().getRooms().values()) {
+            room.getUsers().values().stream()
+                    .filter(user -> user.getID().equals(data.userId))
+                    .forEach(user ->
+                            Platform.runLater(() -> Main.UIcontrol.controllerUsers.userDisconnected(room.getRoomName(), data.userId)));
+        }
     }
 
     public void receivedRoomCreated(NetworkMessage.RoomCreate data) {
@@ -91,7 +96,12 @@ public class DataHandlerHelper {
         System.out.println("User changed name");
         NetworkMessage.UserNameChange userNameChange = (NetworkMessage.UserNameChange) data;
 
-        Platform.runLater(() -> Main.UIcontrol.controllerUsers.updateUsername(userNameChange));
+        for (Room room : ChatClient.get().getRooms().values()) {
+            room.getUsers().values().stream()
+                    .filter(user -> user.getID().equals(userNameChange.getUserId()))
+                    .forEach(user -> Platform.runLater(() ->
+                            Main.UIcontrol.controllerUsers.updateUsername(room.getRoomName(), userNameChange)));
+        }
     }
 
     public void receivedClientConnected(NetworkMessage.ClientConnect event) {
@@ -100,7 +110,13 @@ public class DataHandlerHelper {
                 user.setOnlineStatus(true);
             }
         }));
-        Platform.runLater(() -> Main.UIcontrol.controllerUsers.userConnected(event.userId));
+
+        for (Room room : ChatClient.get().getRooms().values()) {
+            room.getUsers().values().stream()
+                    .filter(user -> user.getID().equals(event.userId))
+                    .forEach(user ->
+                            Platform.runLater(() -> Main.UIcontrol.controllerUsers.userConnected(room.getRoomName(), event.userId)));
+        }
     }
 
     public void printDataToRooms(Room room) {
