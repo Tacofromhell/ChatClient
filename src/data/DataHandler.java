@@ -42,15 +42,20 @@ public class DataHandler {
                 } else if (data instanceof ClientDisconnect) {
                     helper.receivedClientDisconnected((ClientDisconnect) data);
 
+                } else if (data instanceof RoomNameExists) {
+                    helper.receivedRoomNameExists();
+
                 } else if (data instanceof RoomCreate) {
                     helper.receivedRoomCreated((RoomCreate) data);
 
                 } else if (data instanceof RoomDelete) {
+                    helper.receivedRoomDeleted((RoomDelete) data);
 
                 } else if (data instanceof RoomJoin) {
                     helper.receivedUserJoinedRoom(((RoomJoin) data).getTargetRoom(), ((RoomJoin) data).getUser(), ((RoomJoin) data).getRoom());
 
                 } else if (data instanceof RoomLeave) {
+                    helper.receivedUserLeftRoom((RoomLeave) data);
 
                 } else if (data instanceof UserNameChange) {
                     helper.receivedUserChangedName(data);

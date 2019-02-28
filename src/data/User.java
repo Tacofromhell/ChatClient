@@ -34,6 +34,11 @@ public class User implements Serializable {
             joinedRooms.add(roomName);
     }
 
+    public void removeJoinedRoom(String roomName) {
+        if (joinedRooms.contains(roomName))
+            joinedRooms.remove(roomName);
+    }
+
     public String getActiveRoom() {
         return activeRoom;
     }
@@ -58,15 +63,15 @@ public class User implements Serializable {
         this.username = username;
     }
 
-    public String getID(){
+    public String getID() {
         return this.ID;
     }
 
-    public void setOnlineStatus(boolean onlineStatus){
+    public void setOnlineStatus(boolean onlineStatus) {
         this.onlineStatus = onlineStatus;
     }
 
-    public boolean getOnlineStatus(){
+    public boolean getOnlineStatus() {
         return this.onlineStatus;
     }
 }//class end

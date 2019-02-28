@@ -1,7 +1,6 @@
 package gui;
 
 import data.NetworkMessage;
-import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import javafx.scene.input.MouseButton;
@@ -27,19 +26,11 @@ public class UIControllerRooms extends chatUIcontroller {
         ChatClient.get().getCurrentUser().setActiveRoom(room);
     }
 
-    public void activeRoomColor(String activeRoom, String lastRoom) {
+    public void activeRoomColor(String activeRoom) {
 
-//            this.roomButtonsHolder.getChildren().forEach(room -> {
-//                if (room.getId().equals(activeRoom))
-//                    room.setStyle("-fx-background-color: lightseagreen");
-//            });
-
-//        Set<Button> prevRoomButton = (Set) this.roomButtonsHolder.lookupAll("#");
-//        prevRoomButton.forEach(button ->
-//                button.setStyle("-fx-background-color: lightgray"));
-
-        Button lastRoomButton = (Button) this.roomButtonsHolder.lookup("#" + lastRoom);
-        lastRoomButton.setStyle("-fx-background-color: lightgray");
+        for (var lastRoom : this.roomButtonsHolder.getChildren()) {
+            lastRoom.setStyle("-fx-background-color: lightgray");
+        }
 
         Button roomButton = (Button) this.roomButtonsHolder.lookup("#" + activeRoom);
         roomButton.setStyle("-fx-background-color: lightseagreen");
@@ -65,7 +56,8 @@ public class UIControllerRooms extends chatUIcontroller {
         b.setStyle("-fx-background-color: lightgray");
         b.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
             if (e.getButton() == MouseButton.SECONDARY) {
-                Main.UIcontrol.tooltip.show(b, e.getScreenX(), e.getScreenY());
+                if (!b.getId().equals("general"))
+                    Main.UIcontrol.tooltip.show(b, e.getScreenX(), e.getScreenY());
             } else {
                 this.roomButtonsHolder.getChildren().forEach(roomCircle ->
                         roomCircle.setStyle("-fx-background-color: lightgray"));
@@ -87,9 +79,22 @@ public class UIControllerRooms extends chatUIcontroller {
                     ChatClient.get().getDataOut());
 
             // removes when user joins
-            Main.UIcontrol.publicRooms.getItems().remove(newRoom);
+            removePublicRoom(room);
             switchContent(room);
         });
         Main.UIcontrol.publicRooms.getItems().add(newRoom);
+    }
+
+    @SuppressWarnings("all")
+    public void removePublicRoom(String targetRoom) {
+        MenuItem item = null;
+
+        for (MenuItem room : Main.UIcontrol.publicRooms.getItems()) {
+            if (room.getId().equals(targetRoom)) {
+                item = room;
+            }
+        }
+
+        Main.UIcontrol.publicRooms.getItems().remove(item);
     }
 }

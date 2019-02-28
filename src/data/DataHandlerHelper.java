@@ -3,7 +3,6 @@ package data;
 import gui.Main;
 import javafx.application.Platform;
 import network.ChatClient;
-import network.SocketStreamHelper;
 
 public class DataHandlerHelper {
     private boolean firstLogin = false;
@@ -47,7 +46,8 @@ public class DataHandlerHelper {
         Platform.runLater(() -> Main.UIcontrol.controllerRooms.printNewPublicRoom(data.getRoomName()));
     }
 
-    public void receivedRoomDeleted(Object data) {
+    public void receivedRoomDeleted(NetworkMessage.RoomDelete data) {
+        Platform.runLater(() -> Main.UIcontrol.controllerRooms.removePublicRoom(data.targetRoom));
     }
 
     public void receivedRoom(Object data) {
@@ -72,7 +72,7 @@ public class DataHandlerHelper {
             printDataToRooms(room);
 
             // TODO: highlight active room color
-            Platform.runLater(() -> Main.UIcontrol.controllerRooms.activeRoomColor(targetRoom, ChatClient.get().getCurrentUser().getActiveRoom()));
+            Platform.runLater(() -> Main.UIcontrol.controllerRooms.activeRoomColor(targetRoom));
 
             // switch room when joining
             Platform.runLater(() -> Main.UIcontrol.controllerRooms.switchContent(targetRoom));
@@ -94,7 +94,20 @@ public class DataHandlerHelper {
         }
     }
 
-    public void receivedUserLeftRoom(Object data) {
+    public void receivedUserLeftRoom(NetworkMessage.RoomLeave data) {
+        ChatClient.get().getRooms().get(data.targetRoom)
+                .getUsers().remove(data.userId);
+
+        if (ChatClient.get().getRooms().get(data.targetRoom)
+                .getUsers().size() < 1)
+
+
+            Platform.runLater(() ->
+                    Main.UIcontrol.controllerUsers.removeUserFromRoom(data.targetRoom, data.userId));
+    }
+
+    public void receivedRoomNameExists() {
+        Platform.runLater(() -> Main.UIcontrol.setErrorMessage("Roomname already exists!"));
     }
 
     public void receivedUserChangedName(Object data) {
