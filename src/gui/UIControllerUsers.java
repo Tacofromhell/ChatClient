@@ -65,4 +65,9 @@ public class UIControllerUsers extends chatUIcontroller {
             userPic.setFill(Color.GREEN);
         }
     }
+    public void removeUserFromRoom(String targetRoom, String userID){
+        Label user = (Label) Main.UIcontrol.VBoxRoomsUsers.get(targetRoom).lookup("#" + userID);
+
+        Main.UIcontrol.VBoxRoomsUsers.get(targetRoom).getChildren().remove(user.getParent());
+    }
 }

@@ -89,11 +89,15 @@ public class DataHandlerHelper {
         }
     }
 
-    public void receivedUserLeftRoom(Object data) {
+    public void receivedUserLeftRoom(NetworkMessage.RoomLeave data) {
+        ChatClient.get().getRooms().get(data.targetRoom)
+                .getUsers().remove(data.userId);
+        Platform.runLater(() ->
+                Main.UIcontrol.controllerUsers.removeUserFromRoom(data.targetRoom, data.userId));
     }
 
-    public void receivedRoomNameExists(){
-        Platform.runLater(()-> Main.UIcontrol.setErrorMessage("Roomname already exists!"));
+    public void receivedRoomNameExists() {
+        Platform.runLater(() -> Main.UIcontrol.setErrorMessage("Roomname already exists!"));
     }
 
     public void receivedUserChangedName(Object data) {

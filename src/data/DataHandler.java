@@ -53,6 +53,7 @@ public class DataHandler {
                     helper.receivedUserJoinedRoom(((RoomJoin) data).getTargetRoom(), ((RoomJoin) data).getUser(), ((RoomJoin) data).getRoom());
 
                 } else if (data instanceof RoomLeave) {
+                    helper.receivedUserLeftRoom((RoomLeave) data);
 
                 } else if (data instanceof UserNameChange) {
                     helper.receivedUserChangedName(data);

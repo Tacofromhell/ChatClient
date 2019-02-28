@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -63,7 +64,12 @@ public class chatUIcontroller {
 
         //TODO: add function to tooltip
         MenuItem leaveRoomButton = new MenuItem("Leave room");
-        leaveRoomButton.setOnAction(e -> System.out.println("left room"));
+        leaveRoomButton.setOnAction(e -> {
+            String name = tooltip.getOwnerNode().getId();
+            System.out.println("left: " + name);
+
+            leaveRoom(name);
+        });
         tooltip.getItems().add(leaveRoomButton);
 
         publicRooms = new MenuButton();
@@ -73,7 +79,8 @@ public class chatUIcontroller {
         addRoomButton.setStyle("-fx-background-color: lightgray");
         addRoomButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
 
-            createPublicRoom(newRoom.getText());
+            if (e.getButton() == MouseButton.PRIMARY)
+                createPublicRoom(newRoom.getText());
         });
 
         newRoom = new TextField();
@@ -110,6 +117,29 @@ public class chatUIcontroller {
 
     }
 
+    public void leaveRoom(String roomName) {
+
+        User currentUser = ChatClient.get().getCurrentUser();
+
+        // remove joined room from user
+        currentUser.removeJoinedRoom(roomName);
+        ChatClient.get().getRooms().remove(roomName);
+
+        // find selected room
+        Button roomButton = (Button) roomButtonsHolder.lookup("#" + roomName);
+        roomButtonsHolder.getChildren().remove(roomButton);
+
+        // clear nodes
+        VBoxRoomsMessages.remove(roomName);
+        VBoxRoomsUsers.remove(roomName);
+
+        // switch room and re-add room to public rooms
+        controllerRooms.switchContent("general");
+        controllerRooms.printNewPublicRoom(roomName);
+
+        SocketStreamHelper.sendData(new NetworkMessage.RoomLeave(roomName, currentUser.getID()), ChatClient.get().getDataOut());
+    }
+
     public void setErrorMessage(String errorMessage) {
         roomCreateError.setStyle("-fx-font-size: 16px; -fx-font-weight: bold");
         roomCreateError.setTextFill(Color.RED);
@@ -117,10 +147,11 @@ public class chatUIcontroller {
     }
 
     public void createPublicRoom(String roomName) {
-        SocketStreamHelper.sendData(
-                new NetworkMessage.RoomCreate(roomName, true),
-                ChatClient.get().getDataOut());
-
+        if (roomName.trim().length() > 0) {
+            SocketStreamHelper.sendData(
+                    new NetworkMessage.RoomCreate(roomName, true),
+                    ChatClient.get().getDataOut());
+        }
         newRoom.setText("");
     }
 
@@ -147,7 +178,6 @@ public class chatUIcontroller {
                     new NetworkMessage.UserNameChange(
                             ChatClient.get().getCurrentUser().getUsername(),
                             ChatClient.get().getCurrentUser().getID()), ChatClient.get().getDataOut());
-
         }
         newUsername.setText("");
     }
@@ -156,6 +186,7 @@ public class chatUIcontroller {
         if (key.getCode().equals(KeyCode.ENTER)) {
             sendNewUsernameButton();
         }
-
     }
+
+
 }

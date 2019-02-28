@@ -1,7 +1,6 @@
 package gui;
 
 import data.NetworkMessage;
-import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import javafx.scene.input.MouseButton;
@@ -10,8 +9,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import network.ChatClient;
 import network.SocketStreamHelper;
-
-import java.util.Set;
 
 public class UIControllerRooms extends chatUIcontroller {
     HBox roomButtonsHolder;
@@ -56,7 +53,8 @@ public class UIControllerRooms extends chatUIcontroller {
         b.setStyle("-fx-background-color: lightgray");
         b.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
             if (e.getButton() == MouseButton.SECONDARY) {
-                Main.UIcontrol.tooltip.show(b, e.getScreenX(), e.getScreenY());
+                if (!b.getId().equals("general"))
+                    Main.UIcontrol.tooltip.show(b, e.getScreenX(), e.getScreenY());
             } else {
                 this.roomButtonsHolder.getChildren().forEach(roomCircle ->
                         roomCircle.setStyle("-fx-background-color: lightgray"));
