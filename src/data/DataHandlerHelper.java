@@ -79,8 +79,12 @@ public class DataHandlerHelper {
 
 
         } else {
-            ChatClient.get().getRooms().get(targetRoom).addUserToRoom(user);
-            Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(user, targetRoom));
+            room.getUsers().values().forEach(System.out::println);
+            if(!ChatClient.get().getRooms().get(targetRoom).getUsers().containsKey(user.getID())) {
+                ChatClient.get().getRooms().get(targetRoom).addUserToRoom(user);
+                Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(user, targetRoom));
+            }
+
         }
 
         // need to init rooms at correct lifecycle hook
