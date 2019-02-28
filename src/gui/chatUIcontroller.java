@@ -31,14 +31,17 @@ public class chatUIcontroller {
 
     public Map<String, VBox> VBoxRoomsMessages = new HashMap<>();
     public Map<String, VBox> VBoxRoomsUsers = new HashMap<>();
-    public Map<String, Button> roomButtons = new HashMap<>();
 
     public static UIControllerMessages controllerMessages;
     public static UIControllerRooms controllerRooms;
     public static UIControllerUsers controllerUsers;
 
     @FXML
-    HBox roomButtonsHolder;
+    public Tab joinedTab;
+    @FXML
+    public TabPane roomTabs;
+    @FXML
+    public VBox roomButtonsHolder;
     @FXML
     HBox addNewRoomHolder;
     @FXML
@@ -50,10 +53,13 @@ public class chatUIcontroller {
     @FXML
     TextField newUsername;
     @FXML
+    HBox errorHolder;
+    @FXML
     Button sendMessage;
     TextField newRoom;
     Label roomCreateError = new Label();
-    public MenuButton publicRooms;
+    @FXML
+    public VBox publicRooms;
     public ContextMenu tooltip = new ContextMenu();
 
 
@@ -72,8 +78,6 @@ public class chatUIcontroller {
         });
         tooltip.getItems().add(leaveRoomButton);
 
-        publicRooms = new MenuButton();
-
         Button addRoomButton = new Button("\uD83D\uDFA6");
         addRoomButton.setId("addRoom");
         addRoomButton.setStyle("-fx-background-color: lightgray");
@@ -84,8 +88,8 @@ public class chatUIcontroller {
         });
 
         newRoom = new TextField();
-        newRoom.setPromptText("Roomname");
-        newRoom.setPrefWidth(80);
+        newRoom.setPromptText("Create room");
+//        newRoom.setPrefWidth(80);
         newRoom.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
             if (newRoom.getText().matches("^[\\wåäöÅÄÖ-]{3,10}$")) {
                 if (e.getCode() == KeyCode.ENTER) {
@@ -99,14 +103,17 @@ public class chatUIcontroller {
             }
         });
 
-        addNewRoomHolder.getChildren().addAll(publicRooms, addRoomButton, newRoom, roomCreateError);
+        addNewRoomHolder.getChildren().addAll(newRoom);
+        errorHolder.getChildren().add(roomCreateError);
     }
 
     public void initRooms() {
 
         // highlight active room
-        Button roomButton = (Button) roomButtonsHolder.lookup("#" + ChatClient.get().getCurrentUser().getActiveRoom());
-        roomButton.setStyle("-fx-background-color: lightseagreen");
+        Label roomButton = (Label) roomButtonsHolder.lookup("#" + ChatClient.get().getCurrentUser().getActiveRoom());
+        roomButton.setStyle("-fx-font-weight: bold");
+        roomButton.setTextFill(Color.LIGHTSEAGREEN);
+//        roomButton.setStyle("-fx-background-color: lightseagreen");
 
         scrollMessages.setContent(VBoxRoomsMessages.get(
                 ChatClient.get().getCurrentUser().getActiveRoom()
@@ -126,7 +133,7 @@ public class chatUIcontroller {
         ChatClient.get().getRooms().remove(roomName);
 
         // find selected room
-        Button roomButton = (Button) roomButtonsHolder.lookup("#" + roomName);
+        Label roomButton = (Label) roomButtonsHolder.lookup("#" + roomName);
         roomButtonsHolder.getChildren().remove(roomButton);
 
         // clear nodes

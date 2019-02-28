@@ -72,20 +72,18 @@ public class DataHandlerHelper {
 
             printDataToRooms(room);
 
-            // TODO: highlight active room color
-            Platform.runLater(() -> Main.UIcontrol.controllerRooms.activeRoomColor(targetRoom));
-
             // switch room when joining
             Platform.runLater(() -> Main.UIcontrol.controllerRooms.switchContent(targetRoom));
 
+            // highlight active room color
+            Platform.runLater(() -> Main.UIcontrol.controllerRooms.activeRoomColor(targetRoom));
 
         } else {
             room.getUsers().values().forEach(System.out::println);
-            if(!ChatClient.get().getRooms().get(targetRoom).getUsers().containsKey(user.getID())) {
+            if (!ChatClient.get().getRooms().get(targetRoom).getUsers().containsKey(user.getID())) {
                 ChatClient.get().getRooms().get(targetRoom).addUserToRoom(user);
                 Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(user, targetRoom));
             }
-
         }
 
         // need to init rooms at correct lifecycle hook
@@ -101,7 +99,6 @@ public class DataHandlerHelper {
 
         if (ChatClient.get().getRooms().get(data.targetRoom)
                 .getUsers().size() < 1)
-
 
             Platform.runLater(() ->
                     Main.UIcontrol.controllerUsers.removeUserFromRoom(data.targetRoom, data.userId));

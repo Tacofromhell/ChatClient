@@ -1,21 +1,24 @@
 package gui;
 
 import data.NetworkMessage;
+import javafx.css.converter.CursorConverter;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import network.ChatClient;
 import network.SocketStreamHelper;
 
 import java.util.Set;
 
 public class UIControllerRooms extends chatUIcontroller {
-    HBox roomButtonsHolder;
+    VBox roomButtonsHolder;
 
-    public UIControllerRooms(HBox roomButtonsHolder) {
+    public UIControllerRooms(VBox roomButtonsHolder) {
         this.roomButtonsHolder = roomButtonsHolder;
     }
 
@@ -28,12 +31,17 @@ public class UIControllerRooms extends chatUIcontroller {
 
     public void activeRoomColor(String activeRoom) {
 
-        for (var lastRoom : this.roomButtonsHolder.getChildren()) {
-            lastRoom.setStyle("-fx-background-color: lightgray");
+        for (String room : ChatClient.get().getCurrentUser().getJoinedRooms()) {
+
+            Label roomButton = (Label) this.roomButtonsHolder.lookup("#" + room);
+            roomButton.setStyle("-fx-font-weight: normal; -fx-font-size: 15px");
+            roomButton.setTextFill(Color.BLACK);
         }
 
-        Button roomButton = (Button) this.roomButtonsHolder.lookup("#" + activeRoom);
-        roomButton.setStyle("-fx-background-color: lightseagreen");
+        Label roomButton = (Label) this.roomButtonsHolder.lookup("#" + activeRoom);
+        roomButton.setStyle("-fx-font-weight: bold; -fx-font-size: 17px");
+        roomButton.setTextFill(Color.LIGHTSEAGREEN);
+
     }
 
     public void addRoomContent(String room) {
@@ -51,30 +59,29 @@ public class UIControllerRooms extends chatUIcontroller {
     public void printNewJoinedRoom(String room) {
         addRoomContent(room);
 
-        Button b = new Button(room);
-        b.setId(room);
-        b.setStyle("-fx-background-color: lightgray");
-        b.setMinWidth(Control.USE_PREF_SIZE);
-        b.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
+        Label item = new Label(room);
+        item.setId(room);
+        item.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;" +
+                "-fx-cursor: hand");
+        item.setTextFill(Color.LIGHTSEAGREEN);
+        item.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
             if (e.getButton() == MouseButton.SECONDARY) {
-                if (!b.getId().equals("general"))
-                    Main.UIcontrol.tooltip.show(b, e.getScreenX(), e.getScreenY());
+                if (!item.getId().equals("general"))
+                    Main.UIcontrol.tooltip.show(item, e.getScreenX(), e.getScreenY());
             } else {
-                this.roomButtonsHolder.getChildren().forEach(roomCircle ->
-                        roomCircle.setStyle("-fx-background-color: lightgray"));
-                b.setStyle("-fx-background-color: lightseagreen");
-                switchContent(b.getId());
+                activeRoomColor(room);
+                switchContent(item.getId());
             }
         });
 
-        roomButtons.putIfAbsent(room, b);
-        this.roomButtonsHolder.getChildren().add(b);
+        roomButtonsHolder.getChildren().add(item);
     }
 
     public void printNewPublicRoom(String room) {
-        MenuItem newRoom = new MenuItem(room);
+        Label newRoom = new Label(room);
         newRoom.setId(room);
-        newRoom.setOnAction(e -> {
+        newRoom.setStyle("-fx-font-size: 15px; -fx-cursor: hand");
+        newRoom.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
             SocketStreamHelper.sendData(
                     new NetworkMessage.RoomJoin(newRoom.getId(), ChatClient.get().getCurrentUser(), null),
                     ChatClient.get().getDataOut());
@@ -82,20 +89,14 @@ public class UIControllerRooms extends chatUIcontroller {
             // removes when user joins
             removePublicRoom(room);
             switchContent(room);
+            Main.UIcontrol.roomTabs
+                    .getSelectionModel().select(0);
         });
-        Main.UIcontrol.publicRooms.getItems().add(newRoom);
+        Main.UIcontrol.publicRooms.getChildren().add(newRoom);
     }
 
-    @SuppressWarnings("all")
     public void removePublicRoom(String targetRoom) {
-        MenuItem item = null;
-
-        for (MenuItem room : Main.UIcontrol.publicRooms.getItems()) {
-            if (room.getId().equals(targetRoom)) {
-                item = room;
-            }
-        }
-
-        Main.UIcontrol.publicRooms.getItems().remove(item);
+        Label item = (Label) Main.UIcontrol.publicRooms.lookup("#" + targetRoom);
+        Main.UIcontrol.publicRooms.getChildren().remove(item);
     }
 }
