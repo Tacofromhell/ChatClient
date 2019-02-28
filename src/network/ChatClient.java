@@ -31,6 +31,7 @@ public class ChatClient {
             //Check if client has existing user ID stored in file:
             if (UserIdHandler.readUserId() != null) {
                 SocketStreamHelper.sendData(new NetworkMessage.ClientConnect(UserIdHandler.getUserId()), dataOut);
+//                SocketStreamHelper.sendData(new NetworkMessage.ClientConnect("123412"), dataOut);
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
