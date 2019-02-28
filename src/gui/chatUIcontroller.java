@@ -136,7 +136,7 @@ public class chatUIcontroller {
 
         // switch room and re-add room to public rooms
         controllerRooms.switchContent("general");
-
+        controllerRooms.activeRoomColor("general");
         controllerRooms.printNewPublicRoom(roomName);
 
         SocketStreamHelper.sendData(new NetworkMessage.RoomLeave(roomName, currentUser.getID()), ChatClient.get().getDataOut());
