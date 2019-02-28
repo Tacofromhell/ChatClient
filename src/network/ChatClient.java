@@ -30,10 +30,13 @@ public class ChatClient {
 
             //Check if client has existing user ID stored in file:
             if (UserIdHandler.readUserId() != null) {
-                SocketStreamHelper.sendData(new NetworkMessage.ClientConnect(UserIdHandler.getUserId()), dataOut);
+                SocketStreamHelper.sendData(new NetworkMessage.InitializeClient(UserIdHandler.readUserId()), dataOut);
             } else {
-                SocketStreamHelper.sendData(new NetworkMessage.ClientConnect("new user"), dataOut);
+                SocketStreamHelper.sendData(new NetworkMessage.InitializeClient("new user"), dataOut);
             }
+//            SocketStreamHelper.sendData(new NetworkMessage.InitializeClient("new user"), dataOut);
+
+//            SocketStreamHelper.sendData(new NetworkMessage.ClientConnect(currentUser.getID()), dataOut);
 
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);

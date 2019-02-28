@@ -22,7 +22,7 @@ public class DataHandlerHelper {
         System.out.println("Received a: " + data);
         ChatClient.get().setCurrentUser((User) data);
 
-
+        SocketStreamHelper.sendData(new NetworkMessage.ClientConnect(ChatClient.get().getCurrentUser().getID()), ChatClient.get().getDataOut());
         ChatClient.get().startAutoUpdatingActiveRoom();
 
         System.out.println(ChatClient.get().getCurrentUser().getID());

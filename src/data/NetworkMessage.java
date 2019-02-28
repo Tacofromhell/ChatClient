@@ -5,6 +5,15 @@ import java.io.Serializable;
 public abstract class NetworkMessage implements Serializable {
     private static final long serialVersionUID = -4057760186023784992L;
 
+
+    public static class InitializeClient extends NetworkMessage {
+        public String userId;
+
+        public InitializeClient(String userId) {
+            this.userId = userId;
+        }
+    }
+
     public static class ClientConnect extends NetworkMessage {
         String userId;
 

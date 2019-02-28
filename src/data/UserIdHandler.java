@@ -1,5 +1,7 @@
 package data;
 
+import network.ChatClient;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -8,12 +10,12 @@ import java.nio.file.Paths;
 
 public class UserIdHandler{
 
-    private static Path path = Paths.get("src/storage/userId.txt");
-    private static String userId;
+    private static String userId = "userId";
+    private static Path path = Paths.get("src/storage/" + userId +".txt");
 
     public UserIdHandler(){}
 
-    public static String getUserId() { return userId;}
+//    public static String getUserId() { return userId;}
 
     public static void writeUserId(String userId){
 
