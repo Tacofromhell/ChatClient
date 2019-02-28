@@ -30,7 +30,7 @@ public class ChatClient {
 
             //Check if client has existing user ID stored in file:
             if (UserIdHandler.readUserId() != null) {
-                SocketStreamHelper.sendData(new NetworkMessage.InitializeClient(UserIdHandler.readUserId()), dataOut);
+                SocketStreamHelper.sendData(new NetworkMessage.InitializeClient(UserIdHandler.getUserId()), dataOut);
             } else {
                 SocketStreamHelper.sendData(new NetworkMessage.InitializeClient("new user"), dataOut);
             }

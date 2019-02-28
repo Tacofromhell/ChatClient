@@ -27,6 +27,7 @@ public class DataHandler {
                 Object data = dataQueue.poll();
 
                 if (data instanceof Message) {
+                    System.out.println("Received " + data);
                     helper.receivedMessage(data);
 
                 } else if (data instanceof Room) {
