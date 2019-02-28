@@ -79,15 +79,6 @@ public class chatUIcontroller {
         });
         tooltip.getItems().add(leaveRoomButton);
 
-        Button addRoomButton = new Button("\uD83D\uDFA6");
-        addRoomButton.setId("addRoom");
-        addRoomButton.setStyle("-fx-background-color: lightgray");
-        addRoomButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
-
-            if (e.getButton() == MouseButton.PRIMARY)
-                createPublicRoom(newRoom.getText());
-        });
-
         newRoom = new TextField();
         newRoom.setPromptText("Create room");
 //        newRoom.setPrefWidth(80);
@@ -147,8 +138,6 @@ public class chatUIcontroller {
         controllerRooms.printNewPublicRoom(roomName);
 
         SocketStreamHelper.sendData(new NetworkMessage.RoomLeave(roomName, currentUser.getID()), ChatClient.get().getDataOut());
-
-
     }
 
     public void setErrorMessage(String errorMessage) {

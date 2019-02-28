@@ -27,6 +27,7 @@ public class UIControllerRooms extends chatUIcontroller {
         Main.UIcontrol.scrollUsers.setContent(Main.UIcontrol.VBoxRoomsUsers.get(room));
 
         ChatClient.get().getCurrentUser().setActiveRoom(room);
+        SocketStreamHelper.sendData(new NetworkMessage.UserActiveRoom(room), ChatClient.get().getDataOut());
     }
 
     public void activeRoomColor(String activeRoom) {
@@ -34,12 +35,14 @@ public class UIControllerRooms extends chatUIcontroller {
         for (String room : ChatClient.get().getCurrentUser().getJoinedRooms()) {
 
             Label roomButton = (Label) this.roomButtonsHolder.lookup("#" + room);
-            roomButton.setStyle("-fx-font-weight: normal; -fx-font-size: 15px");
-            roomButton.setTextFill(Color.BLACK);
+            if (roomButton != null) {
+                roomButton.setStyle("-fx-font-weight: normal; -fx-font-size: 15px; -fx-cursor: hand");
+                roomButton.setTextFill(Color.BLACK);
+            }
         }
 
         Label roomButton = (Label) this.roomButtonsHolder.lookup("#" + activeRoom);
-        roomButton.setStyle("-fx-font-weight: bold; -fx-font-size: 17px");
+        roomButton.setStyle("-fx-font-weight: bold; -fx-font-size: 17px; -fx-cursor: hand");
         roomButton.setTextFill(Color.LIGHTSEAGREEN);
 
     }
@@ -61,7 +64,7 @@ public class UIControllerRooms extends chatUIcontroller {
 
         Label item = new Label(room);
         item.setId(room);
-        item.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;" +
+        item.setStyle("-fx-font-weight: bold; -fx-font-size: 17px;" +
                 "-fx-cursor: hand");
         item.setTextFill(Color.LIGHTSEAGREEN);
         item.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
