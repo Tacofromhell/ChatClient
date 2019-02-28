@@ -29,10 +29,11 @@ public class UserIdHandler{
     public static String readUserId(){
 
         try {
-            userId = Files.lines(path).toString();
+            userId = Files.readAllLines(path).get(0);
         }
         catch (IOException e){
             System.out.println("UserId not found: Generic user will be created by server.");
+            return null;
         }
         return userId;
     }
