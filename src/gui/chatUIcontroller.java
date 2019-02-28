@@ -87,7 +87,7 @@ public class chatUIcontroller {
         newRoom.setPromptText("Roomname");
         newRoom.setPrefWidth(80);
         newRoom.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
-            if (newRoom.getText().matches("^[\\w-]{3,10}$")) {
+            if (newRoom.getText().matches("^[\\wåäöÅÄÖ-]{3,10}$")) {
                 if (e.getCode() == KeyCode.ENTER) {
                     createPublicRoom(newRoom.getText());
                 } else {
@@ -172,17 +172,22 @@ public class chatUIcontroller {
 
     public void sendNewUsernameButton() {
         if (newUsername.getText().trim().length() > 0) {
-            ChatClient.get().getCurrentUser().setUsername(newUsername.getText());
-            System.out.println("Changed username to: " + ChatClient.get().getCurrentUser().getUsername());
-            SocketStreamHelper.sendData(
-                    new NetworkMessage.UserNameChange(
-                            ChatClient.get().getCurrentUser().getUsername(),
-                            ChatClient.get().getCurrentUser().getID()), ChatClient.get().getDataOut());
+            if (newUsername.getText().matches("^[\\wåäöÅÄÖ-]{3,10}$")) {
+
+                ChatClient.get().getCurrentUser().setUsername(newUsername.getText());
+                System.out.println("Changed username to: " + ChatClient.get().getCurrentUser().getUsername());
+                SocketStreamHelper.sendData(
+                        new NetworkMessage.UserNameChange(
+                                ChatClient.get().getCurrentUser().getUsername(),
+                                ChatClient.get().getCurrentUser().getID()), ChatClient.get().getDataOut());
+            } else
+                setErrorMessage("Username must be 3-10 characters long");
         }
         newUsername.setText("");
     }
 
     public void sendNewUsernameEnter(KeyEvent key) {
+        setErrorMessage("");
         if (key.getCode().equals(KeyCode.ENTER)) {
             sendNewUsernameButton();
         }

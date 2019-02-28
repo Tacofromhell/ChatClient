@@ -90,10 +90,13 @@
                <VBox.margin>
                   <Insets bottom="5.0" top="5.0" />
                </VBox.margin></HBox>
-            <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="0.0" style="-fx-background-color: darkslategray;">
+            <ScrollPane fitToHeight="true" fitToWidth="true" style="-fx-background-color: darkslategray;">
                <content>
                   <HBox fx:id="roomButtonsHolder" spacing="10.0" style="-fx-background-color: darkslategray;" />
                </content>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
             </ScrollPane>
          </children>
       </VBox>

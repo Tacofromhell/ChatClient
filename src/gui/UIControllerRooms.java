@@ -54,6 +54,7 @@ public class UIControllerRooms extends chatUIcontroller {
         Button b = new Button(room);
         b.setId(room);
         b.setStyle("-fx-background-color: lightgray");
+        b.setMinWidth(Control.USE_PREF_SIZE);
         b.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
             if (e.getButton() == MouseButton.SECONDARY) {
                 if (!b.getId().equals("general"))
