@@ -99,4 +99,6 @@ public class UIControllerRooms extends chatUIcontroller {
         Label item = (Label) Main.UIcontrol.publicRooms.lookup("#" + targetRoom);
         Main.UIcontrol.publicRooms.getChildren().remove(item);
     }
+
+
 }

@@ -1,6 +1,7 @@
 package gui;
 
 import data.NetworkMessage;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -142,9 +143,12 @@ public class chatUIcontroller {
 
         // switch room and re-add room to public rooms
         controllerRooms.switchContent("general");
+        controllerRooms.activeRoomColor("general");
         controllerRooms.printNewPublicRoom(roomName);
 
         SocketStreamHelper.sendData(new NetworkMessage.RoomLeave(roomName, currentUser.getID()), ChatClient.get().getDataOut());
+
+
     }
 
     public void setErrorMessage(String errorMessage) {
