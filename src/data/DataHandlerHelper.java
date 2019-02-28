@@ -21,7 +21,7 @@ public class DataHandlerHelper {
     public void receivedUser(Object data) {
         System.out.println("Received a: " + data);
         ChatClient.get().setCurrentUser((User) data);
-
+        ChatClient.get().getCurrentUser().getJoinedRooms().forEach(room -> System.out.println("JOINAT RUM " + room));
         SocketStreamHelper.sendData(new NetworkMessage.ClientConnect(ChatClient.get().getCurrentUser().getID()), ChatClient.get().getDataOut());
         ChatClient.get().startAutoUpdatingActiveRoom();
 
@@ -80,12 +80,10 @@ public class DataHandlerHelper {
 
 
         } else {
-            room.getUsers().values().forEach(System.out::println);
             if(!ChatClient.get().getRooms().get(targetRoom).getUsers().containsKey(user.getID())) {
                 ChatClient.get().getRooms().get(targetRoom).addUserToRoom(user);
                 Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(user, targetRoom));
             }
-
         }
 
         // need to init rooms at correct lifecycle hook
@@ -96,15 +94,11 @@ public class DataHandlerHelper {
     }
 
     public void receivedUserLeftRoom(NetworkMessage.RoomLeave data) {
-        ChatClient.get().getRooms().get(data.targetRoom)
-                .getUsers().remove(data.userId);
+        ChatClient.get().getRooms().get(data.targetRoom).getUsers().remove(data.userId);
 
-        if (ChatClient.get().getRooms().get(data.targetRoom)
-                .getUsers().size() < 1)
-
-
-            Platform.runLater(() ->
-                    Main.UIcontrol.controllerUsers.removeUserFromRoom(data.targetRoom, data.userId));
+        if (ChatClient.get().getRooms().get(data.targetRoom).getUsers().size() > 0) {
+            Platform.runLater(() -> Main.UIcontrol.controllerUsers.removeUserFromRoom(data.targetRoom, data.userId));
+        }
     }
 
     public void receivedRoomNameExists() {

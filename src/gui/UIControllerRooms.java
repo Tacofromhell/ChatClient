@@ -24,6 +24,7 @@ public class UIControllerRooms extends chatUIcontroller {
         Main.UIcontrol.scrollUsers.setContent(Main.UIcontrol.VBoxRoomsUsers.get(room));
 
         ChatClient.get().getCurrentUser().setActiveRoom(room);
+        controllerRooms.activeRoomColor(room);
     }
 
     public void activeRoomColor(String activeRoom) {
@@ -98,4 +99,6 @@ public class UIControllerRooms extends chatUIcontroller {
 
         Main.UIcontrol.publicRooms.getItems().remove(item);
     }
+
+
 }
