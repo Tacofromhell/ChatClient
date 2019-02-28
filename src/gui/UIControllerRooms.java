@@ -10,6 +10,8 @@ import javafx.scene.layout.VBox;
 import network.ChatClient;
 import network.SocketStreamHelper;
 
+import java.util.Set;
+
 public class UIControllerRooms extends chatUIcontroller {
     HBox roomButtonsHolder;
 
@@ -76,9 +78,22 @@ public class UIControllerRooms extends chatUIcontroller {
                     ChatClient.get().getDataOut());
 
             // removes when user joins
-            Main.UIcontrol.publicRooms.getItems().remove(newRoom);
+            removePublicRoom(room);
             switchContent(room);
         });
         Main.UIcontrol.publicRooms.getItems().add(newRoom);
+    }
+
+    @SuppressWarnings("all")
+    public void removePublicRoom(String targetRoom) {
+        MenuItem item = null;
+
+        for (MenuItem room : Main.UIcontrol.publicRooms.getItems()) {
+            if (room.getId().equals(targetRoom)) {
+                item = room;
+            }
+        }
+
+        Main.UIcontrol.publicRooms.getItems().remove(item);
     }
 }

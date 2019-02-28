@@ -48,6 +48,7 @@ public class DataHandler {
                     helper.receivedRoomCreated((RoomCreate) data);
 
                 } else if (data instanceof RoomDelete) {
+                    helper.receivedRoomDeleted((RoomDelete) data);
 
                 } else if (data instanceof RoomJoin) {
                     helper.receivedUserJoinedRoom(((RoomJoin) data).getTargetRoom(), ((RoomJoin) data).getUser(), ((RoomJoin) data).getRoom());
