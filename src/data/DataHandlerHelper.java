@@ -92,6 +92,10 @@ public class DataHandlerHelper {
     public void receivedUserLeftRoom(Object data) {
     }
 
+    public void receivedRoomNameExists(){
+        Platform.runLater(()-> Main.UIcontrol.setErrorMessage("Roomname already exists!"));
+    }
+
     public void receivedUserChangedName(Object data) {
         System.out.println("User changed name");
         NetworkMessage.UserNameChange userNameChange = (NetworkMessage.UserNameChange) data;

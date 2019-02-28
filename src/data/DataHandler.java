@@ -41,6 +41,9 @@ public class DataHandler {
                 } else if (data instanceof ClientDisconnect) {
                     helper.receivedClientDisconnected((ClientDisconnect) data);
 
+                } else if (data instanceof RoomNameExists) {
+                    helper.receivedRoomNameExists();
+
                 } else if (data instanceof RoomCreate) {
                     helper.receivedRoomCreated((RoomCreate) data);
 

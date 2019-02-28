@@ -39,6 +39,8 @@ public class chatUIcontroller {
     @FXML
     HBox roomButtonsHolder;
     @FXML
+    HBox addNewRoomHolder;
+    @FXML
     ScrollPane scrollMessages;
     @FXML
     ScrollPane scrollUsers;
@@ -49,6 +51,7 @@ public class chatUIcontroller {
     @FXML
     Button sendMessage;
     TextField newRoom;
+    Label roomCreateError = new Label();
     public MenuButton publicRooms;
     public ContextMenu tooltip = new ContextMenu();
 
@@ -64,36 +67,36 @@ public class chatUIcontroller {
         tooltip.getItems().add(leaveRoomButton);
 
         publicRooms = new MenuButton();
-        roomButtonsHolder.getChildren().add(publicRooms);
 
         Button addRoomButton = new Button("\uD83D\uDFA6");
         addRoomButton.setId("addRoom");
         addRoomButton.setStyle("-fx-background-color: lightgray");
         addRoomButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
 
-            SocketStreamHelper.sendData(
-                    new NetworkMessage.RoomCreate(newRoom.getText(), true),
-                    ChatClient.get().getDataOut());
-
-            newRoom.setText("");
+            createPublicRoom(newRoom.getText());
         });
-        roomButtonsHolder.getChildren().add(addRoomButton);
 
         newRoom = new TextField();
         newRoom.setPromptText("Roomname");
         newRoom.setPrefWidth(80);
-        roomButtonsHolder.getChildren().add(newRoom);
+        newRoom.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
+            if (newRoom.getText().matches("^[\\w-]{3,10}$")) {
+                if (e.getCode() == KeyCode.ENTER) {
+                    createPublicRoom(newRoom.getText());
+                } else {
+                    setErrorMessage("");
+                }
+            } else {
+                setErrorMessage(newRoom.getText().length() > 0 ?
+                        "Roomname must be 3-10 characters long" : "");
+            }
+        });
 
-
+        addNewRoomHolder.getChildren().addAll(publicRooms, addRoomButton, newRoom, roomCreateError);
     }
 
     public void initRooms() {
 
-//        for (String room : ChatClient.get().getCurrentUser().getJoinedRooms()) {
-//            controllerRooms.addRoomContent(room);
-//
-//            controllerRooms.printNewJoinedRoom(room);
-//        }
         // highlight active room
         Button roomButton = (Button) roomButtonsHolder.lookup("#" + ChatClient.get().getCurrentUser().getActiveRoom());
         roomButton.setStyle("-fx-background-color: lightseagreen");
@@ -105,6 +108,20 @@ public class chatUIcontroller {
                 ChatClient.get().getCurrentUser().getActiveRoom()
         ));
 
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        roomCreateError.setStyle("-fx-font-size: 16px; -fx-font-weight: bold");
+        roomCreateError.setTextFill(Color.RED);
+        roomCreateError.setText(errorMessage);
+    }
+
+    public void createPublicRoom(String roomName) {
+        SocketStreamHelper.sendData(
+                new NetworkMessage.RoomCreate(roomName, true),
+                ChatClient.get().getDataOut());
+
+        newRoom.setText("");
     }
 
     public void sendMessageButton() {

@@ -29,15 +29,6 @@ public class UIControllerRooms extends chatUIcontroller {
 
     public void activeRoomColor(String activeRoom, String lastRoom) {
 
-//            this.roomButtonsHolder.getChildren().forEach(room -> {
-//                if (room.getId().equals(activeRoom))
-//                    room.setStyle("-fx-background-color: lightseagreen");
-//            });
-
-//        Set<Button> prevRoomButton = (Set) this.roomButtonsHolder.lookupAll("#");
-//        prevRoomButton.forEach(button ->
-//                button.setStyle("-fx-background-color: lightgray"));
-
         Button lastRoomButton = (Button) this.roomButtonsHolder.lookup("#" + lastRoom);
         lastRoomButton.setStyle("-fx-background-color: lightgray");
 
