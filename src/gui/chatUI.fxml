@@ -86,11 +86,11 @@
                       <Font name="Arial" size="24.0" />
                   </font>
               </Label>
-            <HBox fx:id="roomButtonsHolder" spacing="10.0">
-               <VBox.margin>
-                  <Insets bottom="5.0" top="5.0" />
-               </VBox.margin>
-            </HBox>
+            <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="0.0" style="-fx-background-color: darkslategray;">
+               <content>
+                  <HBox fx:id="roomButtonsHolder" spacing="10.0" style="-fx-background-color: darkslategray;" />
+               </content>
+            </ScrollPane>
          </children>
       </VBox>
    </top>

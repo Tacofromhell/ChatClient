@@ -23,9 +23,19 @@ public abstract class NetworkMessage implements Serializable {
 
     public static class RoomCreate extends NetworkMessage {
         String roomName;
+        boolean isPublic;
 
-        public RoomCreate(String roomName) {
+        public RoomCreate(String roomName, boolean isPublic) {
             this.roomName = roomName;
+            this.isPublic = isPublic;
+        }
+
+        public String getRoomName() {
+            return roomName;
+        }
+
+        public boolean isPublic() {
+            return isPublic;
         }
     }
 
@@ -40,10 +50,12 @@ public abstract class NetworkMessage implements Serializable {
     public static class RoomJoin extends NetworkMessage {
         String targetRoom;
         User user;
+        Room room;
 
-        public RoomJoin(String targetRoom, User user) {
+        public RoomJoin(String targetRoom, User user, Room room) {
             this.targetRoom = targetRoom;
             this.user = user;
+            this.room = room;
         }
 
         public User getUser() {
@@ -52,6 +64,10 @@ public abstract class NetworkMessage implements Serializable {
 
         public String getTargetRoom() {
             return targetRoom;
+        }
+
+        public Room getRoom() {
+            return room;
         }
     }
 

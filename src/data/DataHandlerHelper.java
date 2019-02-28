@@ -3,8 +3,10 @@ package data;
 import gui.Main;
 import javafx.application.Platform;
 import network.ChatClient;
+import network.SocketStreamHelper;
 
 public class DataHandlerHelper {
+    private boolean firstLogin = false;
 
     public void receivedMessage(Object data) {
         System.out.println("Received a: " + data);
@@ -24,7 +26,6 @@ public class DataHandlerHelper {
         ChatClient.get().startAutoUpdatingActiveRoom();
 
         System.out.println(ChatClient.get().getCurrentUser().getID());
-        Platform.runLater(() -> Main.UIcontrol.initRooms());
     }
 
     public void receivedClientDisconnected(NetworkMessage.ClientDisconnect data) {
@@ -34,10 +35,16 @@ public class DataHandlerHelper {
                 user.setOnlineStatus(false);
             }
         }));
-        Platform.runLater(() -> Main.UIcontrol.controllerUsers.userDisconnected(data.userId));
+        for (Room room : ChatClient.get().getRooms().values()) {
+            room.getUsers().values().stream()
+                    .filter(user -> user.getID().equals(data.userId))
+                    .forEach(user ->
+                            Platform.runLater(() -> Main.UIcontrol.controllerUsers.userDisconnected(room.getRoomName(), data.userId)));
+        }
     }
 
-    public void receivedRoomCreated(Object data) {
+    public void receivedRoomCreated(NetworkMessage.RoomCreate data) {
+        Platform.runLater(() -> Main.UIcontrol.controllerRooms.printNewPublicRoom(data.getRoomName()));
     }
 
     public void receivedRoomDeleted(Object data) {
@@ -48,18 +55,39 @@ public class DataHandlerHelper {
         Room room = (Room) data;
         ChatClient.get().addRoom(room);
         // print rooms messages on connection
-        room.getMessages()
-                .forEach(msg ->
-                        Platform.runLater(() -> Main.UIcontrol.controllerMessages.printMessageFromServer(msg)));
 
-        room.getUsers().values().forEach(user -> {
-            Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(user, room.getRoomName()));
-        });
+//        printDataToRooms(room);
     }
 
-    public void receivedUserJoinedRoom(String targetRoom, User user) {
-        ChatClient.get().getRooms().get(targetRoom).addUserToRoom(user);
-        Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(user, targetRoom));
+    public void receivedUserJoinedRoom(String targetRoom, User user, Room room) {
+
+        // if user == this client, add room to joined rooms
+        if (ChatClient.get().getCurrentUser().getID().equals(user.getID())) {
+            ChatClient.get().getCurrentUser().addJoinedRoom(targetRoom);
+
+            ChatClient.get().addRoom(room);
+
+            Platform.runLater(() -> Main.UIcontrol.controllerRooms.printNewJoinedRoom(targetRoom));
+
+            printDataToRooms(room);
+
+            // TODO: highlight active room color
+            Platform.runLater(() -> Main.UIcontrol.controllerRooms.activeRoomColor(targetRoom, ChatClient.get().getCurrentUser().getActiveRoom()));
+
+            // switch room when joining
+            Platform.runLater(() -> Main.UIcontrol.controllerRooms.switchContent(targetRoom));
+
+
+        } else {
+            ChatClient.get().getRooms().get(targetRoom).addUserToRoom(user);
+            Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(user, targetRoom));
+        }
+
+        // need to init rooms at correct lifecycle hook
+        if (!firstLogin) {
+            Platform.runLater(() -> Main.UIcontrol.initRooms());
+            firstLogin = true;
+        }
     }
 
     public void receivedUserLeftRoom(Object data) {
@@ -69,7 +97,12 @@ public class DataHandlerHelper {
         System.out.println("User changed name");
         NetworkMessage.UserNameChange userNameChange = (NetworkMessage.UserNameChange) data;
 
-        Platform.runLater(() -> Main.UIcontrol.controllerUsers.updateUsername(userNameChange));
+        for (Room room : ChatClient.get().getRooms().values()) {
+            room.getUsers().values().stream()
+                    .filter(user -> user.getID().equals(userNameChange.getUserId()))
+                    .forEach(user -> Platform.runLater(() ->
+                            Main.UIcontrol.controllerUsers.updateUsername(room.getRoomName(), userNameChange)));
+        }
     }
 
     public void receivedClientConnected(NetworkMessage.ClientConnect event) {
@@ -78,6 +111,22 @@ public class DataHandlerHelper {
                 user.setOnlineStatus(true);
             }
         }));
-        Platform.runLater(() -> Main.UIcontrol.controllerUsers.userConnected(event.userId));
+
+        for (Room room : ChatClient.get().getRooms().values()) {
+            room.getUsers().values().stream()
+                    .filter(user -> user.getID().equals(event.userId))
+                    .forEach(user ->
+                            Platform.runLater(() -> Main.UIcontrol.controllerUsers.userConnected(room.getRoomName(), event.userId)));
+        }
     }
+
+    public void printDataToRooms(Room room) {
+        room.getMessages().forEach(msg ->
+                Platform.runLater(() -> Main.UIcontrol.controllerMessages.printMessageFromServer(msg)));
+
+        room.getUsers().values().forEach(u -> {
+            Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(u, room.getRoomName()));
+        });
+    }
+
 }

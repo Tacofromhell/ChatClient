@@ -11,7 +11,7 @@ import network.ChatClient;
 
 import java.util.Set;
 
-public class UIControllerUsers extends chatUIcontroller{
+public class UIControllerUsers extends chatUIcontroller {
 
     public void printUsers(User user, String room) {
         HBox onlineUser = new HBox(5);
@@ -19,10 +19,9 @@ public class UIControllerUsers extends chatUIcontroller{
         Circle userPic = new Circle(6);
         userPic.setId("userPic" + user.getID());
 
-
         if (ChatClient.get().getCurrentUser().getID().equals(user.getID())) {
             userPic.setFill(Color.BLUE);
-        } else if(!user.getOnlineStatus()){
+        } else if (!user.getOnlineStatus()) {
             userPic.setFill(Color.LIGHTGRAY);
         } else {
             userPic.setFill(Color.GREEN);
@@ -39,42 +38,31 @@ public class UIControllerUsers extends chatUIcontroller{
         Main.UIcontrol.VBoxRoomsUsers.get(room).getChildren().add(onlineUser);
     }
 
-    public void updateUsername(NetworkMessage.UserNameChange event) {
+    public void updateUsername(String roomName, NetworkMessage.UserNameChange event) {
         System.out.println("Updated list ");
 
-        Main.UIcontrol.VBoxRoomsMessages.forEach((room, vbox) -> {
-            Set<Label> userNameLabel = (Set)vbox.lookupAll("#" + event.getUserId());
-            userNameLabel.iterator().forEachRemaining(label -> label.setText(event.getNewName()));
-        });
+        Set<Label> userNameMessages = (Set) Main.UIcontrol.VBoxRoomsMessages.get(roomName).lookupAll("#" + event.getUserId());
+        userNameMessages.iterator().forEachRemaining(label -> label.setText(event.getNewName()));
 
         //Går igenom rum och ändrar namn i användarlistan
-        Main.UIcontrol.VBoxRoomsUsers.forEach((room, vbox) -> {
-            Label userNameLabel = (Label) vbox.lookup("#" + event.getUserId());
-            userNameLabel.setText(event.getNewName());
-        });
-
+        Label userNameLabel = (Label) Main.UIcontrol.VBoxRoomsUsers.get(roomName).lookup("#" + event.getUserId());
+        userNameLabel.setText(event.getNewName());
     }
 
-    public void userDisconnected(String userID){
-        System.out.println("USer disconnected");
+    public void userDisconnected(String roomName, String userID) {
+        System.out.println("User disconnected");
         //Hitta cirkeln till användaren som disconnectade och byt färg på den
 
-        Main.UIcontrol.VBoxRoomsUsers.forEach((room, vbox) -> {
-            Circle userPic = (Circle) Main.stage.getScene().lookup("#userPic" + userID);
-            userPic.setFill(Color.LIGHTGRAY);
-        });
-
+        Circle userPic = (Circle) Main.UIcontrol.VBoxRoomsUsers.get(roomName).lookup("#userPic" + userID);
+        userPic.setFill(Color.LIGHTGRAY);
     }
 
-    public void userConnected(String userID){
+    public void userConnected(String roomName, String userID) {
         //Hitta cirkeln till användaren som anslöt och byt färg på den
 
-        if(!ChatClient.get().getCurrentUser().getID().equals(userID)) {
-            Main.UIcontrol.VBoxRoomsUsers.forEach((room, vbox) -> {
-                Circle userPic = (Circle) Main.stage.getScene().lookup("#userPic" + userID);
-                userPic.setFill(Color.GREEN);
-            });
+        if (!ChatClient.get().getCurrentUser().getID().equals(userID)) {
+            Circle userPic = (Circle) Main.UIcontrol.VBoxRoomsUsers.get(roomName).lookup("#userPic" + userID);
+            userPic.setFill(Color.GREEN);
         }
-
     }
 }

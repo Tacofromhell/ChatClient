@@ -30,10 +30,11 @@ public class chatUIcontroller {
 
     public Map<String, VBox> VBoxRoomsMessages = new HashMap<>();
     public Map<String, VBox> VBoxRoomsUsers = new HashMap<>();
+    public Map<String, Button> roomButtons = new HashMap<>();
 
-    public static UIControllerMessages controllerMessages = new UIControllerMessages();
-    public static UIControllerRooms controllerRooms = new UIControllerRooms();
-    public static UIControllerUsers controllerUsers = new UIControllerUsers();
+    public static UIControllerMessages controllerMessages;
+    public static UIControllerRooms controllerRooms;
+    public static UIControllerUsers controllerUsers;
 
     @FXML
     HBox roomButtonsHolder;
@@ -47,38 +48,55 @@ public class chatUIcontroller {
     TextField newUsername;
     @FXML
     Button sendMessage;
+    TextField newRoom;
+    public MenuButton publicRooms;
+    public ContextMenu tooltip = new ContextMenu();
 
 
     public void initialize() {
+        controllerUsers = new UIControllerUsers();
+        controllerRooms = new UIControllerRooms(roomButtonsHolder);
+        controllerMessages = new UIControllerMessages();
+
+        //TODO: add function to tooltip
+        MenuItem leaveRoomButton = new MenuItem("Leave room");
+        leaveRoomButton.setOnAction(e -> System.out.println("left room"));
+        tooltip.getItems().add(leaveRoomButton);
+
+        publicRooms = new MenuButton();
+        roomButtonsHolder.getChildren().add(publicRooms);
+
+        Button addRoomButton = new Button("\uD83D\uDFA6");
+        addRoomButton.setId("addRoom");
+        addRoomButton.setStyle("-fx-background-color: lightgray");
+        addRoomButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
+
+            SocketStreamHelper.sendData(
+                    new NetworkMessage.RoomCreate(newRoom.getText(), true),
+                    ChatClient.get().getDataOut());
+
+            newRoom.setText("");
+        });
+        roomButtonsHolder.getChildren().add(addRoomButton);
+
+        newRoom = new TextField();
+        newRoom.setPromptText("Roomname");
+        newRoom.setPrefWidth(80);
+        roomButtonsHolder.getChildren().add(newRoom);
+
+
     }
 
     public void initRooms() {
-        for (String room : ChatClient.get().getCurrentUser().getJoinedRooms()) {
-            VBox tempMsg = new VBox();
-            tempMsg.setId(room);
-            VBoxRoomsMessages.putIfAbsent(room, tempMsg);
-            VBox tempUsr = new VBox();
-            tempUsr.setId(room);
-            VBoxRoomsUsers.putIfAbsent(room, tempUsr);
 
-
-            Button b = new Button(room);
-            b.setId(room);
-            b.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
-                roomButtonsHolder.getChildren().forEach(roomCircle -> roomCircle.setStyle("-fx-background-color: lightgray"));
-                b.setStyle("-fx-background-color: lightseagreen");
-                controllerRooms.switchContent(b.getId());
-            });
-            roomButtonsHolder.getChildren().add(b);
-        }
-        roomButtonsHolder.getChildren().forEach(roomButton -> {
-            if (roomButton.getId().equals(ChatClient.get().getCurrentUser().getActiveRoom())) {
-                roomButton.setStyle("-fx-background-color: lightseagreen");
-
-            } else {
-                roomButton.setStyle("-fx-background-color: lightgray");
-            }
-        });
+//        for (String room : ChatClient.get().getCurrentUser().getJoinedRooms()) {
+//            controllerRooms.addRoomContent(room);
+//
+//            controllerRooms.printNewJoinedRoom(room);
+//        }
+        // highlight active room
+        Button roomButton = (Button) roomButtonsHolder.lookup("#" + ChatClient.get().getCurrentUser().getActiveRoom());
+        roomButton.setStyle("-fx-background-color: lightseagreen");
 
         scrollMessages.setContent(VBoxRoomsMessages.get(
                 ChatClient.get().getCurrentUser().getActiveRoom()

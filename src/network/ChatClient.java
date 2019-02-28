@@ -73,7 +73,7 @@ public class ChatClient {
         return singleton;
     }
 
-    public void startAutoUpdatingActiveRoom(){
+    public void startAutoUpdatingActiveRoom() {
         // starts auto updating active room
         UpdateActiveRoom updateActiveRoom = new UpdateActiveRoom();
         Thread updateActiveRoomThread = new Thread(updateActiveRoom);

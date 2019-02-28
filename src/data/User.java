@@ -29,6 +29,11 @@ public class User implements Serializable {
         this.username = name.length() > 0 ? name : "new User";
     }
 
+    public void addJoinedRoom(String roomName) {
+        if (!joinedRooms.contains(roomName))
+            joinedRooms.add(roomName);
+    }
+
     public String getActiveRoom() {
         return activeRoom;
     }
