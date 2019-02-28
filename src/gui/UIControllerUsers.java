@@ -24,7 +24,7 @@ public class UIControllerUsers extends chatUIcontroller {
         } else if (!user.getOnlineStatus()) {
             userPic.setFill(Color.LIGHTGRAY);
         } else {
-            userPic.setFill(Color.GREEN);
+            userPic.setFill(Color.valueOf("#20b755"));
         }
 
         Label userName = new Label(user.getUsername());
@@ -62,7 +62,7 @@ public class UIControllerUsers extends chatUIcontroller {
 
         if (!ChatClient.get().getCurrentUser().getID().equals(userID)) {
             Circle userPic = (Circle) Main.UIcontrol.VBoxRoomsUsers.get(roomName).lookup("#userPic" + userID);
-            userPic.setFill(Color.GREEN);
+            userPic.setFill(Color.valueOf("#20b755"));
         }
     }
     public void removeUserFromRoom(String targetRoom, String userID){

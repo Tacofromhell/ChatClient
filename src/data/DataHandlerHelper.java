@@ -3,6 +3,7 @@ package data;
 import gui.Main;
 import javafx.application.Platform;
 import network.ChatClient;
+import network.SocketStreamHelper;
 
 public class DataHandlerHelper {
     private boolean firstLogin = false;

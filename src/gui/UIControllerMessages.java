@@ -44,7 +44,7 @@ public class UIControllerMessages extends chatUIcontroller{
         messageToPrint.getChildren().add(msgMessage);
 
         messageToPrint.setPadding(new Insets(2, 5, 2, 5));
-        messageToPrint.setStyle("-fx-background-color: honeydew; -fx-background-radius: 5px;");
+        messageToPrint.setStyle("-fx-background-color: #20b755; ; -fx-background-radius: 5px;");
         messageToPrint.setMinHeight(Control.USE_PREF_SIZE);
         messageToPrint.setMaxWidth(350);
 
