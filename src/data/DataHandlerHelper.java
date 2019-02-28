@@ -71,7 +71,7 @@ public class DataHandlerHelper {
             printDataToRooms(room);
 
             // TODO: highlight active room color
-            Platform.runLater(() -> Main.UIcontrol.controllerRooms.activeRoomColor(targetRoom, ChatClient.get().getCurrentUser().getActiveRoom()));
+            Platform.runLater(() -> Main.UIcontrol.controllerRooms.activeRoomColor(targetRoom));
 
             // switch room when joining
             Platform.runLater(() -> Main.UIcontrol.controllerRooms.switchContent(targetRoom));

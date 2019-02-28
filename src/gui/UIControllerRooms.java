@@ -26,10 +26,11 @@ public class UIControllerRooms extends chatUIcontroller {
         ChatClient.get().getCurrentUser().setActiveRoom(room);
     }
 
-    public void activeRoomColor(String activeRoom, String lastRoom) {
+    public void activeRoomColor(String activeRoom) {
 
-        Button lastRoomButton = (Button) this.roomButtonsHolder.lookup("#" + lastRoom);
-        lastRoomButton.setStyle("-fx-background-color: lightgray");
+        for (var lastRoom : this.roomButtonsHolder.getChildren()) {
+            lastRoom.setStyle("-fx-background-color: lightgray");
+        }
 
         Button roomButton = (Button) this.roomButtonsHolder.lookup("#" + activeRoom);
         roomButton.setStyle("-fx-background-color: lightseagreen");
