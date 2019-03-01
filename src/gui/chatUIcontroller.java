@@ -1,33 +1,17 @@
 package gui;
 
 import data.NetworkMessage;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.text.Text;
-import javafx.stage.Popup;
 import network.ChatClient;
-import data.Message;
-import data.Room;
 import data.User;
 import network.SocketStreamHelper;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Stream;
-
 
 public class chatUIcontroller {
 
@@ -75,14 +59,12 @@ public class chatUIcontroller {
         leaveroomLabel.setOnAction(e -> {
             String name = tooltip.getOwnerNode().getId();
             System.out.println("left: " + name);
-
             leaveRoom(name);
         });
         tooltip.getItems().add(leaveroomLabel);
 
         newRoom = new TextField();
         newRoom.setPromptText("Create room");
-//        newRoom.setPrefWidth(80);
         newRoom.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
             if (newRoom.getText().matches("^[\\wåäöÅÄÖ-]{3,10}$")) {
                 if (e.getCode() == KeyCode.ENTER) {
@@ -159,12 +141,10 @@ public class chatUIcontroller {
         if (userInputNewMessage.getText().trim().length() > 0 && userInputNewMessage.getText().trim().length() < 500) {
             setErrorMessage("");
             ChatClient.get().sendMessageToServer(userInputNewMessage.getText(), ChatClient.get().getCurrentUser().getActiveRoom());
+            userInputNewMessage.setText("");
         } else {
             setErrorMessage("Message must be between 1 and 500 characters");
-
         }
-
-        userInputNewMessage.setText("");
     }
 
     public void sendMessageEnter(KeyEvent key) {
@@ -177,17 +157,16 @@ public class chatUIcontroller {
     public void sendNewUsernameButton() {
         if (newUsername.getText().trim().length() > 0) {
             if (newUsername.getText().matches("^[\\wåäöÅÄÖ-]{3,10}$")) {
-
                 ChatClient.get().getCurrentUser().setUsername(newUsername.getText());
                 System.out.println("Changed username to: " + ChatClient.get().getCurrentUser().getUsername());
                 SocketStreamHelper.sendData(
                         new NetworkMessage.UserNameChange(
                                 ChatClient.get().getCurrentUser().getUsername(),
                                 ChatClient.get().getCurrentUser().getID()), ChatClient.get().getDataOut());
+                newUsername.setText("");
             } else
                 setErrorMessage("Username must be 3-10 characters long");
         }
-        newUsername.setText("");
     }
 
     public void sendNewUsernameEnter(KeyEvent key) {
@@ -196,6 +175,4 @@ public class chatUIcontroller {
             sendNewUsernameButton();
         }
     }
-
-
 }

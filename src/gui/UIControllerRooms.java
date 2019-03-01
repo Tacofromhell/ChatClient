@@ -1,19 +1,13 @@
 package gui;
 
 import data.NetworkMessage;
-import javafx.css.converter.CursorConverter;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import network.ChatClient;
 import network.SocketStreamHelper;
-
-import java.util.Set;
 
 public class UIControllerRooms extends chatUIcontroller {
     VBox roomLabelsHolder;
@@ -31,16 +25,13 @@ public class UIControllerRooms extends chatUIcontroller {
     }
 
     public void activeRoomColor(String activeRoom) {
-
         for (String room : ChatClient.get().getCurrentUser().getJoinedRooms()) {
-
             Label roomLabel = (Label) this.roomLabelsHolder.lookup("#" + room);
             if (roomLabel != null) {
                 roomLabel.setStyle("-fx-font-weight: normal; -fx-font-size: 13px; -fx-cursor: hand");
                 roomLabel.setTextFill(Color.BLACK);
             }
         }
-
         Label roomLabel = (Label) this.roomLabelsHolder.lookup("#" + activeRoom);
         if (roomLabel != null) {
             roomLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-cursor: hand");
@@ -77,7 +68,6 @@ public class UIControllerRooms extends chatUIcontroller {
                 switchContent(item.getId());
             }
         });
-
         roomLabelsHolder.getChildren().add(item);
     }
 
@@ -103,6 +93,4 @@ public class UIControllerRooms extends chatUIcontroller {
         Label item = (Label) Main.UIcontrol.publicRooms.lookup("#" + targetRoom);
         Main.UIcontrol.publicRooms.getChildren().remove(item);
     }
-
-
 }

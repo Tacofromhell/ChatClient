@@ -51,15 +51,6 @@ public class DataHandlerHelper {
         Platform.runLater(() -> Main.UIcontrol.controllerRooms.removePublicRoom(data.targetRoom));
     }
 
-    public void receivedRoom(Object data) {
-
-        Room room = (Room) data;
-        ChatClient.get().addRoom(room);
-        // print rooms messages on connection
-
-//        printDataToRooms(room);
-    }
-
     public void receivedUserJoinedRoom(NetworkMessage.RoomJoin data) {
 
         // if user == this client, add room to joined rooms

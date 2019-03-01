@@ -6,9 +6,8 @@ import java.io.ObjectOutputStream;
 
 public class SocketStreamHelper {
 
-    SocketStreamHelper(){
+    SocketStreamHelper(){}
 
-    }
     public static void sendData (Object o, ObjectOutputStream out){
         try {
             out.reset();
@@ -19,14 +18,14 @@ public class SocketStreamHelper {
     }
 
     public static Object receiveData(ObjectInputStream in){
-
         try {
             return in.readObject();
         }
-        catch (IOException e) { }
-        catch (ClassNotFoundException e) { }
-
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
-
 }

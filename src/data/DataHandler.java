@@ -27,11 +27,7 @@ public class DataHandler {
                 Object data = dataQueue.poll();
 
                 if (data instanceof Message) {
-                    System.out.println("Received " + data);
                     helper.receivedMessage(data);
-
-                } else if (data instanceof Room) {
-//                    helper.receivedRoom(data);
 
                 } else if (data instanceof User) {
                     helper.receivedUser(data);
@@ -51,7 +47,6 @@ public class DataHandler {
                 } else if (data instanceof RoomDelete) {
                     helper.receivedRoomDeleted((RoomDelete) data);
 
-                    // TODO: add boolean for first connect
                 } else if (data instanceof RoomJoin) {
                     helper.receivedUserJoinedRoom((RoomJoin) data);
 
@@ -70,5 +65,4 @@ public class DataHandler {
             }
         }
     }
-
 }

@@ -1,9 +1,7 @@
 package data;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public abstract class Room implements Serializable {

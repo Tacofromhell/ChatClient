@@ -29,8 +29,7 @@ public class UIControllerUsers extends chatUIcontroller {
 
         Label userName = new Label(user.getUsername());
         userName.setId(user.getID());
-        userName.setStyle("-fx-text-fill: black;" +
-                "-fx-pref-width: 100px;");
+        userName.setStyle("-fx-text-fill: black; -fx-pref-width: 100px;");
 
         onlineUser.getChildren().addAll(userPic, userName);
         onlineUser.setMargin(userPic, new Insets(5, 0, 5, 3));
@@ -67,7 +66,6 @@ public class UIControllerUsers extends chatUIcontroller {
     }
     public void removeUserFromRoom(String targetRoom, String userID){
         Label user = (Label) Main.UIcontrol.VBoxRoomsUsers.get(targetRoom).lookup("#" + userID);
-
         Main.UIcontrol.VBoxRoomsUsers.get(targetRoom).getChildren().remove(user.getParent());
     }
 }

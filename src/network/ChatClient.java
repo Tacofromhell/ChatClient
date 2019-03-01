@@ -1,11 +1,9 @@
 package network;
 
 import data.*;
-
 import java.io.*;
 import java.net.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.FileHandler;
 
 public class ChatClient {
     private final String HOSTNAME = "localhost";
@@ -21,7 +19,6 @@ public class ChatClient {
     private ConcurrentHashMap<String, Room> rooms = new ConcurrentHashMap<>();
 
     private ChatClient() {
-
         try {
             socket = new Socket(HOSTNAME, PORT);
             //TODO: add setSoTimeout()
@@ -34,7 +31,6 @@ public class ChatClient {
             } else {
                 SocketStreamHelper.sendData(new NetworkMessage.InitializeClient("new user"), dataOut);
             }
-
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);
             System.exit(1);
