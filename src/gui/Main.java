@@ -26,7 +26,6 @@ public class Main extends Application {
         stage.setTitle("ChatApp");
 
 
-
         stage.setScene(new Scene(root));
         stage.setMinWidth(650);
         stage.setMinHeight(650);

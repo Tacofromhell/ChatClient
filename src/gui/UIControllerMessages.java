@@ -14,6 +14,7 @@ import network.ChatClient;
 
 import javax.swing.border.StrokeBorder;
 import java.awt.*;
+import java.util.Set;
 
 public class UIControllerMessages extends chatUIcontroller{
 
@@ -45,6 +46,7 @@ public class UIControllerMessages extends chatUIcontroller{
 
         //Vbox for everything
         VBox messageToPrint = new VBox();
+        messageToPrint.setId("vbox" + msg.getUser().getID());
         messageToPrint.getChildren().add(timeAndUsername);
         messageToPrint.getChildren().add(msgMessage);
 
@@ -52,7 +54,8 @@ public class UIControllerMessages extends chatUIcontroller{
         messageToPrint.setStyle("-fx-background-color: #a0e182; ; -fx-background-radius: 5px;" +
                 "-fx-border-radius: 5px; -fx-border-color: #00a132");
         messageToPrint.setMinHeight(Control.USE_PREF_SIZE);
-        messageToPrint.setMaxWidth(350);
+        messageToPrint.setMaxWidth(Main.UIcontrol.scrollMessages.getWidth() - 50);
+
 
         messageContainer.getChildren().add(messageToPrint);
 
@@ -66,6 +69,7 @@ public class UIControllerMessages extends chatUIcontroller{
         messageContainer.setMargin(messageToPrint, new Insets(5, 5, 5, 5));
         Main.UIcontrol.VBoxRoomsMessages.get(msg.getRoom()).getChildren().add(messageContainer);
         messageContainer.heightProperty().addListener((ChangeListener) (observable, oldvalue, newValue) -> Main.UIcontrol.scrollMessages.setVvalue((Double) newValue));
+
     }
 
 }
