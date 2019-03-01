@@ -113,14 +113,6 @@ public class chatUIcontroller {
         scrollUsers.setContent(VBoxRoomsUsers.get(
                 ChatClient.get().getCurrentUser().getActiveRoom()
         ));
-
-        Main.UIcontrol.scrollMessages.widthProperty().addListener((ChangeListener) (observable, oldValue, newValue) -> {
-            for(String room : ChatClient.get().getCurrentUser().getJoinedRooms()) {
-                Set<VBox> vBoxMessage = (Set) Main.UIcontrol.VBoxRoomsMessages.get(room).lookupAll("#vbox" + ChatClient.get().getCurrentUser().getID());
-                vBoxMessage.iterator().forEachRemaining(vbox -> vbox.setMaxWidth((Double) newValue - 50));
-            }
-        });
-
     }
 
     public void leaveRoom(String roomName) {

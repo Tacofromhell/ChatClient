@@ -69,6 +69,8 @@ public class UIControllerMessages extends chatUIcontroller{
         messageContainer.setMargin(messageToPrint, new Insets(5, 5, 5, 5));
         Main.UIcontrol.VBoxRoomsMessages.get(msg.getRoom()).getChildren().add(messageContainer);
         messageContainer.heightProperty().addListener((ChangeListener) (observable, oldvalue, newValue) -> Main.UIcontrol.scrollMessages.setVvalue((Double) newValue));
+        Main.UIcontrol.scrollMessages.widthProperty().addListener((ChangeListener) (observable, oldValue, newValue) -> messageToPrint.setMaxWidth((Double) newValue - 50));
+
 
     }
 
