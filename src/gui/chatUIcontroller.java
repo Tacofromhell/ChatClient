@@ -156,8 +156,13 @@ public class chatUIcontroller {
 
     public void sendMessageButton() {
 //        send input string to network method in ChatClient
-        if (userInputNewMessage.getText().trim().length() > 0)
+        if (userInputNewMessage.getText().trim().length() > 0 && userInputNewMessage.getText().trim().length() < 500) {
+            setErrorMessage("");
             ChatClient.get().sendMessageToServer(userInputNewMessage.getText(), ChatClient.get().getCurrentUser().getActiveRoom());
+        } else {
+            setErrorMessage("Message must be between 1 and 500 characters");
+
+        }
 
         userInputNewMessage.setText("");
     }

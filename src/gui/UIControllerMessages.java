@@ -26,13 +26,13 @@ public class UIControllerMessages extends chatUIcontroller{
         //label for timestamp
         Label msgTimestamp = new Label(msg.getTimestamp() + ": ");
         msgTimestamp.setId("timestamp");
-//        msgTimestamp.setStyle("-fx-font-weight: bold");
+        msgTimestamp.setStyle("-fx-font-weight: bold");
         msgTimestamp.setMinWidth(Control.USE_PREF_SIZE);
 
         //label for username
         Label msgUsername = new Label(msg.getUser().getUsername());
         msgUsername.setId(msg.getUser().getID());
-//        msgUsername.setStyle("-fx-font-weight: bold");
+        msgUsername.setStyle("-fx-font-weight: bold");
         msgUsername.setMinWidth(Control.USE_PREF_SIZE);
 
         //label for message
