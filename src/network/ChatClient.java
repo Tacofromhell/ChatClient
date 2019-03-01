@@ -34,9 +34,6 @@ public class ChatClient {
             } else {
                 SocketStreamHelper.sendData(new NetworkMessage.InitializeClient("new user"), dataOut);
             }
-//            SocketStreamHelper.sendData(new NetworkMessage.InitializeClient("new user"), dataOut);
-
-//            SocketStreamHelper.sendData(new NetworkMessage.ClientConnect(currentUser.getID()), dataOut);
 
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + HOSTNAME);

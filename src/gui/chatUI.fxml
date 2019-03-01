@@ -97,7 +97,7 @@
                                     <Insets bottom="5.0" top="5.0" />
                                  </VBox.margin>
                               </HBox>
-                              <VBox fx:id="roomButtonsHolder" prefHeight="200.0" prefWidth="100.0" />
+                              <VBox fx:id="roomLabelsHolder" prefHeight="200.0" prefWidth="100.0" />
                            </children>
                         </VBox>
                      </content>

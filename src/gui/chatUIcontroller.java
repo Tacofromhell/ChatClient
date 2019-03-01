@@ -42,7 +42,7 @@ public class chatUIcontroller {
     @FXML
     public TabPane roomTabs;
     @FXML
-    public VBox roomButtonsHolder;
+    public VBox roomLabelsHolder;
     @FXML
     HBox addNewRoomHolder;
     @FXML
@@ -66,18 +66,18 @@ public class chatUIcontroller {
 
     public void initialize() {
         controllerUsers = new UIControllerUsers();
-        controllerRooms = new UIControllerRooms(roomButtonsHolder);
+        controllerRooms = new UIControllerRooms(roomLabelsHolder);
         controllerMessages = new UIControllerMessages();
 
         //TODO: add function to tooltip
-        MenuItem leaveRoomButton = new MenuItem("Leave room");
-        leaveRoomButton.setOnAction(e -> {
+        MenuItem leaveroomLabel = new MenuItem("Leave room");
+        leaveroomLabel.setOnAction(e -> {
             String name = tooltip.getOwnerNode().getId();
             System.out.println("left: " + name);
 
             leaveRoom(name);
         });
-        tooltip.getItems().add(leaveRoomButton);
+        tooltip.getItems().add(leaveroomLabel);
 
         newRoom = new TextField();
         newRoom.setPromptText("Create room");
@@ -94,7 +94,6 @@ public class chatUIcontroller {
                         "Roomname must be 3-10 characters long" : "");
             }
         });
-
         addNewRoomHolder.getChildren().addAll(newRoom);
         errorHolder.getChildren().add(roomCreateError);
     }
@@ -102,11 +101,11 @@ public class chatUIcontroller {
     public void initRooms() {
 
         // highlight active room
-        Label roomButton = (Label) roomButtonsHolder.lookup("#" + ChatClient.get().getCurrentUser().getActiveRoom());
-        roomButton.setStyle("-fx-font-weight: bold");
-        roomButton.setTextFill(Color.LIGHTSEAGREEN);
-//        roomButton.setStyle("-fx-background-color: lightseagreen");
-
+        Label roomLabel = (Label) roomLabelsHolder.lookup("#" + ChatClient.get().getCurrentUser().getActiveRoom());
+        if (roomLabel != null) {
+            roomLabel.setStyle("-fx-font-weight: bold");
+            roomLabel.setTextFill(Color.LIGHTSEAGREEN);
+        }
         scrollMessages.setContent(VBoxRoomsMessages.get(
                 ChatClient.get().getCurrentUser().getActiveRoom()
         ));
@@ -125,8 +124,8 @@ public class chatUIcontroller {
         ChatClient.get().getRooms().remove(roomName);
 
         // find selected room
-        Label roomButton = (Label) roomButtonsHolder.lookup("#" + roomName);
-        roomButtonsHolder.getChildren().remove(roomButton);
+        Label roomLabel = (Label) roomLabelsHolder.lookup("#" + roomName);
+        roomLabelsHolder.getChildren().remove(roomLabel);
 
         // clear nodes
         VBoxRoomsMessages.remove(roomName);

@@ -16,10 +16,10 @@ import network.SocketStreamHelper;
 import java.util.Set;
 
 public class UIControllerRooms extends chatUIcontroller {
-    VBox roomButtonsHolder;
+    VBox roomLabelsHolder;
 
-    public UIControllerRooms(VBox roomButtonsHolder) {
-        this.roomButtonsHolder = roomButtonsHolder;
+    public UIControllerRooms(VBox roomLabelsHolder) {
+        this.roomLabelsHolder = roomLabelsHolder;
     }
 
     public void switchContent(String room) {
@@ -34,17 +34,18 @@ public class UIControllerRooms extends chatUIcontroller {
 
         for (String room : ChatClient.get().getCurrentUser().getJoinedRooms()) {
 
-            Label roomButton = (Label) this.roomButtonsHolder.lookup("#" + room);
-            if (roomButton != null) {
-                roomButton.setStyle("-fx-font-weight: normal; -fx-font-size: 15px; -fx-cursor: hand");
-                roomButton.setTextFill(Color.BLACK);
+            Label roomLabel = (Label) this.roomLabelsHolder.lookup("#" + room);
+            if (roomLabel != null) {
+                roomLabel.setStyle("-fx-font-weight: normal; -fx-font-size: 15px; -fx-cursor: hand");
+                roomLabel.setTextFill(Color.BLACK);
             }
         }
 
-        Label roomButton = (Label) this.roomButtonsHolder.lookup("#" + activeRoom);
-        roomButton.setStyle("-fx-font-weight: bold; -fx-font-size: 17px; -fx-cursor: hand");
-        roomButton.setTextFill(Color.LIGHTSEAGREEN);
-
+        Label roomLabel = (Label) this.roomLabelsHolder.lookup("#" + activeRoom);
+        if (roomLabel != null) {
+            roomLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 17px; -fx-cursor: hand");
+            roomLabel.setTextFill(Color.LIGHTSEAGREEN);
+        }
     }
 
     public void addRoomContent(String room) {
@@ -77,7 +78,7 @@ public class UIControllerRooms extends chatUIcontroller {
             }
         });
 
-        roomButtonsHolder.getChildren().add(item);
+        roomLabelsHolder.getChildren().add(item);
     }
 
     public void printNewPublicRoom(String room) {
@@ -85,13 +86,13 @@ public class UIControllerRooms extends chatUIcontroller {
         newRoom.setId(room);
         newRoom.setStyle("-fx-font-size: 15px; -fx-cursor: hand");
         newRoom.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
+            switchContent(room);
             SocketStreamHelper.sendData(
                     new NetworkMessage.RoomJoin(newRoom.getId(), ChatClient.get().getCurrentUser(), null),
                     ChatClient.get().getDataOut());
 
             // removes when user joins
             removePublicRoom(room);
-            switchContent(room);
             Main.UIcontrol.roomTabs
                     .getSelectionModel().select(0);
         });

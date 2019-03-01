@@ -68,15 +68,16 @@ public class DataHandlerHelper {
 
             ChatClient.get().addRoom(room);
 
+
             Platform.runLater(() -> Main.UIcontrol.controllerRooms.printNewJoinedRoom(targetRoom));
 
-            printDataToRooms(room);
-
             // highlight active room color
-            Platform.runLater(() -> Main.UIcontrol.controllerRooms.activeRoomColor(targetRoom));
+            Platform.runLater(() -> Main.UIcontrol.controllerRooms.activeRoomColor(user.getActiveRoom()));
 
             // switch room when joining
-            Platform.runLater(() -> Main.UIcontrol.controllerRooms.switchContent(targetRoom));
+            Platform.runLater(() -> Main.UIcontrol.controllerRooms.switchContent(user.getActiveRoom()));
+
+            printDataToRooms(room);
 
         } else {
             if (!ChatClient.get().getRooms().get(targetRoom).getUsers().containsKey(user.getID())) {
