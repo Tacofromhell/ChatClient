@@ -60,33 +60,31 @@ public class DataHandlerHelper {
 //        printDataToRooms(room);
     }
 
-    public void receivedUserJoinedRoom(String targetRoom, User user, Room room) {
+    public void receivedUserJoinedRoom(NetworkMessage.RoomJoin data) {
 
         // if user == this client, add room to joined rooms
-        if (ChatClient.get().getCurrentUser().getID().equals(user.getID())) {
-            ChatClient.get().getCurrentUser().addJoinedRoom(targetRoom);
+        if (ChatClient.get().getCurrentUser().getID().equals(data.user.getID())) {
+            ChatClient.get().getCurrentUser().addJoinedRoom(data.targetRoom);
 
-            ChatClient.get().addRoom(room);
+            ChatClient.get().addRoom(data.room);
 
-
-            Platform.runLater(() -> Main.UIcontrol.controllerRooms.printNewJoinedRoom(targetRoom));
-
+            Platform.runLater(() -> Main.UIcontrol.controllerRooms.printNewJoinedRoom(data.targetRoom));
             // highlight active room color
-            Platform.runLater(() -> Main.UIcontrol.controllerRooms.activeRoomColor(user.getActiveRoom()));
-
+            Platform.runLater(() -> Main.UIcontrol.controllerRooms.activeRoomColor(
+                    data.firstConnection ? data.user.getActiveRoom() : data.targetRoom));
             // switch room when joining
-            Platform.runLater(() -> Main.UIcontrol.controllerRooms.switchContent(user.getActiveRoom()));
+            Platform.runLater(() -> Main.UIcontrol.controllerRooms.switchContent(
+                    data.firstConnection ? data.user.getActiveRoom() : data.targetRoom
+            ));
 
-            printDataToRooms(room);
+            printDataToRooms(data.room);
 
         } else {
-            if (!ChatClient.get().getRooms().get(targetRoom).getUsers().containsKey(user.getID())) {
-                ChatClient.get().getRooms().get(targetRoom).addUserToRoom(user);
-                Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(user, targetRoom));
+            if (!ChatClient.get().getRooms().get(data.targetRoom).getUsers().containsKey(data.user.getID())) {
+                ChatClient.get().getRooms().get(data.targetRoom).addUserToRoom(data.user);
+                Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(data.user, data.targetRoom));
             }
-
         }
-
         // need to init rooms at correct lifecycle hook
         if (!firstLogin) {
             Platform.runLater(() -> Main.UIcontrol.initRooms());

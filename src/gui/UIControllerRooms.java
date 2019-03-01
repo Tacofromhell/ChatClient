@@ -36,14 +36,14 @@ public class UIControllerRooms extends chatUIcontroller {
 
             Label roomLabel = (Label) this.roomLabelsHolder.lookup("#" + room);
             if (roomLabel != null) {
-                roomLabel.setStyle("-fx-font-weight: normal; -fx-font-size: 15px; -fx-cursor: hand");
+                roomLabel.setStyle("-fx-font-weight: normal; -fx-font-size: 13px; -fx-cursor: hand");
                 roomLabel.setTextFill(Color.BLACK);
             }
         }
 
         Label roomLabel = (Label) this.roomLabelsHolder.lookup("#" + activeRoom);
         if (roomLabel != null) {
-            roomLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 17px; -fx-cursor: hand");
+            roomLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-cursor: hand");
             roomLabel.setTextFill(Color.LIGHTSEAGREEN);
         }
     }
@@ -65,7 +65,7 @@ public class UIControllerRooms extends chatUIcontroller {
 
         Label item = new Label(room);
         item.setId(room);
-        item.setStyle("-fx-font-weight: bold; -fx-font-size: 17px;" +
+        item.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;" +
                 "-fx-cursor: hand");
         item.setTextFill(Color.LIGHTSEAGREEN);
         item.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
@@ -84,11 +84,11 @@ public class UIControllerRooms extends chatUIcontroller {
     public void printNewPublicRoom(String room) {
         Label newRoom = new Label(room);
         newRoom.setId(room);
-        newRoom.setStyle("-fx-font-size: 15px; -fx-cursor: hand");
+        newRoom.setStyle("-fx-font-size: 13px; -fx-cursor: hand");
         newRoom.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
             switchContent(room);
             SocketStreamHelper.sendData(
-                    new NetworkMessage.RoomJoin(newRoom.getId(), ChatClient.get().getCurrentUser(), null),
+                    new NetworkMessage.RoomJoin(newRoom.getId(), ChatClient.get().getCurrentUser(), null, false),
                     ChatClient.get().getDataOut());
 
             // removes when user joins

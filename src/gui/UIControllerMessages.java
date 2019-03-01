@@ -6,9 +6,14 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import network.ChatClient;
+
+import javax.swing.border.StrokeBorder;
+import java.awt.*;
 
 public class UIControllerMessages extends chatUIcontroller{
 
@@ -44,7 +49,8 @@ public class UIControllerMessages extends chatUIcontroller{
         messageToPrint.getChildren().add(msgMessage);
 
         messageToPrint.setPadding(new Insets(2, 5, 2, 5));
-        messageToPrint.setStyle("-fx-background-color: #20b755; ; -fx-background-radius: 5px;");
+        messageToPrint.setStyle("-fx-background-color: #a0e182; ; -fx-background-radius: 5px;" +
+                "-fx-border-radius: 5px; -fx-border-color: #00a132");
         messageToPrint.setMinHeight(Control.USE_PREF_SIZE);
         messageToPrint.setMaxWidth(350);
 
@@ -53,10 +59,11 @@ public class UIControllerMessages extends chatUIcontroller{
         if (msg.getUser().getUser().getID().equals(ChatClient.get().getCurrentUser().getID())) {
             messageContainer.setAlignment(Pos.CENTER_RIGHT);
             messageToPrint.setAlignment(Pos.CENTER_RIGHT);
-            messageToPrint.setStyle("-fx-background-color: #27d5ff; -fx-background-radius: 5px;");
+            messageToPrint.setStyle("-fx-background-color: #77d5ff; -fx-background-radius: 5px;" +
+                    "-fx-border-radius: 5px; -fx-border-color: #37a5af");
         }
 
-        messageContainer.setMargin(messageToPrint, new Insets(5, 5, 0, 5));
+        messageContainer.setMargin(messageToPrint, new Insets(5, 5, 5, 5));
         Main.UIcontrol.VBoxRoomsMessages.get(msg.getRoom()).getChildren().add(messageContainer);
         messageContainer.heightProperty().addListener((ChangeListener) (observable, oldvalue, newValue) -> Main.UIcontrol.scrollMessages.setVvalue((Double) newValue));
     }

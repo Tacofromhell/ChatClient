@@ -51,8 +51,9 @@ public class DataHandler {
                 } else if (data instanceof RoomDelete) {
                     helper.receivedRoomDeleted((RoomDelete) data);
 
+                    // TODO: add boolean for first connect
                 } else if (data instanceof RoomJoin) {
-                    helper.receivedUserJoinedRoom(((RoomJoin) data).getTargetRoom(), ((RoomJoin) data).getUser(), ((RoomJoin) data).getRoom());
+                    helper.receivedUserJoinedRoom((RoomJoin) data);
 
                 } else if (data instanceof RoomLeave) {
                     helper.receivedUserLeftRoom((RoomLeave) data);
