@@ -32,7 +32,7 @@ public class UIControllerUsers extends chatUIcontroller {
         userName.setStyle("-fx-text-fill: black; -fx-pref-width: 100px;");
 
         onlineUser.getChildren().addAll(userPic, userName);
-        onlineUser.setMargin(userPic, new Insets(5, 0, 5, 3));
+        HBox.setMargin(userPic, new Insets(5, 0, 5, 3));
 
         Main.UIcontrol.VBoxRoomsUsers.get(room).getChildren().add(onlineUser);
     }

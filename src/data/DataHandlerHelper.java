@@ -5,6 +5,10 @@ import javafx.application.Platform;
 import network.ChatClient;
 import network.SocketStreamHelper;
 
+import static gui.chatUIcontroller.controllerMessages;
+import static gui.chatUIcontroller.controllerRooms;
+import static gui.chatUIcontroller.controllerUsers;
+
 public class DataHandlerHelper {
     private boolean firstLogin = false;
 
@@ -15,7 +19,7 @@ public class DataHandlerHelper {
         String msg = incoming.getRoom() + ": " + incoming.getTimestamp() + " | " + incoming.getUser().getUsername() + ":  " + incoming.getMsg();
         System.out.println(msg);
         //Send incoming message and currentUser to javaFX
-        Platform.runLater(() -> Main.UIcontrol.controllerMessages.printMessageFromServer(incoming));
+        Platform.runLater(() -> controllerMessages.printMessageFromServer(incoming));
     }
 
     public void receivedUser(Object data) {
@@ -39,16 +43,16 @@ public class DataHandlerHelper {
             room.getUsers().values().stream()
                     .filter(user -> user.getID().equals(data.userId))
                     .forEach(user ->
-                            Platform.runLater(() -> Main.UIcontrol.controllerUsers.userDisconnected(room.getRoomName(), data.userId)));
+                            Platform.runLater(() -> controllerUsers.userDisconnected(room.getRoomName(), data.userId)));
         }
     }
 
     public void receivedRoomCreated(NetworkMessage.RoomCreate data) {
-        Platform.runLater(() -> Main.UIcontrol.controllerRooms.printNewPublicRoom(data.getRoomName()));
+        Platform.runLater(() -> controllerRooms.printNewPublicRoom(data.getRoomName()));
     }
 
     public void receivedRoomDeleted(NetworkMessage.RoomDelete data) {
-        Platform.runLater(() -> Main.UIcontrol.controllerRooms.removePublicRoom(data.targetRoom));
+        Platform.runLater(() -> controllerRooms.removePublicRoom(data.targetRoom));
     }
 
     public void receivedUserJoinedRoom(NetworkMessage.RoomJoin data) {
@@ -59,12 +63,12 @@ public class DataHandlerHelper {
 
             ChatClient.get().addRoom(data.room);
 
-            Platform.runLater(() -> Main.UIcontrol.controllerRooms.printNewJoinedRoom(data.targetRoom));
+            Platform.runLater(() -> controllerRooms.printNewJoinedRoom(data.targetRoom));
             // highlight active room color
-            Platform.runLater(() -> Main.UIcontrol.controllerRooms.activeRoomColor(
+            Platform.runLater(() -> controllerRooms.activeRoomColor(
                     data.firstConnection ? data.user.getActiveRoom() : data.targetRoom));
             // switch room when joining
-            Platform.runLater(() -> Main.UIcontrol.controllerRooms.switchContent(
+            Platform.runLater(() -> controllerRooms.switchContent(
                     data.firstConnection ? data.user.getActiveRoom() : data.targetRoom
             ));
 
@@ -73,7 +77,7 @@ public class DataHandlerHelper {
         } else {
             if (!ChatClient.get().getRooms().get(data.targetRoom).getUsers().containsKey(data.user.getID())) {
                 ChatClient.get().getRooms().get(data.targetRoom).addUserToRoom(data.user);
-                Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(data.user, data.targetRoom));
+                Platform.runLater(() -> controllerUsers.printUsers(data.user, data.targetRoom));
             }
         }
         // need to init rooms at correct lifecycle hook
@@ -87,7 +91,7 @@ public class DataHandlerHelper {
         ChatClient.get().getRooms().get(data.targetRoom).getUsers().remove(data.userId);
 
         if (ChatClient.get().getRooms().get(data.targetRoom).getUsers().size() > 0) {
-            Platform.runLater(() -> Main.UIcontrol.controllerUsers.removeUserFromRoom(data.targetRoom, data.userId));
+            Platform.runLater(() -> controllerUsers.removeUserFromRoom(data.targetRoom, data.userId));
         }
     }
 
@@ -103,7 +107,7 @@ public class DataHandlerHelper {
             room.getUsers().values().stream()
                     .filter(user -> user.getID().equals(userNameChange.getUserId()))
                     .forEach(user -> Platform.runLater(() ->
-                            Main.UIcontrol.controllerUsers.updateUsername(room.getRoomName(), userNameChange)));
+                            controllerUsers.updateUsername(room.getRoomName(), userNameChange)));
         }
     }
 
@@ -118,17 +122,13 @@ public class DataHandlerHelper {
             room.getUsers().values().stream()
                     .filter(user -> user.getID().equals(event.userId))
                     .forEach(user ->
-                            Platform.runLater(() -> Main.UIcontrol.controllerUsers.userConnected(room.getRoomName(), event.userId)));
+                            Platform.runLater(() -> controllerUsers.userConnected(room.getRoomName(), event.userId)));
         }
     }
 
     public void printDataToRooms(Room room) {
-        room.getMessages().forEach(msg ->
-                Platform.runLater(() -> Main.UIcontrol.controllerMessages.printMessageFromServer(msg)));
+        room.getMessages().forEach(msg -> Platform.runLater(() -> controllerMessages.printMessageFromServer(msg)));
 
-        room.getUsers().values().forEach(u -> {
-            Platform.runLater(() -> Main.UIcontrol.controllerUsers.printUsers(u, room.getRoomName()));
-        });
+        room.getUsers().values().forEach(u -> Platform.runLater(() -> controllerUsers.printUsers(u, room.getRoomName())));
     }
-
 }

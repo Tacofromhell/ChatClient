@@ -73,7 +73,7 @@ public class UIControllerMessages extends chatUIcontroller{
                     "-fx-border-radius: 5px; -fx-border-color: #37a5af");
         }
 
-        messageContainer.setMargin(messageToPrint, new Insets(0, 5, 0, 5));
+        HBox.setMargin(messageToPrint, new Insets(0, 5, 0, 5));
 
         Main.UIcontrol.VBoxRoomsMessages.get(msg.getRoom()).getChildren().add(containerMessageAndTimestamp);
         //Listener to ensure that scoll always is at bottom
@@ -81,5 +81,4 @@ public class UIControllerMessages extends chatUIcontroller{
         //Listener to check if user changes window-width
         Main.UIcontrol.scrollMessages.widthProperty().addListener((ChangeListener) (observable, oldValue, newValue) -> messageToPrint.setMaxWidth((Double) newValue - 50));
     }
-
 }
