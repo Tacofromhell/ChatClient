@@ -28,7 +28,7 @@ public class Main extends Application {
 
 
         stage.setScene(new Scene(root));
-        stage.setMinWidth(550);
+        stage.setMinWidth(650);
         stage.setMinHeight(650);
         stage.setOnCloseRequest(e -> ChatClient.get().closeThreads());
         stage.show();
