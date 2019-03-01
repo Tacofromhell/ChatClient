@@ -1,10 +1,6 @@
-package network;
+package data;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.net.IDN;
-import java.net.Socket;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -30,7 +26,17 @@ public class User implements Serializable {
     public User(String name) {
         //this.activeRoom = "general";
         this.ID = UUID.randomUUID().toString();
-        this.username = name.length() > 0 ? name : "anon";
+        this.username = name.length() > 0 ? name : "new User";
+    }
+
+    public void addJoinedRoom(String roomName) {
+        if (!joinedRooms.contains(roomName))
+            joinedRooms.add(roomName);
+    }
+
+    public void removeJoinedRoom(String roomName) {
+        if (joinedRooms.contains(roomName))
+            joinedRooms.remove(roomName);
     }
 
     public String getActiveRoom() {
@@ -57,15 +63,15 @@ public class User implements Serializable {
         this.username = username;
     }
 
-    public String getID(){
+    public String getID() {
         return this.ID;
     }
 
-    public void setOnlineStatus(boolean onlineStatus){
+    public void setOnlineStatus(boolean onlineStatus) {
         this.onlineStatus = onlineStatus;
     }
 
-    public boolean getOnlineStatus(){
+    public boolean getOnlineStatus() {
         return this.onlineStatus;
     }
 }//class end

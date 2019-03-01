@@ -10,6 +10,7 @@ import network.ChatClient;
 public class Main extends Application {
     public static Stage stage;
     public static chatUIcontroller UIcontrol;
+
     private Parent root;
 
     @Override
@@ -25,9 +26,8 @@ public class Main extends Application {
         stage.setTitle("ChatApp");
 
 
-
         stage.setScene(new Scene(root));
-        stage.setMinWidth(550);
+        stage.setMinWidth(650);
         stage.setMinHeight(650);
         stage.setOnCloseRequest(e -> ChatClient.get().closeThreads());
         stage.show();
