@@ -1,0 +1,25 @@
+.messagePane {
+    -fx-background-radius: 3 3 3 3;
+}
+
+.usersPane {
+    -fx-background-radius: 3 3 3 3;
+}
+
+.tab-pane .tab-header-area .tab-header-background{
+    -fx-background-radius: 3 3 0 0;
+}
+
+.tab-pane .tab-content-area {
+    -fx-background-color: BLACK;
+    -fx-background-radius: 0 0 3 3;
+}
+
+.tab-pane .tab-header-area {
+    -fx-alignment: CENTER;
+}
+
+.tab .tab-label {
+    -fx-pref-width: 50px;
+    -fx-alignment: CENTER;
+}

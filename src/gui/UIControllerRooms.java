@@ -1,6 +1,7 @@
 package gui;
 
 import data.NetworkMessage;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -43,6 +44,7 @@ public class UIControllerRooms extends chatUIcontroller {
         // add placeholder for messages
         VBox VBoxMessages = new VBox();
         VBoxMessages.setId(room);
+        VBoxMessages.setPadding(new Insets(5, 0, 0, 0));
         Main.UIcontrol.VBoxRoomsMessages.putIfAbsent(room, VBoxMessages);
 
         // add placeholder for users
