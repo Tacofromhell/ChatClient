@@ -3,13 +3,26 @@ package gui;
 import data.NetworkMessage;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import network.ChatClient;
 import data.User;
 import network.SocketStreamHelper;
+
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +34,8 @@ public class chatUIcontroller {
     public static UIControllerMessages controllerMessages;
     public static UIControllerRooms controllerRooms;
     public static UIControllerUsers controllerUsers;
+
+    private Stage stage;
 
     @FXML
     public Tab joinedTab;
@@ -147,6 +162,23 @@ public class chatUIcontroller {
         }
     }
 
+    public void sendImageButton(){
+        FileChooser fileChooser = new FileChooser();
+        File file = fileChooser.showOpenDialog(stage);
+        if(file != null){
+            System.out.println(file.toURI().toString());
+            try {
+                byte[] image = Files.readAllBytes(file.toPath());
+                ChatClient.get().sendImageToServer(ChatClient.get().getCurrentUser().getActiveRoom(), image);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Image image1 = new Image(file.toURI().toString());
+        }
+
+    }
+
     public void sendMessageEnter(KeyEvent key) {
         if (key.getCode().equals(KeyCode.ENTER)) {
 //            send input string to network method in ChatClient
@@ -174,5 +206,9 @@ public class chatUIcontroller {
         if (key.getCode().equals(KeyCode.ENTER)) {
             sendNewUsernameButton();
         }
+    }
+
+    public void setStage(Stage stage){
+        this.stage = stage;
     }
 }

@@ -11,12 +11,14 @@ public class Message implements Serializable {
     private String msg;
     private String room;
     private LocalTime timestamp;
+    private byte[] imageBuffer;
 
-    public Message(String msg, User user, String room){
+    public Message(String msg, User user, String room, byte[] imageBuffer){
         this.user = user;
         this.msg = msg;
         this.room = room;
         this.timestamp = LocalTime.now();
+        this.imageBuffer = imageBuffer;
     }
 
     public String getRoom() {
@@ -32,6 +34,9 @@ public class Message implements Serializable {
     public String getTimestamp(){
         DateTimeFormatter timestampFormat = DateTimeFormatter.ofPattern("HH:mm");
         return this.timestamp.format(timestampFormat);
+    }
+    public byte[] getImageBuffer(){
+        return imageBuffer;
     }
 }
 

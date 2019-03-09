@@ -22,7 +22,6 @@ public class UserIdHandler {
             System.out.println("Writing user ID to " + path.toString());
         }
         catch (IOException e){
-            e.printStackTrace();
         }
     }
 

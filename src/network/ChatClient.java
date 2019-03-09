@@ -64,7 +64,11 @@ public class ChatClient {
     }
 
     public void sendMessageToServer(String userInput, String activeRoom) {
-        Message newMessage = new Message(userInput, currentUser, activeRoom);
+        Message newMessage = new Message(userInput, currentUser, activeRoom, null);
+        SocketStreamHelper.sendData(newMessage, dataOut);
+    }
+    public void sendImageToServer(String activeRoom, byte[] image) {
+        Message newMessage = new Message(null, currentUser, activeRoom, image);
         SocketStreamHelper.sendData(newMessage, dataOut);
     }
 

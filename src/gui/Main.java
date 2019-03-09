@@ -20,6 +20,7 @@ public class Main extends Application {
         root = loader.load();
 
         UIcontrol = loader.getController();
+        UIcontrol.setStage(stage);
         stage.setUserData(UIcontrol);
 
         Main.stage = stage;
