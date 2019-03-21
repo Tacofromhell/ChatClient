@@ -22,6 +22,7 @@ public class Main extends Application {
         UIcontrol = loader.getController();
         stage.setUserData(UIcontrol);
 
+
         Main.stage = stage;
         stage.setTitle("ChatApp");
 

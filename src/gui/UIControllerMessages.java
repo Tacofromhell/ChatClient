@@ -1,12 +1,18 @@
 package gui;
 
+import data.ImageMessage;
 import data.Message;
 import javafx.beans.value.ChangeListener;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -14,8 +20,16 @@ import javafx.scene.paint.Color;
 import network.ChatClient;
 
 import javax.swing.border.StrokeBorder;
-import java.awt.*;
+
+import java.awt.Desktop;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Set;
+import java.util.UUID;
 
 public class UIControllerMessages extends chatUIcontroller{
 
@@ -36,7 +50,7 @@ public class UIControllerMessages extends chatUIcontroller{
         msgUsername.setId(msg.getUser().getID());
         msgUsername.setStyle("-fx-font-weight: bold");
         msgUsername.setMinWidth(Control.USE_PREF_SIZE);
-
+        
         //label for message
         Label msgMessage = new Label(msg.getMsg());
         msgMessage.setWrapText(true);
@@ -49,7 +63,65 @@ public class UIControllerMessages extends chatUIcontroller{
         VBox messageToPrint = new VBox();
         messageToPrint.setId("vbox" + msg.getUser().getID());
         messageToPrint.getChildren().add(hboxUsername);
+        
+        
+        //If message is of type ImageMessage
+        if(msg instanceof ImageMessage)
+        {
+        	String name = ((ImageMessage) msg).getImageName();
+        	byte[] data = ((ImageMessage) msg).getImageData();
+        	
+        	if(data != null && data.length > 0)
+        	{
+        		Image img = new Image(new ByteArrayInputStream(data));
+        		ImageView view = new ImageView(img);
+        		
+        		view.setPreserveRatio(true);
+        		view.setFitHeight(100);
+        		
+        		//Change cursor to hand when hovering over image
+        		view.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+       		     @Override
+       		     public void handle(MouseEvent event) {
+       		    	 Main.stage.getScene().setCursor(Cursor.HAND);
+       		         event.consume();
+       		     }
+        		});
+        		
+        		//Change cursor back to default when leaving
+        		view.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+          		     @Override
+          		     public void handle(MouseEvent event) {
+          		    	 Main.stage.getScene().setCursor(Cursor.DEFAULT);
+          		         event.consume();
+          		     }
+           		});
+        		
+        		//Handle click on image
+        		view.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+        		     @Override
+        		     public void handle(MouseEvent event) {
+        		    	try 
+        		    	{
+        		    		//Save the file to disk
+        		    		Path path = Files.write(Paths.get("src/storage/downloaded/" + name), data);
+
+        		    		//Open file with default application
+        		    		Desktop.getDesktop().open(path.toFile());
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+        		         event.consume();
+        		     }
+        		});
+        		
+        		messageToPrint.getChildren().add(view);
+        	}
+        }
+        
         messageToPrint.getChildren().add(msgMessage);
+        
+    
 
         //styling
         messageToPrint.setPadding(new Insets(2, 5, 2, 5));

@@ -1,15 +1,22 @@
 package gui;
 
 import data.NetworkMessage;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import network.ChatClient;
 import data.User;
 import network.SocketStreamHelper;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +47,8 @@ public class chatUIcontroller {
     TextField newUsername;
     @FXML
     HBox errorHolder;
+    @FXML
+    Button filechooserbtn;
     @FXML
     Button sendMessage;
     TextField newRoom;
@@ -174,5 +183,26 @@ public class chatUIcontroller {
         if (key.getCode().equals(KeyCode.ENTER)) {
             sendNewUsernameButton();
         }
+    }
+
+    public void fileChooser() {
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.getExtensionFilters().addAll(
+              //  new FileChooser.ExtensionFilter("All Images", "."),  //FUNKAR EJ!
+                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+                new FileChooser.ExtensionFilter("GIF", "*.gif"),
+                new FileChooser.ExtensionFilter("BMP", "*.bmp"),
+                new FileChooser.ExtensionFilter("PNG", "*.png"));
+
+        //Show open file dialog
+        File file = fileChooser.showOpenDialog(null);
+
+        System.out.println(file.getAbsolutePath());
+
+   
+        //userInputNewMessage
+        ChatClient.get().sendImageToServer(file, ChatClient.get().getCurrentUser().getActiveRoom()); //Metod i chatclient!
+
     }
 }

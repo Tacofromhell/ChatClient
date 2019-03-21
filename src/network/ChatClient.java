@@ -1,9 +1,24 @@
 package network;
 
-import data.*;
-import java.io.*;
-import java.net.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.imageio.ImageIO;
+
+import data.DataHandler;
+import data.ImageMessage;
+import data.Message;
+import data.NetworkMessage;
+import data.Room;
+import data.User;
+import data.UserIdHandler;
 
 public class ChatClient {
     private final String HOSTNAME = "localhost";
@@ -66,6 +81,19 @@ public class ChatClient {
     public void sendMessageToServer(String userInput, String activeRoom) {
         Message newMessage = new Message(userInput, currentUser, activeRoom);
         SocketStreamHelper.sendData(newMessage, dataOut);
+    }
+
+    public void sendImageToServer(File file, String activeRoom) {
+		try(ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+			BufferedImage img = ImageIO.read(file);
+			String name = file.getName();
+			String extension = file.getName().substring(name.lastIndexOf('.') + 1);
+			ImageIO.write(img, extension, os);
+			ImageMessage newMessage = new ImageMessage(name, os.toByteArray(), currentUser, activeRoom);
+	        SocketStreamHelper.sendData(newMessage, dataOut);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 
     public static ChatClient get() {
