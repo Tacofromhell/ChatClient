@@ -12,13 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.imageio.ImageIO;
 
-import data.DataHandler;
-import data.ImageMessage;
-import data.Message;
-import data.NetworkMessage;
-import data.Room;
-import data.User;
-import data.UserIdHandler;
+import data.*;
 
 public class ChatClient {
     private final String HOSTNAME = "localhost";
